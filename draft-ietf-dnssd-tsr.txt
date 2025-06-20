@@ -2,14 +2,16 @@
 
 
 
-WG Working Group                                              Y. N. Here
-Internet-Draft                                    Your Organization Here
-Intended status: Informational                               19 May 2025
-Expires: 20 November 2025
+dnssd                                                           T. Lemon
+Internet-Draft                                                Apple Inc.
+Intended status: Standards Track                                 E. Dijk
+Expires: 22 December 2025                              IoTconsultancy.nl
+                                                            20 June 2025
 
 
-                           TODO - Your title
-                  draft-todo-yourname-protocol-latest
+ Multicast DNS conflict resolution using the Time Since Received (TSR)
+                              EDNS option
+                      draft-ietf-dnssd-tsr-latest
 
 Abstract
 
@@ -20,16 +22,17 @@ About This Document
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at
-   https://example.com/LATEST.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-todo-yourname-
-   protocol/.
+   https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-tsr.  Status
+   information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-ietf-dnssd-tsr/.
 
    Discussion of this document takes place on the WG Working Group
-   mailing list (mailto:WG@example.com), which is archived at
-   https://example.com/WG.
+   mailing list (mailto:dnssd@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/dnssd/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/dnssd/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/USER/REPO.
+   https://github.com/dnssd-wg/draft-ietf-dnssd-tsr.
 
 Status of This Memo
 
@@ -46,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 November 2025.
+   This Internet-Draft will expire on 22 December 2025.
 
 Copyright Notice
 
@@ -70,7 +73,7 @@ Table of Contents
    4.  IANA Considerations
    5.  Normative References
    Acknowledgments
-   Author's Address
+   Authors' Addresses
 
 1.  Introduction
 
@@ -107,8 +110,13 @@ Acknowledgments
 
    TODO acknowledge.
 
-Author's Address
+Authors' Addresses
 
-   Your Name Here
-   Your Organization Here
-   Email: your.email@example.com
+   Ted Lemon
+   Apple Inc.
+   Email: mellon@fugue.com
+
+
+   Esko Dijk
+   IoTconsultancy.nl
+   Email: esko.dijk@iotconsultancy.nl
