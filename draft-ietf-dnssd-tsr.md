@@ -50,12 +50,13 @@ normative:
   I-D.ietf-dnssd-srp:
 
 informative:
+  RFC9665:
 
 
 --- abstract
 
 This document specifies a new conflict resolution mechanism for DNS, for use in cases where the advertisement is
-being proxied, rather than advertised directly, e.g. when using a combined DNS-SD Advertising Proxy and SRP
+being proxied, rather than advertised directly, e.g. when using a combined DNS-SD advertising proxy and SRP
 registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
 DNS owner name was most recently updated.
 
@@ -69,11 +70,11 @@ Multicast DNS has no single source of authority. Because of this, mDNS has a mec
 
 The current goal of mDNS conflict resolution is to prevent a newly advertised service from taking the place of
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
-entity advertising an mDNS service is in fact authoritative for that service. In the case of an Advertising
-Proxy {{I-D.sctl-advertising-proxy}}, this is not the case: the source of truth for the service
-being advertised is an SRP {{I-D.ietf-dnssd-srp}} client.
+entity advertising an mDNS service is in fact authoritative for that service. In the case of an advertising
+proxy {{I-D.sctl-advertising-proxy}}, this is not the case: the source of truth for the service
+being advertised is an SRP {{I-D.ietf-dnssd-srp}} requester.
 
-On a link with more than one SRP registrar, an SRP client may register with one SRP registrar, and then subsequently
+On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
 original server may still be advertising the old SRP registration using mDNS. If the information in the new SRP
 registration is identical to that in the old registration, this is often not a problem. However if some information has
@@ -88,7 +89,7 @@ advertising on their own behalf, is exactly wrong when a service registration is
 
 ## Current Behavior
 
-When a new service is to be advertised, the requestor (the entity requesting the registration) typically registers the
+When a new service is to be advertised, the registrant (the entity requesting the registration) typically registers the
 service with a central mDNS registrar on the host on which it is running.  This mDNS registrar may have an internal
 database of services already registered, and may detect a conflict with one of those services. This can be true whether
 the conflicting database entry is data for which the mDNS registrar is authoritative, or data it has received via mDNS and
@@ -96,34 +97,35 @@ cached.
 
 In the case of such a conflict, no network transaction is required: the mDNS registrar detects it locally. It
 addresses the conflict in one of two ways. The first alternative is that the mDNS registrar will report the
-conflict to the requestor as an error, which it must fix. Alternatively, the server requestor have indicated that
-the mDNS mDNS registrar should automatically choose a new name for it, in which case the mDNS registrar does so
-automatically, without notifying the requestor.
+conflict to the registrant as an error, which it must fix. Alternatively, if the registrant has indicated that
+the mDNS registrar should automatically choose a new name for it in case of conflict, the mDNS registrar does so
+automatically, without notifying the registrant.
 
 Once any locally-detectable conflicts have been resolved, the mDNS registrar probes (see {{Section 8.1 of RFC6762}})
 local network to see if any other host has already registered a service the conflicts with the proposed new
 service. If such a service is present on the network, the mDNS registrar follows the same process previously
-described, either reporting the error to the requestor or automatically choosing a new name.
+described, either reporting the error to the registrant or automatically choosing a new name.
 
-The effect of this approach is that generally whichever requestor first registers a service under a particular name
-wins. If a requestor comes along later and registers the same service with conflicting information, the newcomer’s
+The effect of this approach is that generally whichever registrant first registers a service under a particular name
+wins. If a registrant comes along later and registers the same service with conflicting information, the newcomer’s
 information is rejected.
 
 ## Problem Statement
 
-The current behavior works well for requestors registering on their own behalf. However, for example in the case of
+The current behavior works well for registrants registering on their own behalf. However, for example in the case of
 an SRP registrar, it works poorly: an SRP registrar acting as an advertising proxy publishes the contents of its
-registration dataset(s) using mDNS. The source of truth for information in such datasets is the SRP requestor
-not the SRP registrar (which is acting in proxy as the mDNS requestor) itself.
+registration dataset(s) using mDNS. The source of truth for information in such datasets is the SRP requester,
+not the SRP registrar itself. The SRP registrar in this case acts as a proxy for the SRP requester.
 
-In the case of an advertising proxy publishing an SRP dataset, what we want is not the oldest information, but the
-newest. When the SRP requestor is able to continue registering with the same SRP registrar, this works well: stale
+In the case of an advertising proxy publishing an SRP dataset, what we want the mDNS registrar to advertise is not the
+oldest information, but the newest.
+When the SRP requester is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
-available, the requestor may wind up registering with a different SRP registrar. This can happen as a result of
-a network partition, or in cases where the SRP server is advertised on a anycast address.
+available, the SRP requester may wind up sending its SRP Updates to a different SRP registrar. This can happen as a result of
+a network partition, or in cases where the SRP registrar is advertised on a anycast address.
 
-When the SRP requestor registers with a different SRP registrar, the behavior we get with the current conflict
-resolution approach is that the SRP client will be given a new name, and both the old (stale) advertisement (A)
+When the SRP requester registers with a different SRP registrar, the behavior we get with the current mDNS conflict
+resolution approach is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
 and the new (more recent) advertisement (A’) will be discoverable as separate services.
 
 This creates a new burden on consumers of such services: they need to parse through the whole list of services of
@@ -135,13 +137,34 @@ SRP lease for the stale service expires, that service's advertisement will be re
 longer be discoverable under the original name, even if the IP address hasn't changed.
 
 This document proposes an enhancement to the current conflict resolution algorithm for mDNS, which allows an mDNS
-proxy to report the time at which it received the registration it is newly advertising, and the source from which
-it was received. This is done using a new Time Since Received EDNS option, for which there must be exactly one
-per name being registered by the proxy.
+proxy to report the time at which it received the registration for DNS records it is newly advertising, and the source from which
+it was received. This is done using a new Time Since Received (TSR) EDNS option, of which there must be exactly one
+per name being advertised by the mDNS proxy.
 
-## Conventions and Definitions
+## Conventions, Terms and Definitions
 {::boilerplate bcp14-tagged}
 
+**mDNS registrar**
+: an mDNS {{RFC6762}} implementation on a host that accepts local requests for advertising/registering DNS records from
+one or more registrants. This could for example be an mDNS daemon process running in an operating system, accepting
+API calls from local processes to register or update DNS records for that process.
+
+**mDNS registrant**
+: an entity or software process requesting a DNS name to be advertised by the (local) mDNS registrar.
+
+**mDNS proxy**
+: a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
+mDNS records on behalf of one or more entities not located on the host itself.
+The advertising proxy {{I-D.sctl-advertising-proxy}} is an example of an mDNS proxy.
+
+**SRP requester**
+: a client that uses the Service Registration Protocol (SRP) {{RFC9665}} to send an SRP Update to an SRP registrar.
+
+**SRP registrar**
+: a server that accepts SRP Updates sent by SRP requesters using the SRP {{RFC9665}}.
+DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
+{{I-D.sctl-advertising-proxy}} located on the same host.
+In that case, the SRP registrar process acts as a registrant towards its local mDNS registrar process.
 
 # Time Since Received EDNS Option {#tsrrr}
 
@@ -163,7 +186,7 @@ SRP protocol for two updates at two different times to contain records that appl
 situation, the second update completely replaces the first, so all data in the first update is then rendered stale.
 
 The second field, the key checksum, is simple 32-bit checksum of the public key that the owner of the data (for example
-the SRP requestor) used to authenticate itself. The key checksum is computed by treating the key as a series of 32-bit
+the SRP requester) used to authenticate itself. The key checksum is computed by treating the key as a series of 32-bit
 unsigned integers in network byte order, and adding these integers together to produce a 32-bit unsigned checksum.
 Overflow is not considered. This checksum need not be cryptographically secure: mDNS messages are not authenticated, so
 an attacker on the local link can always cause problems with mDNS by providing spurious responses. The purpose of
@@ -184,31 +207,31 @@ generated from local data.
 
 ## Validating requested local RR registrations that include a TSR option {#locval}
 
-When a local mDNS requestor asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
-for that name, the mDNS requestor first checks to see if there are any records either in cache or from other local registrations
+When an mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
+for that name, the mDNS registrar first checks to see if there are any records either in cache or from other local registrations
 on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.
 
 When such data exists, the registrar MUST check to see if it has TSR data for that owner name. If it does not, or if there
 is TSR data on that name but the key checksum does not match, the registrar MUST treat this registration as a conflict
-and return an appropriate error to the requestor.
+and return an appropriate error to the registrant.
 
 If such data exists and the key checksums match, there are three possibilities based on the known TSR time and the proposed TSR time:
 
 **Known time is more recent**
 : In this case, the registrar MUST treat the new registration as stale, and return an indication to the
-  requestor that its registration is stale. This indication must be different than the conflict indication.
+  registrant that its registration is stale. This indication must be different than the conflict indication.
 
 **Both times are the same**
 : In this case, the new record is added to the local registration database and put in the probing state.
 
 **Proposed time is more recent**
-: In this case, all cached data on the name is discarded. The requestor for any existing locally-registered data is notified that
+: In this case, all cached data on the name is discarded. The registrant for any existing locally-registered data is notified that
   the data they have registered is stale, and the stale data is removed from the local registration database. The new data is
   added and put in the probing state, and the TSR data is updated with the proposed TSR data.
 
-It is in principle possible for two different mDNS requestors to ask the same mDNS registrar to publish different RRs on
+It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see {{Section 2 of RFC6762}}).
-If an mDNS requestor registers an RR on a name for which the registrar already has data, cached or
+If an mDNS registrant registers an RR on a name for which the registrar already has data, cached or
 authoritative, on the same name, whether of the same type or a different type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar MUST treat
 this as an immediate conflict, and MUST NOT probe.
@@ -272,7 +295,7 @@ to the context of the conflict, as described in {{Section 9 of RFC6762}}.
 
 In cases where the key checksums match, the mDNS registrar MUST compare the times. When the TSR time from the mDNS Message
 is more recent than the local TSR time, local data in the cache is flushed and registered data is removed and reported
-to the requestor that registered it as stale.
+to the registrant that registered it as stale.
 
 When the TSR times are the same, any resource records on that name in the answer section and additional section are added
 to the cache.
@@ -320,7 +343,7 @@ prodiuce the time difference, and this is clamped to a maximum of seven days.
 
 Because TSR computations are affected by network latency, comparisons can’t be considered accurate. It is
 therefore necessary to tolerate some amount of error. In practice, however, it should generally not be the case
-that two advertising proxies receive SRP updates from the same SRP client at nearly the same time. So it should
+that two advertising proxies receive SRP updates from the same SRP requester at nearly the same time. So it should
 always be the case either that there is a clear ordering to the timestamps, or that there is no conflict in the
 data. For example with anycast, a retransmission could go to a different SRP registrar, but in this case both
 servers would simultaneously receive identical data, so the close ordering or even equality of the timestamps
@@ -350,30 +373,30 @@ implementation should be able to remember time intervals of at least seven days.
 mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
 as if no TSR option was sent. This may result in such registrars temporarily caching stale data. However, in the
 normal course of processing, more recent data will win. In cases where it does not, the Reconfirm process which
-is part of {{RFC6762}} already works to clear stale data: since we expect SRP servers to implement
+is part of {{RFC6762}} already works to clear stale data: since we expect SRP registrars to implement
 TSR, by the time a Reconfirm is attempted, all authoritative stale data should have been cleared.
 
 
 # When to Use TSR
 
-TSR is only relevant for mDNS proxies. Regular (non-proxy) mDNS registrants are not expected to use it, since it
-will produce the wrong behavior for this use case. An mDNS registrant that is a proxy MUST explicitly request that a
-TSR be used for conflict resolution. mDNS registrars MUST NOT record a time of receipt unless the registrant has
+TSR is only relevant for mDNS proxies. Regular mDNS registrants that don't support mDNS proxy are not expected to use it, since it
+will produce the wrong behavior for this use case. An mDNS proxy MUST explicitly allow its mDNS registrar to use
+TSR for conflict resolution. mDNS registrars MUST NOT record a time of receipt unless the registrant has
 specifically requested it.
 
 
 # Registrant API considerations
 
-When an mDNS proxy registers a service and requests the use of a time of receipt, the proxy MUST specify when it
-received the registration. In order to support this, the API is required not only to allow the registrant to specify
-that TSR conflict resolution is wanted, but must also provide a way for the proxy to specify an absolute time at
-which the registration was received, and the key checksum used to identify the entity that's actually authoritative
+When a registrant registers a service at its mDNS registrar and requests the use of a time of receipt, the registrant MUST also specify when it
+received the original registration. In order to support this, the API is required not only to allow the registrant to specify
+that TSR conflict resolution is wanted, but also to provide a way for the registrant to specify an absolute time at
+which the original registration was received, and the key checksum used to identify the entity that's actually authoritative
 for the data.
 
 This is important, for example, in the case of SRP Replication <xref target="I-D.lemon-srp-replication"/>, where an
 SRP registrar may receive a registration from a peer during startup synchronization. This registration will have
-occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS proxy receiving
-the registration to use the time that the mDNS proxy registers the service as the time of receipt.
+occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
+the registration to use the time that the registrant registers the service as the time of receipt.
 
 
 
