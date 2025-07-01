@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-29T01:16:19.026145+00:00",
+  "timestamp": "2025-07-01T01:16:29.557873+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -47,8 +47,93 @@
       "name": "wontfix",
       "description": "This will not be worked on",
       "color": "ffffff"
+    },
+    {
+      "name": "editorial",
+      "description": "",
+      "color": "714900"
     }
   ],
-  "issues": [],
-  "pulls": []
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOOs4T_8695XRR",
+      "title": "Add terms in terminology section and clarify: requestor, mDNS requestor, SRP requestor, mDNS registrar, ...",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/1",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "EskoDijk"
+      ],
+      "labels": [],
+      "body": "This is a task to add the terms to the terms & definitions section and explain these.\nAlso harmonize the names, to avoid using different names for the same concept.\n\nList (not complete) of terms:\n\n* requestor\n* mDNS requestor - would be more clear to use \"requestor\" or \"local requestor\" here\n* SRP requestor - better perhaps to use the RFC 9665 term \"SRP requester\" and point to this rfc\n* SRP client - better use \"SRP requester\" per RFC 9665 ?\n* mDNS registrar\n* mDNS proxy\n* registrant\n* mDNS registrant\n* Regular (non-proxy) mDNS registrant\n* mDNS registrant that is a proxy\n",
+      "createdAt": "2025-06-29T09:08:16Z",
+      "updatedAt": "2025-06-29T15:48:06Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOOs4T_8696ocv",
+      "title": "Update ref I-D.sctl-advertising-proxy to I-D.ietf-dnssd-advertising-proxy",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/2",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-06-29T15:18:34Z",
+      "updatedAt": "2025-06-29T15:18:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOOs4T_8696vDt",
+      "title": "clarify term \"dataset\" / \"SRP dataset\" / \"registration dataset\"",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/3",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "it can be defined better, or replaced by e.g. \"DNS records of an SRP Update\".  Note that RFC 9665 does not define a \"dataset\" as such.",
+      "createdAt": "2025-06-29T15:44:02Z",
+      "updatedAt": "2025-06-29T15:44:02Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 4,
+      "id": "PR_kwDOOs4T_86clatt",
+      "title": "Add terms for entities/actors in a terminology section and harmonize terms with RFC 9665",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/4",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "This is a draft PR.\r\nShould eventually close #1 ",
+      "createdAt": "2025-06-29T15:54:38Z",
+      "updatedAt": "2025-06-29T15:54:38Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "1e7493e0511420ef89ce984a0b0bf2daa2e4275b",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-terms-for-actors",
+      "headRefOid": "724ddeca6d72f348c613b6d6c7a2d3c75f42bd67",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
