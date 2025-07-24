@@ -116,7 +116,6 @@ an SRP registrar, it works poorly: an SRP registrar acting as an advertising pro
 registration dataset(s) using mDNS. The source of truth for information in such datasets is the SRP requestor
 not the SRP registrar (which is acting in proxy as the mDNS requestor) itself.
 
-
 In the case of an advertising proxy publishing an SRP dataset, what we want is not the oldest information, but the
 newest. When the SRP requestor is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
@@ -204,7 +203,7 @@ If such data exists and the key checksums match, there are three possibilities b
 
 **Proposed time is more recent**
 : In this case, all cached data on the name is discarded. The requestor for any existing locally-registered data is notified that
-  the data they have registered is stale is stale, and the data is removed from the local registration database. The new data is
+  the data they have registered is stale, and the stale data is removed from the local registration database. The new data is
   added and put in the probing state, and the TSR data is updated with the proposed TSR data.
 
 It is in principle possible for two different mDNS requestors to ask the same mDNS registrar to publish different RRs on
@@ -347,7 +346,7 @@ implementation should be able to remember time intervals of at least seven days.
 
 
 # Legacy Behavior
-y
+
 mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
 as if no TSR option was sent. This may result in such registrars temporarily caching stale data. However, in the
 normal course of processing, more recent data will win. In cases where it does not, the Reconfirm process which
