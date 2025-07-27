@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-01T01:16:29.557873+00:00",
+  "timestamp": "2025-07-27T01:19:25.813756+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -104,6 +104,133 @@
       "updatedAt": "2025-06-29T15:44:02Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOOs4T_87CPxcH",
+      "title": "Use of TSR by a non-proxy mDNS publisher?",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/5",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 8 currently says:\n\n> TSR is only relevant for mDNS proxies. Regular (non-proxy) mDNS registrants are not expected to use it, since it will produce the wrong behavior for this use case.\n\nIn IETF 121 a situation was raised as follows:\n* device client C registers its services via SRP (i.e. SRP Registrar as the Advertising Proxy)\n* client C switches network interface (e.g. Thread/6LoWPAN 15.4 to Wi-Fi) \n* client C now wants to register same services/hostname via mDNS directly. With different IP address(es).\n* new registration competes with existing proxied registration in SRP Registrar (?)\n\nThere has been some discussion whether the client C should use TSR in its mDNS advertisements, (to indicate it's \"newer\" ), or not.\n* What will/should other mDNS clients do in case of conflict?\n* What should the Advertising Proxy / SRP Registrar do when seeing the (newer) published services/hostname?\n\n",
+      "createdAt": "2025-07-24T07:56:59Z",
+      "updatedAt": "2025-07-24T16:55:50Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, it's really clear in this case that when advertising with mDNS on WiFi the device has to use TSR. Otherwise its advertisement will conflict with the advertisement from the proxy. Alternatively, it could just use a whole different hostname and service instance name.",
+          "createdAt": "2025-07-24T08:01:11Z",
+          "updatedAt": "2025-07-24T08:01:11Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Abhayakara  So the client C would have an application process inside, that acts as the mDNS registrant, requesting the service registration to its (local) mDNS registrar.  That registrar behaves like defined in Section 3.1.\nSo e.g. it seens the TSR value is '0', so the update is more recent than what's in the cache. We go to case 3 \"Proposed time is more recent\".  \n\nWhat may not be clear yet from the draft is that a device like client C, which is never itself acting as an SRP Registrar / mDNS advertising proxy, should still implement the API internally as described in Section 3.1. This would be good to clarify.  \n\nTo consider what text could fit in for this and where in the draft.",
+          "createdAt": "2025-07-24T16:55:50Z",
+          "updatedAt": "2025-07-24T16:55:50Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOOs4T_87CP7vC",
+      "title": "Do we need to probe when we see existing data that has the same timestamp?",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/6",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document says:\n\n**Both times are the same**\n: In this case, the new record is added to the local registration database and put in the probing state.\n\nHowever, given that the data is already in the cache, there's actually no need to send any mDNS traffic here, and it's always better not to. So I _think_ we should just add the data to the authoritative database and take no other action.\n\n",
+      "createdAt": "2025-07-24T08:12:38Z",
+      "updatedAt": "2025-07-24T08:12:38Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOOs4T_87CQCwF",
+      "title": "Probe state for new data",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/7",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document says:\n\n**Proposed time is more recent**\n: In this case, all cached data on the name is discarded. The requestor for any existing locally-registered data is notified that\n  the data they have registered is stale, and the stale data is removed from the local registration database. The new data is\n  added and put in the probing state, and the TSR data is updated with the proposed TSR data.\n\nHowever, there are actually two variants of this. First, it could be that the stale data is exactly the same as the new data. The other possibility is that the stale data is different than the new data. Obviously if the stale data is different, we need to go through the usual probing process.\n\nThe question is, do we need to do this if the data is not stale? Or perhaps, what is the most efficient way of handling this situation, because in fact it's likely to be by far the most common situation, so we want to be as sparing as possible with mDNS traffic.\n\nI think that if we don't send any packets in this case, and we are in an SRP proxy/peering arrangement, all of the authoritative databases on all of the proxies will wind up with fresh TSR timestamps by way of SRP replication. This means that we don't need to send any mDNS packets. \n\nIn the case that there is a device publishing stale (but the same) data, it's fine if it continues to publish it. If it gets a subsequent stale update that changes the data, which seems unlikely, it will probe and get a response indicating that its data is stale, so there's no problem there.\n\nIn the case that a device that's not cooperating via SRP replication gets new data that doesn't conflict, no action is needed. If it gets new data that is in conflict, it will have to probe it, and this will flush the stale data out of the other devices' authoritative databases. So I think when there is no change in the data, we're fine to not probe.",
+      "createdAt": "2025-07-24T08:23:39Z",
+      "updatedAt": "2025-07-24T08:23:39Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOOs4T_87CQG7a",
+      "title": "Should use time-of-receipt rather than time-of-processing",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/8",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document says:\n\nFor each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning\nan index to each non-question resource record in the mDNS message. The index of each TSR option is then matched to the\nindex of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR\noption is then computed by taking the _current local clock time_ and subtracting from it the time offset in the TSR record.\n\nOur experience has been that there can be processing delays that are long enough to make a TSR timestamp look different than the current timestamp. Most operating systems offer a socket option to indicate when the packet was received, and we use this in mDNSResponder as the timestamp from which to substract the TSR time offset. This substantially reduced errors of this type.",
+      "createdAt": "2025-07-24T08:29:59Z",
+      "updatedAt": "2025-07-24T08:29:59Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOOs4T_87CQNJN",
+      "title": "Distinguish between \"conflict\" and \"stale\"",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/9",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document says:\n\n# Timeliness of Conflict Resolution\n\nIt is expected that if a conflict exists, it will be recent, and will be resolved quickly. Different hosts may be\nable to record shorter or longer time differences. However, because of this expectation of recentness, mDNS\nregistrars should never need to report a TSR of longer than seven days. It\u2019s reasonable to expect that every mDNS\nimplementation should be able to remember time intervals of at least seven days.\n\nHowever, I think this is talking about stale data, not about conflicting authority. So the point is, it's unlikely that we will see stale data that is more than seven days old, but even if we do, it's unlikely that the fresh data that supersedes it will also be more than seven days old. So I think this section should be updated to clarify that.",
+      "createdAt": "2025-07-24T08:38:56Z",
+      "updatedAt": "2025-07-24T08:38:56Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOOs4T_87CQQOb",
+      "title": "Additional API considerations",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/10",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "An additional issue that came up when we recently fixed our TSR implementation is that every proxy was probing and announcing, which, when there are five proxies, amounts to a huge amount of mDNS traffic, particularly when there is a synchronization event that causes a bunch of clients to register at nearly the same time.\n\nAdditionally, the old implementation would, when renewing, remove old data and replace it with new, which meant that we'd always send a goodbye packet, and that would produce Remove/Add event pairs in long-running queries.\n\nTo prevent this, we did a bit of a hack, which is that we register the new data, which flushes the old data, and then we let go of the old data registration. The effect of this is that we don't send a goodbye packet, and we don't probe unless the data has changed.\n\nI think it would be good to document this and suggest that there should be an API that has this exact behavior. Current mDNSResponder APIs do not allow for this other than in the hacky way I just described.",
+      "createdAt": "2025-07-24T08:43:19Z",
+      "updatedAt": "2025-07-24T08:43:19Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOOs4T_87CQV-K",
+      "title": "Conflict detection due to partial sends",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/11",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "One case where mDNSResponder currently detects a conflict (I think this is in 6762 but will have to check) is when a message contains an answer or a probe for records that are registered locally, and all the records that are in the answer or probe are also present in the local authority database, but not all records in the local authority database are present in the probe.\n\nThis is done because the implication is that the set of data on the owner name on the probing/answering device is different than on the receiving device, and hence in conflict. However, it can happen as a result of marshaling an mDNS message that some data winds up in one packet and some winds up in the next, and so there can be the appearance of a conflict when no conflict exists.\n\nIn the case of the stale/not stale determination, this shouldn't be treated as a conflict. It's never a conflict. The TSR evaluation solves the problem completely. So we should say this explicitly in the document. I think we do mention marshaling conflicts, but don't actually go into any detail about it.",
+      "createdAt": "2025-07-24T08:50:50Z",
+      "updatedAt": "2025-07-24T08:50:50Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -121,7 +248,7 @@
       ],
       "body": "This is a draft PR.\r\nShould eventually close #1 ",
       "createdAt": "2025-06-29T15:54:38Z",
-      "updatedAt": "2025-06-29T15:54:38Z",
+      "updatedAt": "2025-07-24T15:19:40Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
       "baseRefOid": "1e7493e0511420ef89ce984a0b0bf2daa2e4275b",
@@ -133,7 +260,88 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_86125S5",
+          "commit": {
+            "abbreviatedOid": "724ddec"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-24T10:25:48Z",
+          "updatedAt": "2025-07-24T10:25:48Z",
+          "comments": [
+            {
+              "originalPosition": 65,
+              "body": "I think this is a registrant, not a requestor, and we should fix the section that uses the term requestor. There can't be a non-local registrant because there is no protocol between the mDNS registrant and mDNS registrar.",
+              "createdAt": "2025-07-24T10:25:48Z",
+              "updatedAt": "2025-07-24T10:25:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_8617Ado",
+          "commit": {
+            "abbreviatedOid": "724ddec"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-24T15:19:40Z",
+          "updatedAt": "2025-07-24T15:19:40Z",
+          "comments": [
+            {
+              "originalPosition": 65,
+              "body": "Yes, now we agreed on \"registrant\" at the IETF 123 meeting.",
+              "createdAt": "2025-07-24T15:19:40Z",
+              "updatedAt": "2025-07-24T15:19:40Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOOs4T_86gaXrY",
+      "title": "Fix typos",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/12",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There are a couple of minor typos in the current revision; this pull request fixes them.",
+      "createdAt": "2025-07-24T08:53:21Z",
+      "updatedAt": "2025-07-24T15:26:08Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "1e7493e0511420ef89ce984a0b0bf2daa2e4275b",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "ted-typos-20250724",
+      "headRefOid": "4a41c68d5b07aad10c698843b9d2e5cdb3eb81c7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_8617Gon",
+          "commit": {
+            "abbreviatedOid": "4a41c68"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-24T15:26:08Z",
+          "updatedAt": "2025-07-24T15:26:08Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
