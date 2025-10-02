@@ -13,7 +13,7 @@ being proxied, rather than advertised directly, e.g. when using a combined DNS-S
 registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
 DNS owner name was most recently updated. 
     " name="description">
-<meta content="xml2rfc 3.29.0" name="generator">
+<meta content="xml2rfc 3.30.2" name="generator">
 <meta content="mDNS" name="keyword">
 <meta content="TSR" name="keyword">
 <meta content="conflict resolution" name="keyword">
@@ -21,17 +21,17 @@ DNS owner name was most recently updated.
 <meta content="DNS" name="keyword">
 <meta content="draft-ietf-dnssd-tsr-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.29.0
+  xml2rfc 3.30.2
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1052,11 +1052,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TSR EDNS option for mDNS</td>
-<td class="right">June 2025</td>
+<td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Dijk</td>
-<td class="center">Expires 22 December 2025</td>
+<td class="center">Expires 5 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-tsr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-20" class="published">20 June 2025</time>
+<time datetime="2025-10-02" class="published">2 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-22">22 December 2025</time></dd>
+<dd class="expires"><time datetime="2026-04-05">5 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1131,7 +1131,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1390,7 +1390,7 @@ requestor that its registration is stale. This indication must be different than
 <dt id="section-3.1-4.5"><strong>Proposed time is more recent</strong></dt>
           <dd style="margin-left: 1.5em" id="section-3.1-4.6">
             <p id="section-3.1-4.6.1">In this case, all cached data on the name is discarded. The requestor for any existing locally-registered data is notified that
-the data they have registered is stale is stale, and the data is removed from the local registration database. The new data is
+the data they have registered is stale, and the stale data is removed from the local registration database. The new data is
 added and put in the probing state, and the TSR data is updated with the proposed TSR data.<a href="#section-3.1-4.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
@@ -1557,8 +1557,7 @@ implementation should be able to remember time intervals of at least seven days.
       <h2 id="name-legacy-behavior">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-legacy-behavior" class="section-name selfRef">Legacy Behavior</a>
       </h2>
-<p id="section-7-1">y
-mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
+<p id="section-7-1">mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
 as if no TSR option was sent. This may result in such registrars temporarily caching stale data. However, in the
 normal course of processing, more recent data will win. In cases where it does not, the Reconfirm process which
 is part of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> already works to clear stale data: since we expect SRP servers to implement

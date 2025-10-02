@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 22 December 2025                              IoTconsultancy.nl
-                                                            20 June 2025
+Expires: 5 April 2026                                  IoTconsultancy.nl
+                                                          2 October 2025
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 December 2025.
+   This Internet-Draft will expire on 5 April 2026.
 
 Copyright Notice
 
@@ -305,10 +305,9 @@ Table of Contents
    *Proposed time is more recent*  In this case, all cached data on the
       name is discarded.  The requestor for any existing locally-
       registered data is notified that the data they have registered is
-      stale is stale, and the data is removed from the local
-      registration database.  The new data is added and put in the
-      probing state, and the TSR data is updated with the proposed TSR
-      data.
+      stale, and the stale data is removed from the local registration
+      database.  The new data is added and put in the probing state, and
+      the TSR data is updated with the proposed TSR data.
 
    It is in principle possible for two different mDNS requestors to ask
    the same mDNS registrar to publish different RRs on the same name,
@@ -512,7 +511,7 @@ Table of Contents
 
 7.  Legacy Behavior
 
-   y mDNS registrars and queriers that do not support the TSR option are
+   mDNS registrars and queriers that do not support the TSR option are
    expected to ignore the option, so they will behave as if no TSR
    option was sent.  This may result in such registrars temporarily
    caching stale data.  However, in the normal course of processing,
