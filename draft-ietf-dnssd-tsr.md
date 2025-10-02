@@ -113,10 +113,10 @@ information is rejected.
 
 The current behavior works well for requestors registering on their own behalf. However, for example in the case of
 an SRP registrar, it works poorly: an SRP registrar acting as an advertising proxy publishes the contents of its
-registration dataset(s) using mDNS. The source of truth for information in such datasets is the SRP requestor
+registered set(s) of DNS records using mDNS. The source of truth for this information is the SRP requestor
 not the SRP registrar (which is acting in proxy as the mDNS requestor) itself.
 
-In the case of an advertising proxy publishing an SRP dataset, what we want is not the oldest information, but the
+In the case of an advertising proxy publishing the records of an SRP Update, what we want is not the oldest information, but the
 newest. When the SRP requestor is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
 available, the requestor may wind up registering with a different SRP registrar. This can happen as a result of
