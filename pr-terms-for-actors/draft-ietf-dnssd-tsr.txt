@@ -335,10 +335,9 @@ Table of Contents
    *Proposed time is more recent*  In this case, all cached data on the
       name is discarded.  The registrant for any existing locally-
       registered data is notified that the data they have registered is
-      stale is stale, and the data is removed from the local
-      registration database.  The new data is added and put in the
-      probing state, and the TSR data is updated with the proposed TSR
-      data.
+      stale, and the stale data is removed from the local registration
+      database.  The new data is added and put in the probing state, and
+      the TSR data is updated with the proposed TSR data.
 
    It is in principle possible for two different mDNS registrants to ask
    the same mDNS registrar to publish different RRs on the same name,
