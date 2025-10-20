@@ -9,11 +9,11 @@
 <meta content="Esko Dijk" name="author">
 <meta content="
        This document specifies a new conflict resolution mechanism for DNS, for use in cases where the advertisement is
-being proxied, rather than advertised directly, e.g. when using a combined DNS-SD Advertising Proxy and SRP
+being proxied, rather than advertised directly, e.g. when using a combined DNS-SD advertising proxy and SRP
 registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
 DNS owner name was most recently updated. 
     " name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="mDNS" name="keyword">
 <meta content="TSR" name="keyword">
 <meta content="conflict resolution" name="keyword">
@@ -21,19 +21,18 @@ DNS owner name was most recently updated.
 <meta content="DNS" name="keyword">
 <meta content="draft-ietf-dnssd-tsr-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.4.0
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.5
-    setuptools 80.9.0
-    wcwidth 0.2.13
+    wcwidth 0.2.14
 -->
 <link href="draft-ietf-dnssd-tsr.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1056,7 +1055,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Dijk</td>
-<td class="center">Expires 5 April 2026</td>
+<td class="center">Expires 23 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-tsr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-02" class="published">2 October 2025</time>
+<time datetime="2025-10-20" class="published">20 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-05">5 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-23">23 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1092,7 +1091,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document specifies a new conflict resolution mechanism for DNS, for use in cases where the advertisement is
-being proxied, rather than advertised directly, e.g. when using a combined DNS-SD Advertising Proxy and SRP
+being proxied, rather than advertised directly, e.g. when using a combined DNS-SD advertising proxy and SRP
 registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
 DNS owner name was most recently updated.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
@@ -1131,7 +1130,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1170,7 +1169,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
                 <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-problem-statement" class="internal xref">Problem Statement</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
-                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-conventions-terms-and-defin" class="internal xref">Conventions, Terms and Definitions</a></p>
 </li>
             </ul>
 </li>
@@ -1222,7 +1221,15 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
@@ -1244,10 +1251,10 @@ Multicast DNS has no single source of authority. Because of this, mDNS has a mec
 (<span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>) for detecting and fixing conflicts in mDNS advertisements.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">The current goal of mDNS conflict resolution is to prevent a newly advertised service from taking the place of
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
-entity advertising an mDNS service is in fact authoritative for that service. In the case of an Advertising
-Proxy <span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span>, this is not the case: the source of truth for the service
-being advertised is an SRP <span>[<a href="#I-D.ietf-dnssd-srp" class="cite xref">I-D.ietf-dnssd-srp</a>]</span> client.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">On a link with more than one SRP registrar, an SRP client may register with one SRP registrar, and then subsequently
+entity advertising an mDNS service is in fact authoritative for that service. In the case of an advertising
+proxy <span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span>, this is not the case: the source of truth for the service
+being advertised is an SRP <span>[<a href="#I-D.ietf-dnssd-srp" class="cite xref">I-D.ietf-dnssd-srp</a>]</span> requester.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
 original server may still be advertising the old SRP registration using mDNS. If the information in the new SRP
 registration is identical to that in the old registration, this is often not a problem. However if some information has
@@ -1262,22 +1269,22 @@ advertising on their own behalf, is exactly wrong when a service registration is
         <h3 id="name-current-behavior">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-current-behavior" class="section-name selfRef">Current Behavior</a>
         </h3>
-<p id="section-1.1-1">When a new service is to be advertised, the requestor (the entity requesting the registration) typically registers the
+<p id="section-1.1-1">When a new service is to be advertised, the registrant (the entity requesting the registration) typically registers the
 service with a central mDNS registrar on the host on which it is running.  This mDNS registrar may have an internal
 database of services already registered, and may detect a conflict with one of those services. This can be true whether
 the conflicting database entry is data for which the mDNS registrar is authoritative, or data it has received via mDNS and
 cached.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 <p id="section-1.1-2">In the case of such a conflict, no network transaction is required: the mDNS registrar detects it locally. It
 addresses the conflict in one of two ways. The first alternative is that the mDNS registrar will report the
-conflict to the requestor as an error, which it must fix. Alternatively, the server requestor have indicated that
-the mDNS mDNS registrar should automatically choose a new name for it, in which case the mDNS registrar does so
-automatically, without notifying the requestor.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+conflict to the registrant as an error, which it must fix. Alternatively, if the registrant has indicated that
+the mDNS registrar should automatically choose a new name for it in case of conflict, the mDNS registrar does so
+automatically, without notifying the registrant.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 <p id="section-1.1-3">Once any locally-detectable conflicts have been resolved, the mDNS registrar probes (see <span><a href="https://rfc-editor.org/rfc/rfc6762#section-8.1" class="relref">Section 8.1</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>)
 local network to see if any other host has already registered a service the conflicts with the proposed new
 service. If such a service is present on the network, the mDNS registrar follows the same process previously
-described, either reporting the error to the requestor or automatically choosing a new name.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
-<p id="section-1.1-4">The effect of this approach is that generally whichever requestor first registers a service under a particular name
-wins. If a requestor comes along later and registers the same service with conflicting information, the newcomer’s
+described, either reporting the error to the registrant or automatically choosing a new name.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">The effect of this approach is that generally whichever registrant first registers a service under a particular name
+wins. If a registrant comes along later and registers the same service with conflicting information, the newcomer’s
 information is rejected.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1286,17 +1293,18 @@ information is rejected.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
         <h3 id="name-problem-statement">
 <a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-problem-statement" class="section-name selfRef">Problem Statement</a>
         </h3>
-<p id="section-1.2-1">The current behavior works well for requestors registering on their own behalf. However, for example in the case of
+<p id="section-1.2-1">The current behavior works well for registrants registering on their own behalf. However, for example in the case of
 an SRP registrar, it works poorly: an SRP registrar acting as an advertising proxy publishes the contents of its
-registered set(s) of DNS records using mDNS. The source of truth for this information is the SRP requestor
-not the SRP registrar (which is acting in proxy as the mDNS requestor) itself.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">In the case of an advertising proxy publishing the records of an SRP Update, what we want is not the oldest information, but the
-newest. When the SRP requestor is able to continue registering with the same SRP registrar, this works well: stale
+registered set(s) of DNS records using mDNS. The source of truth for this information is the SRP requester,
+not the SRP registrar itself. The SRP registrar in this case acts as a proxy for the SRP requester.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">In the case of an advertising proxy publishing the records of an SRP Update, what we want is not the oldest information,
+but the newest.
+When the SRP requester is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
-available, the requestor may wind up registering with a different SRP registrar. This can happen as a result of
-a network partition, or in cases where the SRP server is advertised on a anycast address.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
-<p id="section-1.2-3">When the SRP requestor registers with a different SRP registrar, the behavior we get with the current conflict
-resolution approach is that the SRP client will be given a new name, and both the old (stale) advertisement (A)
+available, the SRP requester may wind up sending its SRP Updates to a different SRP registrar. This can happen as a result of
+a network partition, or in cases where the SRP registrar is advertised on a anycast address.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+<p id="section-1.2-3">When the SRP requester registers with a different SRP registrar, the behavior we get with the current mDNS conflict
+resolution approach is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
 and the new (more recent) advertisement (A’) will be discoverable as separate services.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
 <p id="section-1.2-4">This creates a new burden on consumers of such services: they need to parse through the whole list of services of
 their type, using metadata from the TXT record in the service instance data, if possible, to determine that
@@ -1306,20 +1314,54 @@ no longer be reachable if, for example, the change that produced the conflict wa
 SRP lease for the stale service expires, that service's advertisement will be removed, and the service will no
 longer be discoverable under the original name, even if the IP address hasn't changed.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
 <p id="section-1.2-5">This document proposes an enhancement to the current conflict resolution algorithm for mDNS, which allows an mDNS
-proxy to report the time at which it received the registration it is newly advertising, and the source from which
-it was received. This is done using a new Time Since Received EDNS option, for which there must be exactly one
-per name being registered by the proxy.<a href="#section-1.2-5" class="pilcrow">¶</a></p>
+proxy to report the time at which it received the registration for DNS records it is newly advertising, and the source from which
+it was received. This is done using a new Time Since Received (TSR) EDNS option, of which there must be exactly one
+per name being advertised by the mDNS proxy.<a href="#section-1.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="conventions-and-definitions">
+<div id="conventions-terms-and-definitions">
 <section id="section-1.3">
-        <h3 id="name-conventions-and-definitions">
-<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+        <h3 id="name-conventions-terms-and-defin">
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-conventions-terms-and-defin" class="section-name selfRef">Conventions, Terms and Definitions</a>
         </h3>
 <p id="section-1.3-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-1.3-2">
+          <dt id="section-1.3-2.1"><strong>mDNS registrar</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.2">
+            <p id="section-1.3-2.2.1">an mDNS <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> implementation on a host that accepts local requests for advertising/registering DNS records from
+one or more registrants. This could for example be an mDNS daemon process running in an operating system, accepting
+API calls from local processes to register or update DNS records for that process.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.3-2.3"><strong>mDNS registrant</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.4">
+            <p id="section-1.3-2.4.1">an entity or software process requesting a DNS name to be advertised by the (local) mDNS registrar.<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.3-2.5"><strong>mDNS proxy</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.6">
+            <p id="section-1.3-2.6.1">a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
+mDNS records on behalf of one or more entities not located on the host itself.
+The advertising proxy <span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.3-2.7"><strong>SRP requester</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.8">
+            <p id="section-1.3-2.8.1">a client that uses the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> to send an SRP Update to an SRP registrar.<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.3-2.9"><strong>SRP registrar</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.10">
+            <p id="section-1.3-2.10.1">a server that accepts SRP Updates sent by SRP requesters using the SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>.
+DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
+<span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span> located on the same host.
+In that case, the SRP registrar process acts as a registrant towards its local mDNS registrar process.<a href="#section-1.3-2.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
 </section>
 </div>
 </section>
@@ -1343,7 +1385,7 @@ that name, and it applies to every RR in the mDNS Message with that owner name. 
 SRP protocol for two updates at two different times to contain records that apply to the same name: in such a
 situation, the second update completely replaces the first, so all data in the first update is then rendered stale.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">The second field, the key checksum, is simple 32-bit checksum of the public key that the owner of the data (for example
-the SRP requestor) used to authenticate itself. The key checksum is computed by treating the key as a series of 32-bit
+the SRP requester) used to authenticate itself. The key checksum is computed by treating the key as a series of 32-bit
 unsigned integers in network byte order, and adding these integers together to produce a 32-bit unsigned checksum.
 Overflow is not considered. This checksum need not be cryptographically secure: mDNS messages are not authenticated, so
 an attacker on the local link can always cause problems with mDNS by providing spurious responses. The purpose of
@@ -1368,18 +1410,18 @@ generated from local data.<a href="#section-2-7" class="pilcrow">¶</a></p>
         <h3 id="name-validating-requested-local-">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-validating-requested-local-" class="section-name selfRef">Validating requested local RR registrations that include a TSR option</a>
         </h3>
-<p id="section-3.1-1">When a local mDNS requestor asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
-for that name, the mDNS requestor first checks to see if there are any records either in cache or from other local registrations
+<p id="section-3.1-1">When an mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
+for that name, the mDNS registrar first checks to see if there are any records either in cache or from other local registrations
 on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">When such data exists, the registrar <span class="bcp14">MUST</span> check to see if it has TSR data for that owner name. If it does not, or if there
 is TSR data on that name but the key checksum does not match, the registrar <span class="bcp14">MUST</span> treat this registration as a conflict
-and return an appropriate error to the requestor.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+and return an appropriate error to the registrant.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">If such data exists and the key checksums match, there are three possibilities based on the known TSR time and the proposed TSR time:<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-3.1-4">
           <dt id="section-3.1-4.1"><strong>Known time is more recent</strong></dt>
           <dd style="margin-left: 1.5em" id="section-3.1-4.2">
             <p id="section-3.1-4.2.1">In this case, the registrar <span class="bcp14">MUST</span> treat the new registration as stale, and return an indication to the
-requestor that its registration is stale. This indication must be different than the conflict indication.<a href="#section-3.1-4.2.1" class="pilcrow">¶</a></p>
+registrant that its registration is stale. This indication must be different than the conflict indication.<a href="#section-3.1-4.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-3.1-4.3"><strong>Both times are the same</strong></dt>
@@ -1389,15 +1431,15 @@ requestor that its registration is stale. This indication must be different than
           <dd class="break"></dd>
 <dt id="section-3.1-4.5"><strong>Proposed time is more recent</strong></dt>
           <dd style="margin-left: 1.5em" id="section-3.1-4.6">
-            <p id="section-3.1-4.6.1">In this case, all cached data on the name is discarded. The requestor for any existing locally-registered data is notified that
+            <p id="section-3.1-4.6.1">In this case, all cached data on the name is discarded. The registrant for any existing locally-registered data is notified that
 the data they have registered is stale, and the stale data is removed from the local registration database. The new data is
 added and put in the probing state, and the TSR data is updated with the proposed TSR data.<a href="#section-3.1-4.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.1-5">It is in principle possible for two different mDNS requestors to ask the same mDNS registrar to publish different RRs on
+<p id="section-3.1-5">It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see <span><a href="https://rfc-editor.org/rfc/rfc6762#section-2" class="relref">Section 2</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>).
-If an mDNS requestor registers an RR on a name for which the registrar already has data, cached or
+If an mDNS registrant registers an RR on a name for which the registrar already has data, cached or
 authoritative, on the same name, whether of the same type or a different type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar <span class="bcp14">MUST</span> treat
 this as an immediate conflict, and <span class="bcp14">MUST NOT</span> probe.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
@@ -1464,7 +1506,7 @@ added to the cache).<a href="#section-3.4-6" class="pilcrow">¶</a></p>
 to the context of the conflict, as described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
 <p id="section-3.4-8">In cases where the key checksums match, the mDNS registrar <span class="bcp14">MUST</span> compare the times. When the TSR time from the mDNS Message
 is more recent than the local TSR time, local data in the cache is flushed and registered data is removed and reported
-to the requestor that registered it as stale.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+to the registrant that registered it as stale.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
 <p id="section-3.4-9">When the TSR times are the same, any resource records on that name in the answer section and additional section are added
 to the cache.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
 <p id="section-3.4-10">When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
@@ -1521,7 +1563,7 @@ prodiuce the time difference, and this is clamped to a maximum of seven days.<a 
       </h2>
 <p id="section-4-1">Because TSR computations are affected by network latency, comparisons can’t be considered accurate. It is
 therefore necessary to tolerate some amount of error. In practice, however, it should generally not be the case
-that two advertising proxies receive SRP updates from the same SRP client at nearly the same time. So it should
+that two advertising proxies receive SRP updates from the same SRP requester at nearly the same time. So it should
 always be the case either that there is a clear ordering to the timestamps, or that there is no conflict in the
 data. For example with anycast, a retransmission could go to a different SRP registrar, but in this case both
 servers would simultaneously receive identical data, so the close ordering or even equality of the timestamps
@@ -1560,7 +1602,7 @@ implementation should be able to remember time intervals of at least seven days.
 <p id="section-7-1">mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
 as if no TSR option was sent. This may result in such registrars temporarily caching stale data. However, in the
 normal course of processing, more recent data will win. In cases where it does not, the Reconfirm process which
-is part of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> already works to clear stale data: since we expect SRP servers to implement
+is part of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> already works to clear stale data: since we expect SRP registrars to implement
 TSR, by the time a Reconfirm is attempted, all authoritative stale data should have been cleared.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1569,9 +1611,9 @@ TSR, by the time a Reconfirm is attempted, all authoritative stale data should h
       <h2 id="name-when-to-use-tsr">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-when-to-use-tsr" class="section-name selfRef">When to Use TSR</a>
       </h2>
-<p id="section-8-1">TSR is only relevant for mDNS proxies. Regular (non-proxy) mDNS registrants are not expected to use it, since it
-will produce the wrong behavior for this use case. An mDNS registrant that is a proxy <span class="bcp14">MUST</span> explicitly request that a
-TSR be used for conflict resolution. mDNS registrars <span class="bcp14">MUST NOT</span> record a time of receipt unless the registrant has
+<p id="section-8-1">TSR is only relevant for mDNS proxies. Regular mDNS registrants that don't support mDNS proxy are not expected to use it, since it
+will produce the wrong behavior for this use case. An mDNS proxy <span class="bcp14">MUST</span> explicitly allow its mDNS registrar to use
+TSR for conflict resolution. mDNS registrars <span class="bcp14">MUST NOT</span> record a time of receipt unless the registrant has
 specifically requested it.<a href="#section-8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1580,15 +1622,15 @@ specifically requested it.<a href="#section-8-1" class="pilcrow">¶</a></p>
       <h2 id="name-registrant-api-consideratio">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-registrant-api-consideratio" class="section-name selfRef">Registrant API considerations</a>
       </h2>
-<p id="section-9-1">When an mDNS proxy registers a service and requests the use of a time of receipt, the proxy <span class="bcp14">MUST</span> specify when it
-received the registration. In order to support this, the API is required not only to allow the registrant to specify
-that TSR conflict resolution is wanted, but must also provide a way for the proxy to specify an absolute time at
-which the registration was received, and the key checksum used to identify the entity that's actually authoritative
+<p id="section-9-1">When a registrant registers a service at its mDNS registrar and requests the use of a time of receipt, the registrant <span class="bcp14">MUST</span> also specify when it
+received the original registration. In order to support this, the API is required not only to allow the registrant to specify
+that TSR conflict resolution is wanted, but also to provide a way for the registrant to specify an absolute time at
+which the original registration was received, and the key checksum used to identify the entity that's actually authoritative
 for the data.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <p id="section-9-2">This is important, for example, in the case of SRP Replication <span>[<a href="#I-D.lemon-srp-replication" class="cite xref">I-D.lemon-srp-replication</a>]</span>, where an
 SRP registrar may receive a registration from a peer during startup synchronization. This registration will have
-occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS proxy receiving
-the registration to use the time that the mDNS proxy registers the service as the time of receipt.<a href="#section-9-2" class="pilcrow">¶</a></p>
+occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
+the registration to use the time that the registrant registers the service as the time of receipt.<a href="#section-9-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -1620,41 +1662,61 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
 'Multicast DNS Time Since Received". Reference shall refer to this document, once published.  IANA shall determine the registration date.<a href="#section-11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="sec-combined-references">
 <section id="section-12">
-      <h2 id="name-normative-references">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      <h2 id="name-references">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
+<section id="section-12.1">
+        <h3 id="name-normative-references">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
 <dl class="references">
 <dt id="I-D.ietf-dnssd-srp">[I-D.ietf-dnssd-srp]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Service Registration Protocol for DNS-Based Service Discovery"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnssd-srp-27</span>, <time datetime="2025-02-18" class="refDate">18 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-srp-27">https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-srp-27</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.lemon-srp-replication">[I-D.lemon-srp-replication]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Lemon, T.</span>, <span class="refAuthor">Keshavarzian, A.</span>, and <span class="refAuthor">J. Hui</span>, <span class="refTitle">"Automatic Replication of DNS-SD Service Registration Protocol Zones"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-lemon-srp-replication-03</span>, <time datetime="2023-02-22" class="refDate">22 February 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-lemon-srp-replication-03">https://datatracker.ietf.org/doc/html/draft-lemon-srp-replication-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.sctl-advertising-proxy">[I-D.sctl-advertising-proxy]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">T. Lemon</span>, <span class="refTitle">"Advertising Proxy for DNS-SD Service Registration Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-sctl-advertising-proxy-02</span>, <time datetime="2021-07-12" class="refDate">12 July 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-sctl-advertising-proxy-02">https://datatracker.ietf.org/doc/html/draft-sctl-advertising-proxy-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC1034">[RFC1034]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Mockapetris, P.</span>, <span class="refTitle">"Domain names - concepts and facilities"</span>, <span class="seriesInfo">STD 13</span>, <span class="seriesInfo">RFC 1034</span>, <span class="seriesInfo">DOI 10.17487/RFC1034</span>, <time datetime="1987-11" class="refDate">November 1987</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1034">https://www.rfc-editor.org/rfc/rfc1034</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6762">[RFC6762]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">M. Krochmal</span>, <span class="refTitle">"Multicast DNS"</span>, <span class="seriesInfo">RFC 6762</span>, <span class="seriesInfo">DOI 10.17487/RFC6762</span>, <time datetime="2013-02" class="refDate">February 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6762">https://www.rfc-editor.org/rfc/rfc6762</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-    <dd>
+      <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-12.2">
+        <h3 id="name-informative-references">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC9665">[RFC9665]</dt>
+      <dd>
+<span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Service Registration Protocol for DNS-Based Service Discovery"</span>, <span class="seriesInfo">RFC 9665</span>, <span class="seriesInfo">DOI 10.17487/RFC9665</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9665">https://www.rfc-editor.org/rfc/rfc9665</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
 </section>
 </div>
 <div id="acknowledgments">
