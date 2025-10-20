@@ -46,11 +46,10 @@ normative:
   RFC1034:
   RFC6762:
   I-D.lemon-srp-replication:
-  I-D.sctl-advertising-proxy:
-  I-D.ietf-dnssd-srp:
+  I-D.ietf-dnssd-advertising-proxy:
+  RFC9665:
 
 informative:
-  RFC9665:
 
 
 --- abstract
@@ -71,8 +70,8 @@ Multicast DNS has no single source of authority. Because of this, mDNS has a mec
 The current goal of mDNS conflict resolution is to prevent a newly advertised service from taking the place of
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
 entity advertising an mDNS service is in fact authoritative for that service. In the case of an advertising
-proxy {{I-D.sctl-advertising-proxy}}, this is not the case: the source of truth for the service
-being advertised is an SRP {{I-D.ietf-dnssd-srp}} requester.
+proxy {{I-D.ietf-dnssd-advertising-proxy}}, this is not the case: the source of truth for the service
+being advertised is an SRP {{RFC9665}} requester.
 
 On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
@@ -155,7 +154,7 @@ API calls from local processes to register or update DNS records for that proces
 **mDNS proxy**
 : a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
 mDNS records on behalf of one or more entities not located on the host itself.
-The advertising proxy {{I-D.sctl-advertising-proxy}} is an example of an mDNS proxy.
+The advertising proxy {{I-D.ietf-dnssd-advertising-proxy}} is an example of an mDNS proxy.
 
 **SRP requester**
 : a client that uses the Service Registration Protocol (SRP) {{RFC9665}} to send an SRP Update to an SRP registrar.
@@ -163,7 +162,7 @@ The advertising proxy {{I-D.sctl-advertising-proxy}} is an example of an mDNS pr
 **SRP registrar**
 : a server that accepts SRP Updates sent by SRP requesters using the SRP {{RFC9665}}.
 DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
-{{I-D.sctl-advertising-proxy}} located on the same host.
+{{I-D.ietf-dnssd-advertising-proxy}} located on the same host.
 In that case, the SRP registrar process acts as a registrant towards its local mDNS registrar process.
 
 # Time Since Received EDNS Option {#tsrrr}
