@@ -1221,15 +1221,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
@@ -1252,8 +1244,8 @@ Multicast DNS has no single source of authority. Because of this, mDNS has a mec
 <p id="section-1-2">The current goal of mDNS conflict resolution is to prevent a newly advertised service from taking the place of
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
 entity advertising an mDNS service is in fact authoritative for that service. In the case of an advertising
-proxy <span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span>, this is not the case: the source of truth for the service
-being advertised is an SRP <span>[<a href="#I-D.ietf-dnssd-srp" class="cite xref">I-D.ietf-dnssd-srp</a>]</span> requester.<a href="#section-1-2" class="pilcrow">¶</a></p>
+proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span>, this is not the case: the source of truth for the service
+being advertised is an SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> requester.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
 original server may still be advertising the old SRP registration using mDNS. If the information in the new SRP
@@ -1345,7 +1337,7 @@ API calls from local processes to register or update DNS records for that proces
           <dd style="margin-left: 1.5em" id="section-1.3-2.6">
             <p id="section-1.3-2.6.1">a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
 mDNS records on behalf of one or more entities not located on the host itself.
-The advertising proxy <span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
+The advertising proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.3-2.7"><strong>SRP requester</strong></dt>
@@ -1357,7 +1349,7 @@ The advertising proxy <span>[<a href="#I-D.sctl-advertising-proxy" class="cite x
           <dd style="margin-left: 1.5em" id="section-1.3-2.10">
             <p id="section-1.3-2.10.1">a server that accepts SRP Updates sent by SRP requesters using the SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>.
 DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
-<span>[<a href="#I-D.sctl-advertising-proxy" class="cite xref">I-D.sctl-advertising-proxy</a>]</span> located on the same host.
+<span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> located on the same host.
 In that case, the SRP registrar process acts as a registrant towards its local mDNS registrar process.<a href="#section-1.3-2.10.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
@@ -1662,61 +1654,41 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
 'Multicast DNS Time Since Received". Reference shall refer to this document, once published.  IANA shall determine the registration date.<a href="#section-11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-combined-references">
-<section id="section-12">
-      <h2 id="name-references">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
-      </h2>
 <div id="sec-normative-references">
-<section id="section-12.1">
-        <h3 id="name-normative-references">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
-        </h3>
+<section id="section-12">
+      <h2 id="name-normative-references">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      </h2>
 <dl class="references">
-<dt id="I-D.ietf-dnssd-srp">[I-D.ietf-dnssd-srp]</dt>
-        <dd>
-<span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Service Registration Protocol for DNS-Based Service Discovery"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnssd-srp-27</span>, <time datetime="2025-02-18" class="refDate">18 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-srp-27">https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-srp-27</a>&gt;</span>. </dd>
+<dt id="I-D.ietf-dnssd-advertising-proxy">[I-D.ietf-dnssd-advertising-proxy]</dt>
+      <dd>
+<span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">T. Lemon</span>, <span class="refTitle">"Advertising Proxy for DNS-SD Service Registration Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnssd-advertising-proxy-04</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-advertising-proxy-04">https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-advertising-proxy-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.lemon-srp-replication">[I-D.lemon-srp-replication]</dt>
-        <dd>
+      <dd>
 <span class="refAuthor">Lemon, T.</span>, <span class="refAuthor">Keshavarzian, A.</span>, and <span class="refAuthor">J. Hui</span>, <span class="refTitle">"Automatic Replication of DNS-SD Service Registration Protocol Zones"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-lemon-srp-replication-03</span>, <time datetime="2023-02-22" class="refDate">22 February 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-lemon-srp-replication-03">https://datatracker.ietf.org/doc/html/draft-lemon-srp-replication-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.sctl-advertising-proxy">[I-D.sctl-advertising-proxy]</dt>
-        <dd>
-<span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">T. Lemon</span>, <span class="refTitle">"Advertising Proxy for DNS-SD Service Registration Protocol"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-sctl-advertising-proxy-02</span>, <time datetime="2021-07-12" class="refDate">12 July 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-sctl-advertising-proxy-02">https://datatracker.ietf.org/doc/html/draft-sctl-advertising-proxy-02</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC1034">[RFC1034]</dt>
-        <dd>
+      <dd>
 <span class="refAuthor">Mockapetris, P.</span>, <span class="refTitle">"Domain names - concepts and facilities"</span>, <span class="seriesInfo">STD 13</span>, <span class="seriesInfo">RFC 1034</span>, <span class="seriesInfo">DOI 10.17487/RFC1034</span>, <time datetime="1987-11" class="refDate">November 1987</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1034">https://www.rfc-editor.org/rfc/rfc1034</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
-        <dd>
+      <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6762">[RFC6762]</dt>
-        <dd>
+      <dd>
 <span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">M. Krochmal</span>, <span class="refTitle">"Multicast DNS"</span>, <span class="seriesInfo">RFC 6762</span>, <span class="seriesInfo">DOI 10.17487/RFC6762</span>, <time datetime="2013-02" class="refDate">February 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6762">https://www.rfc-editor.org/rfc/rfc6762</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
       <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-</dl>
-</section>
-</div>
-<div id="sec-informative-references">
-<section id="section-12.2">
-        <h3 id="name-informative-references">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
-        </h3>
-<dl class="references">
 <dt id="RFC9665">[RFC9665]</dt>
-      <dd>
+    <dd>
 <span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Service Registration Protocol for DNS-Based Service Discovery"</span>, <span class="seriesInfo">RFC 9665</span>, <span class="seriesInfo">DOI 10.17487/RFC9665</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9665">https://www.rfc-editor.org/rfc/rfc9665</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
-</section>
-</div>
 </section>
 </div>
 <div id="acknowledgments">
