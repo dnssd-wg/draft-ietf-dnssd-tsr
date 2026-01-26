@@ -165,6 +165,16 @@ DNS records registered via SRP to an SRP registrar may then be advertised by mDN
 {{I-D.ietf-dnssd-advertising-proxy}} located on the same host.
 In that case, the SRP registrar process acts as a registrant towards its local mDNS registrar process.
 
+**TSR data**
+: locally stored data, associated with a single DNS owner name, that keeps track of the time when a set of resource
+records were last updated and an indication of identity (a key checksum) of the source of the records.
+
+**TSR option**
+: an EDNS0 Time Since Received (TSR) option as defined by this specification.
+
+**TSR time**
+: the (local) absolute time indicated by a particular TSR data.
+
 # Time Since Received EDNS Option {#tsrrr}
 
 Each Time Since Received (TSR) EDNS option is applicable to exactly one DNS owner name. So all the records for that owner
@@ -177,7 +187,7 @@ byte order), a key checksum (four bytes), and a time of registration (four bytes
 The RR index is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
 answer RRs, one authority RR and two additional RRs, an index of 0 would refer to the first answer, an index of 1 to the
 second answer, and index of 2 to the single authority record, and so on. Questions are excluded because they have no
-data associated with them, and so it makes no sense for them to have TSR records associated with them.
+data associated with them, and so it makes no sense for them to have TSR options associated with them.
 
 If there is more than one record in the mDNS Message with the same owner name, only one TSR option is emitted for
 that name, and it applies to every RR in the mDNS Message with that owner name. It is not possible in the
@@ -192,21 +202,21 @@ an attacker on the local link can always cause problems with mDNS by providing s
 the checksum is simply to notice whether, for a specific owner name, two different authoritative sources have provided
 information.
 
-The TSR time offset field contains the difference, in seconds, between the the time at which the TSR record is being
-generated and the time of receipt for recorded for that owner name.
+The TSR time of registration field contains the difference, in seconds, between the the time at which the TSR option is being
+generated and the time of receipt of resource records for that owner name.
 
 The time of registration is represented in the mDNS message as a time in seconds relative to the time when the mDNS message
 is sent. If this difference is greater than seven days (7 * 24 * 60 * 60), the mDNS registrar MUST use a value of seven days
-rather than the larger value.  The relative time represented in the TSR option is converted to an absolute time when stored
-in a cache or authority database on an mDNS registrar, and is converted to a relative time whenever an mDNS message is
-generated from local data.
+rather than the larger value.  The relative time value in the TSR option is converted to an absolute (local) time when stored
+in a cache or authority database on an mDNS registrar as TSR data, and is converted back to a relative time whenever an
+mDNS message with a TSR option is generated from local data.
 
 
 # mDNS Registrar Behavior
 
 ## Validating requested local RR registrations that include a TSR option {#locval}
 
-When an mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
+When an mDNS registrant requests an mDNS registrar to register one or more records on an owner name, and provides TSR data
 for that name, the mDNS registrar first checks to see if there are any records either in cache or from other local registrations
 on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.
 
@@ -214,24 +224,25 @@ When such data exists, the registrar MUST check to see if it has TSR data for th
 is TSR data on that name but the key checksum does not match, the registrar MUST treat this registration as a conflict
 and return an appropriate error to the registrant.
 
-If such data exists and the key checksums match, there are three possibilities based on the known TSR time and the proposed TSR time:
+If such data exists and the key checksums match, there are three possibilities based on the known TSR time
+(from the existing data) and the proposed TSR time (from the TSR data in the registration request):
 
-**Known time is more recent**
+**Known TSR time is more recent**
 : In this case, the registrar MUST treat the new registration as stale, and return an indication to the
-  registrant that its registration is stale. This indication must be different than the conflict indication.
+  registrant that its registration is stale. This indication must be different than a conflict indication.
 
-**Both times are the same**
+**Both TSR times are the same**
 : In this case, the new record is added to the local registration database and put in the probing state.
 
-**Proposed time is more recent**
-: In this case, all cached data on the name is discarded. The registrant for any existing locally-registered data is notified that
-  the data they have registered is stale, and the stale data is removed from the local registration database. The new data is
+**Proposed TSR time is more recent**
+: In this case, all cached data on the owner name is discarded. The registrant for any existing locally-registered data is notified that
+  the data they had registered is stale, and the stale data is removed from the local registration database. The new data is
   added and put in the probing state, and the TSR data is updated with the proposed TSR data.
 
 It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see {{Section 2 of RFC6762}}).
 If an mDNS registrant registers an RR on a name for which the registrar already has data, cached or
-authoritative, on the same name, whether of the same type or a different type, for which there is no TSR data, or for
+authoritative, on the same name, whether of the same record type or a different type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar MUST treat
 this as an immediate conflict, and MUST NOT probe.
 
@@ -241,8 +252,8 @@ is, in the probing state) until they have been probed and no conflicting answers
 ## Probing resource records on names for which TSR data has been proposed
 
 {{Section 8.1 of RFC6762}} describes how an mDNS registrar probes to ensure that there is
-no conflicting data for records in the probing state. The behavior for records that are in the probing state on names to
-which no TSR data applies is unchanged.  When there is TSR data on a name for which records are being probed,
+no conflicting data for records in the probing state. The behavior for records that are in the probing state with owner names to
+which no TSR data applies remains unchanged.  When there is TSR data on a name for which records are being probed,
 the mDNS registar MUST include TSR options for each such name as described in {{tsrrr}}. Handling of
 responses is described in {{procmes}}.
 
@@ -262,7 +273,8 @@ described in {{tsrrr}}.
 For each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning
 an index to each non-question resource record in the mDNS message. The index of each TSR option is then matched to the
 index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
-option is then computed by taking the current local clock time and subtracting from it the time offset in the TSR record.
+option is then computed by taking the current local clock time and subtracting from it the time of registration value in
+the TSR option.
 
 If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
 registrar MUST ignore that TSR option. The mDNS registrar MUST NOT use the index from the TSR option to search across the
@@ -281,7 +293,7 @@ in the local registration database (that is, not just in the cache) on that name
 conflict. This conflict exists even if the locally registered records are all shared records. In cases where there are
 records on the name in the cache, those records are all discarded, because they are in conflict with the new data.
 
-In the case that there is TSR data for the record in the mDNS packet, and no local TSR record, this always means that any
+In the case that there is TSR data for the record in the mDNS packet, and no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
 section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
 to the mDNSResponder cache. Such records can never have TSR options associated with them.  However, resource records in
@@ -322,20 +334,20 @@ owner name for which any RR is being probed to which a TSR option applies.
 
 This means that for any particular owner name that might be represented in an mDNS packet, it must be the case either that
 it is not a known answer, or that it is a known answer and no other records exist in the mDNS packet with the same owner
-name to which a TSR record would apply.  That is, one of two things must be true about the set of all records with a
+name to which a TSR option would apply.  That is, one of two things must be true about the set of all records with a
 particular owner name being added to the mDNS packet: either a TSR option applies to all of the records, or it applies to
-none of the records. Furthermore, either a record is a known answer from cache, or it is a locally-registred record.
+none of the records. Furthermore, either a record is a known answer from cache, or it is a locally-registered record.
 
-When constructing an mDNS message, the registrar maintains a set of names and associated TSR data. Initially this set is
+When constructing an mDNS message, the mDNS registrar maintains a set of names and associated TSR data. Initially this set is
 empty. When the registrar adds a record to the mDNS message, if that record is locally registered, and if the registrar
 has TSR data for that name, it first checks to see if it has already added TSR data for that name to the set. If not, then
 it adds a new entry to the set containing the TSR data for the owner name of the RR. The data added consists of the
 owner name, the index of the record being added (since it is the first), the key checksum, and the time of receipt.
 
-Once the mDNS responder has added all of the resource records it intends to to the mDNS message that is being constructed,
-it emits an OPT record in the additional section. To this OPT record it adds a TSR record for every name in the set that
+Once the mDNS responder has added all of the resource records it intends to the mDNS message that is being constructed,
+it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
-prodiuce the time difference, and this is clamped to a maximum of seven days.
+produce the value for the time of registration field, and this value is clamped to a maximum of seven days (604,800).
 
 
 # The effect of network latency on time computations
@@ -352,11 +364,11 @@ should not affect the outcome.
 # Internal Handling of TSR data
 
 The TSR option that is sent on the wire is expressed in seconds relative to the time of receipt of the
-registration. In order to derive the time to send in a TSR option, the registrar must remember the time at which the registration
-occurred. This time is recorded as an absolute time, not a relative time. We refer to this as the time of
+registration. In order to derive the time to send in a TSR option, the mDNS registrar must remember the (local) time at
+which the registration occurred. This time is recorded as an absolute time, not a relative time. We refer to this as the time of
 receipt. When constructing a TSR option, the registrar computes the difference between the current time and the time of
 receipt, which must always be in the past. This difference, which should be a positive integer, is converted to
-seconds, and that unsigned value is then used to synthesize the TSR RR.
+seconds, and that unsigned value is then used to synthesize the TSR option.
 
 
 # Timeliness of Conflict Resolution
@@ -408,7 +420,7 @@ attacker gains no benefit from using TSR.
 
 Whether or not an mDNS registration has a recorded time of receipt, an attacker can deny service by announcing its
 own conflicting data and then answering the subsequent probe as described in {{Section 9 of RFC6762}}.
-Because it does not include a TSR record in its authority section, it can win the simultaneous conflict resolution
+Because it does not include a TSR option in its authority section, it can win the simultaneous conflict resolution
 process that follows its bogus announcement.
 
 So the TSR-based conflict resolution process creates no new vulnerability. Addressing the existing vulnerability is
