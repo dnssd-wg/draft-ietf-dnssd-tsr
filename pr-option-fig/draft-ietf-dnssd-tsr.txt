@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 12 September 2026                             IoTconsultancy.nl
-                                                           11 March 2026
+Expires: 13 September 2026                             IoTconsultancy.nl
+                                                           12 March 2026
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 September 2026.
+   This Internet-Draft will expire on 13 September 2026.
 
 Copyright Notice
 
@@ -211,9 +211,9 @@ Table of Contents
    resolution algorithm for mDNS, which allows an mDNS proxy to report
    the time at which it received the registration for DNS records it is
    newly advertising, and the source from which it was received.  This
-   is done using a new Time Since Received (TSR) EDNS option, of which
-   there must be exactly one per name being advertised by the mDNS
-   proxy.
+   is done using a new Time Since Received (TSR) EDNS(0) ([RFC6891])
+   option, of which there must be exactly one per name being advertised
+   by the mDNS proxy.
 
 1.3.  Conventions, Terms and Definitions
 
@@ -260,17 +260,19 @@ Table of Contents
 
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-------------------------------+
-   |           RR Index            |
    +-------------------------------+-------------------------------+
-   |                           Key Checksum                        |
-   +---------------------------------------------------------------+
-   |                      Time of Registration                     |
-   +---------------------------------------------------------------+
+   |      OPTION-CODE = TBD1       |       OPTION-LENGTH = 10      |
+   +-------------------------------+-------------------------------+
+   |           RR Index            |         Key Checksum ...
+   +-------------------------------+-------------------------------+
+         ... Key Checksum          |           Time Offset ...
+   +-------------------------------+-------------------------------+
+         ... Time Offset           |
+   +-------------------------------+
 
-   It includes three fields: the RR index (two-byte unsigned integer in
-   network byte order), a key checksum (four bytes), and a time of
-   registration (four bytes).
+   It includes three fields in the OPTION-DATA ([RFC6891]): the RR index
+   (two-byte unsigned integer in network byte order), a key checksum
+   (four bytes), and a time of registration (four bytes).
 
    The RR index is the number of the RR in the mDNS packet.  Question
    RRs are not counted.  So if the message includes two answer RRs, one
@@ -651,6 +653,11 @@ Table of Contents
    [RFC6762]  Cheshire, S. and M. Krochmal, "Multicast DNS", RFC 6762,
               DOI 10.17487/RFC6762, February 2013,
               <https://www.rfc-editor.org/rfc/rfc6762>.
+
+   [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
+              for DNS (EDNS(0))", STD 75, RFC 6891,
+              DOI 10.17487/RFC6891, April 2013,
+              <https://www.rfc-editor.org/rfc/rfc6891>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
