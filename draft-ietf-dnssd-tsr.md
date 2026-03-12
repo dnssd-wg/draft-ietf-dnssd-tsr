@@ -45,6 +45,7 @@ author:
 normative:
   RFC1034:
   RFC6762:
+  RFC6891:
   I-D.lemon-srp-replication:
   I-D.ietf-dnssd-advertising-proxy:
   RFC9665:
@@ -137,7 +138,7 @@ longer be discoverable under the original name, even if the IP address hasn't ch
 
 This document proposes an enhancement to the current conflict resolution algorithm for mDNS, which allows an mDNS
 proxy to report the time at which it received the registration for DNS records it is newly advertising, and the source from which
-it was received. This is done using a new Time Since Received (TSR) EDNS option, of which there must be exactly one
+it was received. This is done using a new Time Since Received (TSR) EDNS(0) ({{RFC6891}}) option, of which there must be exactly one
 per name being advertised by the mDNS proxy.
 
 ## Conventions, Terms and Definitions
@@ -176,16 +177,18 @@ The TSR EDNS option has the following format:
 ~~~~~~~~~~~ aasvg
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-------------------------------+
-|           RR Index            |
 +-------------------------------+-------------------------------+
-|                           Key Checksum                        |
-+---------------------------------------------------------------+
-|                      Time of Registration                     |
-+---------------------------------------------------------------+
+|      OPTION-CODE = TBD1       |       OPTION-LENGTH = 10      |
++-------------------------------+-------------------------------+
+|           RR Index            |         Key Checksum ...
++-------------------------------+-------------------------------+
+      ... Key Checksum          |           Time Offset ...
++-------------------------------+-------------------------------+
+      ... Time Offset           |
++-------------------------------+
 ~~~~~~~~~~~
 
-It includes three fields: the RR index (two-byte unsigned integer in network
+It includes three fields in the OPTION-DATA ({{RFC6891}}): the RR index (two-byte unsigned integer in network
 byte order), a key checksum (four bytes), and a time of registration (four bytes).
 
 The RR index is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
@@ -206,7 +209,7 @@ an attacker on the local link can always cause problems with mDNS by providing s
 the checksum is simply to notice whether, for a specific owner name, two different authoritative sources have provided
 information.
 
-The time of registration field contains the difference, in seconds, between the the time at which the TSR record is being
+The TSR time offset field contains the difference, in seconds, between the the time at which the TSR record is being
 generated and the time of receipt for recorded for that owner name.
 
 The time of registration is represented in the mDNS message as a time in seconds relative to the time when the mDNS message
