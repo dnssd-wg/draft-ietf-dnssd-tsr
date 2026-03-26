@@ -338,6 +338,28 @@ to the cache.
 When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
 respect to any locally-registered data.
 
+## Duplicate answer suppression behavior {#dupans}
+
+{{Section 7.4 of RFC6762}}, Duplicate Answer Suppression, describes behavior intended to prevent the redundant transmission
+of duplicate answers. When an mDNS query is received for which the mDNS registrar has authoritative data, the mDNS registrar
+will wait for a random amount of time before sending a response. If, during that time, a response is received that contains
+all the answers it would have sent, it suppresses sending these answers, since they are redundant. Here we will refer to
+such a response as a pre-empting response.
+
+In the case of TSR, it can be the case that the data in a pre-empting response is stale or conflicting. For this reason, an
+mDNS registrar MUST NOT suppress duplicate answers when:
+
+* the TSR key checksum for the owner name in a pre-empting response does not match the local TSR key checksum for that
+  owner name
+* TSR data is present locally for that owner name but is not present in the pre-empting response
+* A TSR option is present for that owner name in the pre-empting response, but local authoritative data for that owner
+  name is present but has no associated TSR data
+* local authoritative data for that owner name is present and includes TSR data, a TSR option for that owner name is
+  present in the pre-empting response, but the local TSR time for that owner name is more recent than the TSR time
+  for that owner name in the pre-empting response
+
+In {{dupasexample}} we show what this might look like from the perspective of the mDNS requestor.
+
 ## Constructing a mDNS message with TSR options
 
 For each non-question record that is added to the mDNS message, one of three things must be true:
@@ -468,3 +490,35 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
 {:numbered="false"}
 
 TODO acknowledge reviewers and contributors.
+
+# Duplicate Answer Suppression Example {#dupasexample}
+
+As described in {{dupans}}, it is possible that two proxies may respond to an mDNS query with answers to the same question,
+where the data for a particular owner name in both answers is authoritative and unique, but where the TSR time in the
+earlier message is earlier than the TSR time in the later message. In this case, we will see the data from the earlier
+message added and then removed, followed by the data in the later message being added. Consider the following example
+using Apple's mDNSResponder implementation.
+
+1. mDNS requester A sends a multicast query for AAAA records on the name "example.local"
+2. mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T
+3. mDNS registrar for proxy C sends a multicast response of 2001:db8:0:17::1 with TSR time T+300
+
+In between (2) and (3) we would expect mDNS Requester A to see a callback to its DNSServiceQueryRecord call, providing a
+AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing bit clear.
+
+After (3) we would expect mDNS Requester A to see two callbacks to its DNSServiceQueryRecord call. The first would provide
+a AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd not set and the kDNSServiceFlagsMoreComing bit set. The
+second would provide a AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
+bit clear.
+
+Note that we would not normally see the reverse sequence:
+
+1. mDNS requester A sends a multicast query for AAAA records on the name "example.local"
+2. mDNS registrar for proxy C sends a multicast response of 2001:db8:0:17::1 with TSR time T+300
+3. mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T
+
+This is because in this case we would expect known answer suppression to result in the mDNS registrar for proxy B suppressing
+its response. However, it is possible that B might not see the response from C. In that situation, A would receive both
+responses, but since the TSR time on the second response is earlier than the TSR time on the first response, we would see
+only one callback, providing an AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
+bit clear.
