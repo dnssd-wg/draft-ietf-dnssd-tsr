@@ -1,0 +1,3 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-ietf-dnssd-tsr.md mellon@fugue.com esko.dijk@iotconsultancy.nl
