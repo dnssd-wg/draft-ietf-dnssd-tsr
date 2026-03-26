@@ -45,6 +45,7 @@ author:
 normative:
   RFC1034:
   RFC6762:
+  RFC6891:
   I-D.ietf-dnssd-advertising-proxy:
   RFC9665:
 
