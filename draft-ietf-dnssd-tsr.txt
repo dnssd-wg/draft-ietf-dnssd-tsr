@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 23 April 2026                                 IoTconsultancy.nl
-                                                         20 October 2025
+Expires: 27 September 2026                             IoTconsultancy.nl
+                                                           26 March 2026
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,11 +54,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2026.
+   This Internet-Draft will expire on 27 September 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -93,7 +93,9 @@ Table of Contents
    9.  Registrant API considerations
    10. Security Considerations
    11. IANA Considerations
-   12. Normative References
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -570,8 +572,8 @@ Table of Contents
    identify the entity that's actually authoritative for the data.
 
    This is important, for example, in the case of SRP Replication
-   [I-D.lemon-srp-replication], where an SRP registrar may receive a
-   registration from a peer during startup synchronization.  This
+   [I-D.ietf-dnssd-srp-replication], where an SRP registrar may receive
+   a registration from a peer during startup synchronization.  This
    registration will have occurred at some significant amount of time in
    the past, and so it would be incorrect for the mDNS registrar
    receiving the registration to use the time that the registrant
@@ -610,7 +612,9 @@ Table of Contents
    Reference shall refer to this document, once published.  IANA shall
    determine the registration date.
 
-12.  Normative References
+12.  References
+
+12.1.  Normative References
 
    [I-D.ietf-dnssd-advertising-proxy]
               Cheshire, S. and T. Lemon, "Advertising Proxy for DNS-SD
@@ -618,14 +622,6 @@ Table of Contents
               Internet-Draft, draft-ietf-dnssd-advertising-proxy-04, 4
               March 2024, <https://datatracker.ietf.org/doc/html/draft-
               ietf-dnssd-advertising-proxy-04>.
-
-   [I-D.lemon-srp-replication]
-              Lemon, T., Keshavarzian, A., and J. Hui, "Automatic
-              Replication of DNS-SD Service Registration Protocol
-              Zones", Work in Progress, Internet-Draft, draft-lemon-srp-
-              replication-03, 22 February 2023,
-              <https://datatracker.ietf.org/doc/html/draft-lemon-srp-
-              replication-03>.
 
    [RFC1034]  Mockapetris, P., "Domain names - concepts and facilities",
               STD 13, RFC 1034, DOI 10.17487/RFC1034, November 1987,
@@ -648,6 +644,16 @@ Table of Contents
               for DNS-Based Service Discovery", RFC 9665,
               DOI 10.17487/RFC9665, June 2025,
               <https://www.rfc-editor.org/rfc/rfc9665>.
+
+12.2.  Informative References
+
+   [I-D.ietf-dnssd-srp-replication]
+              Lemon, T., Keshavarzian, A., and J. Hui, "Automatic
+              Replication of DNS-SD Service Registration Protocol
+              Zones", Work in Progress, Internet-Draft, draft-ietf-
+              dnssd-srp-replication-02, 4 March 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-
+              srp-replication-02>.
 
 Acknowledgments
 
