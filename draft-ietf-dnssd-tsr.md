@@ -361,6 +361,9 @@ than ten seconds between the cached TSR time and the registrant's TSR time shoul
 In addition, when the TSR time for a set of RRs is updated by the mDNS registrant, but nothing else changes,
 the mDNS registrar MUST NOT re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
 announcement should be sent for such RRs, but no probe announcement is set for RRs that are not removed.
+If some RRs are added, the probing stage can be skipped because we already know that we were up to date. So
+the new RRs can simply be announced immediately. We can assume that updates do not happen frequently enough for
+there to be competing mDNS updates being probed or announced at the same time.
 
 ## Constructing a mDNS message with TSR options
 
