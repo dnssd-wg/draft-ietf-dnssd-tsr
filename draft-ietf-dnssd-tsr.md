@@ -45,11 +45,11 @@ author:
 normative:
   RFC1034:
   RFC6762:
-  I-D.lemon-srp-replication:
   I-D.ietf-dnssd-advertising-proxy:
   RFC9665:
 
 informative:
+  I-D.ietf-dnssd-srp-replication:
 
 
 --- abstract
@@ -137,7 +137,7 @@ longer be discoverable under the original name, even if the IP address hasn't ch
 
 This document proposes an enhancement to the current conflict resolution algorithm for mDNS, which allows an mDNS
 proxy to report the time at which it received the registration for DNS records it is newly advertising, and the source from which
-it was received. This is done using a new Time Since Received (TSR) EDNS option, of which there must be exactly one
+it was received. This is done using a new Time Since Received (TSR) EDNS(0) ({{RFC6891}}) option, of which there must be exactly one
 per name being advertised by the mDNS proxy.
 
 ## Conventions, Terms and Definitions
@@ -188,6 +188,24 @@ option.
 
 The TSR EDNS option consists of three fields: the RR index (two byte integer in network
 byte order), a key checksum (four bytes), and a time offset (four bytes).
+The TSR EDNS option has the following format:
+
+~~~~~~~~~~~ aasvg
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-------------------------------+-------------------------------+
+|      OPTION-CODE = TBD1       |       OPTION-LENGTH = 10      |
++-------------------------------+-------------------------------+
+|           RR Index            |         Key Checksum ...      |
++-------------------------------+-------------------------------+
+|     ... Key Checksum          |           Time Offset ...     |
++-------------------------------+-------------------------------+
+|     ... Time Offset           |
++-------------------------------+
+~~~~~~~~~~~
+
+It includes three fields in the OPTION-DATA ({{RFC6891}}): the RR index (two-byte unsigned integer in network
+byte order), a key checksum (four bytes), and a time of registration (four bytes).
 
 The RR index is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
 answer RRs, one authority RR and two additional RRs, an index of 0 would refer to the first answer, an index of 1 to the
@@ -410,7 +428,7 @@ that TSR conflict resolution is wanted, but also to provide a way for the regist
 which the original registration was received, and the key checksum used to identify the entity that's actually authoritative
 for the data.
 
-This is important, for example, in the case of SRP Replication <xref target="I-D.lemon-srp-replication"/>, where an
+This is important, for example, in the case of SRP Replication <xref target="I-D.ietf-dnssd-srp-replication"/>, where an
 SRP registrar may receive a registration from a peer during startup synchronization. This registration will have
 occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
 the registration to use the time that the registrant registers the service as the time of receipt.
