@@ -338,6 +338,26 @@ to the cache.
 When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
 respect to any locally-registered data.
 
+## Suppression of Goodbye announcements
+
+When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
+data, the mDNS registrar MUST NOT send a "goodbye" announcement for any RR on that owner name as a result of flushing
+this stale data.
+
+This is because in the case where the mDNS registrant updates one or more RRsets on an owner name covered by TSR data,
+and as a result of this some records are removed, but some remain, the "goodbye" announcement will be sent or the cache
+flush bit will be used as specified in {{Section 8.4 of RFC6762}}, and so the "goodbye" announcement would be redundant
+or possibly harmful.
+
+## Suppression of redundant probing
+
+When mDNS proxies are doing any form of replication of the data they are publishing, it can be the case that one
+proxy does its probes first. If this is the case, proxies receiving replicated data will already have the correct
+data in cache with matching TSR times. To avoid redundant probing, when an mDNS registrant registers data with
+an mDNS registrar for which the same data is already cached with the same TSR key checksum and a recent TSR time,
+the mDNS registrar MUST skip probing. Recent here should take into account network delays: a difference of less
+than ten seconds between the cached TSR time and the registrant's TSR time should be considered "recent."
+
 ## Constructing a mDNS message with TSR options
 
 For each non-question record that is added to the mDNS message, one of three things must be true:
@@ -433,7 +453,15 @@ SRP registrar may receive a registration from a peer during startup synchronizat
 occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
 the registration to use the time that the registrant registers the service as the time of receipt.
 
+## Removing data that is still valid
 
+In some cases, a proxy may need to stop being a proxy, but may be proxying RRs that is also being proxied by one or
+more other proxies. In this case, if the proxy sends a "goodbye" announcement for such RRs, they will be removed
+from the caches of mDNS registrars that receive such announcements.
+
+To prevent this, mDNS registrant implementations that implement TSR MUST provide a way for an mDNS registrant to indicate
+that such data is being withdrawn from publication by that registrant, but is still valid. When the registrant indicates that
+this is the case, the mDNS registrar MUST NOT send goodbye announcements for such data.
 
 # Security Considerations
 
