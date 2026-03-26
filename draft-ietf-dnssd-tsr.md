@@ -298,7 +298,20 @@ Once all non-question records have been processed, the responder MUST respond to
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
 described in {{tsrrr}}.
 
-## Processing messages that may contain TSR options {#procmes}
+## Receiving messages that may contain TSR options
+
+mDNS registrars that support TSR need to compute an absolute time based on a time offset. This means that registrars need
+to know when the packet was received. A naive implementation might assume that the time that the packet is read off the
+input queue by the registrant is close enough. However, in practice we have seen that it can be the case on a heavily
+loaded system that the time of receipt and the time of processing are far enough apart to create the appearance of
+staleness.
+
+To avoid this, mDNS registrants that have an API available to get the actual time of receipt of a packet should make use
+of that API. For example, the SO_TIMESTAMP_CONTINUOUS socket option is available on Linux and BSD Unix platforms,
+including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread
+and queue them for later processing.
+
+## Processing messages thay may contain TSR options {#procmes}
 
 mDNS registrars that support the TSR option MUST check incoming messages for the presence of an EDNS(0) option containing
 TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
