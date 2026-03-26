@@ -371,7 +371,8 @@ owner name, the index of the record being added (since it is the first), the key
 Once the mDNS responder has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
-produce the value for the time offset field, and this value is clamped to a maximum of seven days (604,800 seconds).
+produce the value for the time offset field, and this value is clamped to a maximum of seven days (604,800 seconds),
+as described in {{timely}}.
 
 
 # The effect of network latency on time computations
@@ -395,7 +396,7 @@ receipt, which must always be in the past. This difference, which should be a po
 seconds, and that unsigned value is then used to synthesize the TSR option.
 
 
-# Timeliness of Conflict Resolution
+# Timeliness of Conflict Resolution {#timely}
 
 It is expected that if a conflict exists, it will be recent, and will be resolved quickly. Different hosts may be
 able to record shorter or longer time differences. However, because of this expectation of recentness, mDNS
