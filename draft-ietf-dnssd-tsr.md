@@ -137,7 +137,7 @@ longer be discoverable under the original name, even if the IP address hasn't ch
 
 This document proposes an enhancement to the current conflict resolution algorithm for mDNS, which allows an mDNS
 proxy to report the time at which it received the registration for DNS records it is newly advertising, and the source from which
-it was received. This is done using a new Time Since Received (TSR) EDNS option, of which there must be exactly one
+it was received. This is done using a new Time Since Received (TSR) EDNS(0) ({{RFC6891}}) option, of which there must be exactly one
 per name being advertised by the mDNS proxy.
 
 ## Conventions, Terms and Definitions
@@ -171,7 +171,23 @@ Each Time Since Received (TSR) EDNS option is applicable to exactly one DNS owne
 name that appear in the answer, authority and/or additional sections of an mDNS message would be covered by a single TSR
 option.
 
-The TSR EDNS option consists of three fields: the RR index (two byte integer in network
+The TSR EDNS option has the following format:
+
+~~~~~~~~~~~ aasvg
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-------------------------------+-------------------------------+
+|      OPTION-CODE = TBD1       |       OPTION-LENGTH = 10      |
++-------------------------------+-------------------------------+
+|           RR Index            |         Key Checksum ...      |
++-------------------------------+-------------------------------+
+|     ... Key Checksum          |           Time Offset ...     |
++-------------------------------+-------------------------------+
+|     ... Time Offset           |
++-------------------------------+
+~~~~~~~~~~~
+
+It includes three fields in the OPTION-DATA ({{RFC6891}}): the RR index (two-byte unsigned integer in network
 byte order), a key checksum (four bytes), and a time of registration (four bytes).
 
 The RR index is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
