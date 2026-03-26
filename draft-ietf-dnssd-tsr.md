@@ -303,10 +303,9 @@ For non-proxy use cases, this should make no difference, since in such cases if 
 on the same owner name, these are actually in conflict. However, for the proxy use case, what this means is that two
 proxies that are proxying the same data cannot interoperate if one supports TSR and the other doesn't.
 
-It is important to note that there is no binary distinction between messages that contain TSR and messages that
-do not. mDNS messages, particularly in the case of proxies, can contain combined information answering
-multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an mDNS
-registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there
+It is important to note that mDNS messages, particularly in the case of proxies, can contain combined information
+answering multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an
+mDNS registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there
 is not. It's equally possible that such a registrar will send mDNS packets containing no TSR options at all.
 
 When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
