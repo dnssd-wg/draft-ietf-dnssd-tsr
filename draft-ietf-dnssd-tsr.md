@@ -358,6 +358,10 @@ an mDNS registrar for which the same data is already cached with the same TSR ke
 the mDNS registrar MUST skip probing. Recent here should take into account network delays: a difference of less
 than ten seconds between the cached TSR time and the registrant's TSR time should be considered "recent."
 
+In addition, when the TSR time for a set of RRs is updated by the mDNS registrant, but nothing else changes,
+the mDNS registrar MUST NOT re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
+announcement should be sent for such RRs, but no probe announcement is set for RRs that are not removed.
+
 ## Constructing a mDNS message with TSR options
 
 For each non-question record that is added to the mDNS message, one of three things must be true:
@@ -462,6 +466,16 @@ from the caches of mDNS registrars that receive such announcements.
 To prevent this, mDNS registrant implementations that implement TSR MUST provide a way for an mDNS registrant to indicate
 that such data is being withdrawn from publication by that registrant, but is still valid. When the registrant indicates that
 this is the case, the mDNS registrar MUST NOT send goodbye announcements for such data.
+
+## Primary/Secondary indication
+
+When more than one proxy is authoritative for a particular RR, this can generate excessive answer traffic, and also
+redundant goodbye announcements. mDNS registrar implementations that support TSR MUST provide a way for proxies
+to indicate that they are primary or secondary. When an RR registered by a secondary proxy is later removed, the
+mDNS registrant MUST NOT send a goodbye packet for that RR.
+
+Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrant MUST NOT
+respond to the initial mDNS query for that RR. Only if a second mDNS query is received should it respond.
 
 # Security Considerations
 
