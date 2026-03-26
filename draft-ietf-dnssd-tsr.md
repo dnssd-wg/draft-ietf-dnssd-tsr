@@ -149,12 +149,15 @@ with any other clock, nor is it an absolute time in the sense of UTC. The clock 
 not during regular operation.
 
 **mDNS registrar**
-: an mDNS {{RFC6762}} implementation on a host that accepts local requests for advertising/registering DNS records from
-one or more registrants. This could for example be an mDNS daemon process running in an operating system, accepting
-API calls from local processes to register or update DNS records for that process.
+: an mDNS {{RFC6762}} implementation on a host that accepts local requests for querying, advertising and registering
+DNS records from one or more requesters and/or registrants. This could for example be an mDNS daemon process running
+in an operating system, accepting API calls from local processes to register or update DNS records for that process.
 
 **mDNS registrant**
-: an entity or software process requesting a DNS name to be advertised by the (local) mDNS registrar.
+: an entity or software process that is attempting to register information for advertisement to a (local) mDNS registrar.
+
+**mDNS requester**
+: an entity or software process that issues mDNS queries to a local mDNS registrar
 
 **mDNS proxy**
 : a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
@@ -346,8 +349,8 @@ will wait for a random amount of time before sending a response. If, during that
 all the answers it would have sent, it suppresses sending these answers, since they are redundant. Here we will refer to
 such a response as a pre-empting response.
 
-In the case of TSR, it can be the case that the data in a pre-empting response is stale or conflicting. For this reason, an
-mDNS registrar MUST NOT suppress duplicate answers when:
+In the case where TSR data is present locally or in a pre-empting response, it can be the case that the data in a pre-empting
+response is stale or conflicting. For this reason, an mDNS registrar MUST NOT suppress duplicate answers when:
 
 * the TSR key checksum for the owner name in a pre-empting response does not match the local TSR key checksum for that
   owner name
@@ -358,7 +361,7 @@ mDNS registrar MUST NOT suppress duplicate answers when:
   present in the pre-empting response, but the local TSR time for that owner name is more recent than the TSR time
   for that owner name in the pre-empting response
 
-In {{dupasexample}} we show what this might look like from the perspective of the mDNS requestor.
+In {{dupasexample}} we show what this might look like from the perspective of an mDNS requester.
 
 ## Constructing a mDNS message with TSR options
 
