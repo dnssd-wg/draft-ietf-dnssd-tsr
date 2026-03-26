@@ -45,12 +45,11 @@ author:
 normative:
   RFC1034:
   RFC6762:
-  RFC6891:
-  I-D.lemon-srp-replication:
   I-D.ietf-dnssd-advertising-proxy:
   RFC9665:
 
 informative:
+  I-D.ietf-dnssd-srp-replication:
 
 
 --- abstract
@@ -409,7 +408,7 @@ that TSR conflict resolution is wanted, but also to provide a way for the regist
 which the original registration was received, and the key checksum used to identify the entity that's actually authoritative
 for the data.
 
-This is important, for example, in the case of SRP Replication <xref target="I-D.lemon-srp-replication"/>, where an
+This is important, for example, in the case of SRP Replication <xref target="I-D.ietf-dnssd-srp-replication"/>, where an
 SRP registrar may receive a registration from a peer during startup synchronization. This registration will have
 occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
 the registration to use the time that the registrant registers the service as the time of receipt.
