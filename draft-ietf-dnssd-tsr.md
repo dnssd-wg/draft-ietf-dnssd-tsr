@@ -240,8 +240,11 @@ mDNS message with a TSR option is generated from local data.
 
 ## Validating requested local RR registrations that include a TSR option {#locval}
 
-When an mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
-for that name, the mDNS registrar first checks to see if there are any records either in cache or from other local registrations
+When a local mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
+for that name, the mDNS registrar first checks that none of the records are marked shared. If any record is marked shared,
+the mDNS registrar MUST respond with an error indicating that the registration is invalid.
+
+It then checks to see if there are any records either in cache or from other local registrations
 on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.
 
 When such data exists, the registrar MUST check to see if it has TSR data for that owner name. If it does not, or if there
@@ -293,9 +296,21 @@ Once all non-question records have been processed, the responder MUST respond to
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
 described in {{tsrrr}}.
 
-## Processing messages containing TSR options {#procmes}
+## Processing messages that may contain TSR options {#procmes}
 
-For each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning
+mDNS registrars that support the TSR option MUST check incoming messages for the presence of an EDNS(0) option containing
+TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
+For non-proxy use cases, this should make no difference, since in such cases if multiple devices advertise records
+on the same owner name, these are actually in conflict. However, for the proxy use case, what this means is that two
+proxies that are proxying the same data cannot interoperate if one supports TSR and the other doesn't.
+
+It is important to note that mDNS messages, particularly in the case of proxies, can contain combined information
+answering multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an
+mDNS registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there
+is not. It's equally possible that such a registrar will send mDNS packets containing no TSR options at all.
+
+When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
+the owner name of the TSR option by assigning
 an index to each non-question resource record in the mDNS message. The index of each TSR option is then matched to the
 index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
 option is then computed by taking the current local clock time and subtracting from it the time offset value in
@@ -313,12 +328,14 @@ For each remaining resource record in the mDNS message, the mDNS registrar MUST 
 the mDNS message for that owner name. If there is not, the mDNS registrar MUST check to see if there is TSR data with that
 owner name locally. If there is not, the record is processed normally.
 
-If there is local TSR data for the record's owner name, the mDNS registrar checks to see if there are any resource records
-in the local registration database (that is, not just in the cache) on that name. If there are, the record is treated as a
+If there is local TSR data for the record's owner name, but no TSR data for that owner name in the mDNS message,
+the mDNS registrar checks to see if there are any resource records
+in the local registration database (that is, not just in the cache) on that name. If there are, all such records are treated as in
 conflict. This conflict exists even if the locally registered records are all shared records. In cases where there are
 records on the name in the cache, those records are all discarded, because they are in conflict with the new data.
 
-In the case that there is TSR data for the record in the mDNS packet, and no local TSR data, this always means that any
+In the case that there is TSR data for the record in the mDNS packet, and there are local records on the same owner name
+for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
 section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
 to the mDNSResponder cache. Such records can never have TSR options associated with them.  However, resource records in
