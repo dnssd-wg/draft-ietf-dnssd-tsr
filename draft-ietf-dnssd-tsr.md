@@ -398,10 +398,12 @@ seconds, and that unsigned value is then used to synthesize the TSR option.
 
 # Timeliness of Conflict Resolution
 
-It is expected that if a conflict exists, it will be recent, and will be resolved quickly. Different hosts may be
-able to record shorter or longer time differences. However, because of this expectation of recentness, mDNS
-registrars should never need to report a TSR of longer than seven days. It’s reasonable to expect that every mDNS
-implementation should be able to remember time intervals of at least seven days.
+If a conflict exists in which some mDNS registrant(s) store stale data, it is expected that the conflict is recent,
+and that it will be resolved quickly since mDNS message exchanges with TSR options cause removal of the stale data.
+Different hosts may be able to record shorter or longer time offsets, depending on their implementation.
+However, because of this expectation of recentness, mDNS
+registrars should never need to report a TSR 'Time Offset' value of longer than seven days.
+It’s reasonable to expect that every mDNS implementation should be able to remember time intervals of at least seven days.
 
 
 # Legacy Behavior
