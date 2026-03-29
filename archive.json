@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-27T01:19:25.813756+00:00",
+  "timestamp": "2026-03-29T01:17:35.761850+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -52,6 +52,11 @@
       "name": "editorial",
       "description": "",
       "color": "714900"
+    },
+    {
+      "name": "discuss",
+      "description": "For discussion in WG",
+      "color": "5a0230"
     }
   ],
   "issues": [
@@ -60,7 +65,7 @@
       "id": "I_kwDOOs4T_8695XRR",
       "title": "Add terms in terminology section and clarify: requestor, mDNS requestor, SRP requestor, mDNS registrar, ...",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -69,8 +74,8 @@
       "labels": [],
       "body": "This is a task to add the terms to the terms & definitions section and explain these.\nAlso harmonize the names, to avoid using different names for the same concept.\n\nList (not complete) of terms:\n\n* requestor\n* mDNS requestor - would be more clear to use \"requestor\" or \"local requestor\" here\n* SRP requestor - better perhaps to use the RFC 9665 term \"SRP requester\" and point to this rfc\n* SRP client - better use \"SRP requester\" per RFC 9665 ?\n* mDNS registrar\n* mDNS proxy\n* registrant\n* mDNS registrant\n* Regular (non-proxy) mDNS registrant\n* mDNS registrant that is a proxy\n",
       "createdAt": "2025-06-29T09:08:16Z",
-      "updatedAt": "2025-06-29T15:48:06Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T10:43:35Z",
+      "closedAt": "2025-10-20T10:43:35Z",
       "comments": []
     },
     {
@@ -78,15 +83,17 @@
       "id": "I_kwDOOs4T_8696ocv",
       "title": "Update ref I-D.sctl-advertising-proxy to I-D.ietf-dnssd-advertising-proxy",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "EskoDijk"
+      ],
       "labels": [],
       "body": "",
       "createdAt": "2025-06-29T15:18:34Z",
-      "updatedAt": "2025-06-29T15:18:34Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T16:33:17Z",
+      "closedAt": "2025-10-20T16:33:16Z",
       "comments": []
     },
     {
@@ -94,15 +101,17 @@
       "id": "I_kwDOOs4T_8696vDt",
       "title": "clarify term \"dataset\" / \"SRP dataset\" / \"registration dataset\"",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/3",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "EskoDijk"
+      ],
       "labels": [],
       "body": "it can be defined better, or replaced by e.g. \"DNS records of an SRP Update\".  Note that RFC 9665 does not define a \"dataset\" as such.",
       "createdAt": "2025-06-29T15:44:02Z",
-      "updatedAt": "2025-06-29T15:44:02Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T10:49:40Z",
+      "closedAt": "2025-10-20T10:49:40Z",
       "comments": []
     },
     {
@@ -113,11 +122,13 @@
       "state": "OPEN",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "Abhayakara"
+      ],
       "labels": [],
       "body": "Section 8 currently says:\n\n> TSR is only relevant for mDNS proxies. Regular (non-proxy) mDNS registrants are not expected to use it, since it will produce the wrong behavior for this use case.\n\nIn IETF 121 a situation was raised as follows:\n* device client C registers its services via SRP (i.e. SRP Registrar as the Advertising Proxy)\n* client C switches network interface (e.g. Thread/6LoWPAN 15.4 to Wi-Fi) \n* client C now wants to register same services/hostname via mDNS directly. With different IP address(es).\n* new registration competes with existing proxied registration in SRP Registrar (?)\n\nThere has been some discussion whether the client C should use TSR in its mDNS advertisements, (to indicate it's \"newer\" ), or not.\n* What will/should other mDNS clients do in case of conflict?\n* What should the Advertising Proxy / SRP Registrar do when seeing the (newer) published services/hostname?\n\n",
       "createdAt": "2025-07-24T07:56:59Z",
-      "updatedAt": "2025-07-24T16:55:50Z",
+      "updatedAt": "2026-03-27T08:13:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -130,9 +141,37 @@
         {
           "author": "EskoDijk",
           "authorAssociation": "COLLABORATOR",
-          "body": "@Abhayakara  So the client C would have an application process inside, that acts as the mDNS registrant, requesting the service registration to its (local) mDNS registrar.  That registrar behaves like defined in Section 3.1.\nSo e.g. it seens the TSR value is '0', so the update is more recent than what's in the cache. We go to case 3 \"Proposed time is more recent\".  \n\nWhat may not be clear yet from the draft is that a device like client C, which is never itself acting as an SRP Registrar / mDNS advertising proxy, should still implement the API internally as described in Section 3.1. This would be good to clarify.  \n\nTo consider what text could fit in for this and where in the draft.",
+          "body": "@Abhayakara  So the client C would have an application process inside, that acts as the mDNS registrant, requesting the service registration to its (local) mDNS registrar.  That registrar behaves like defined in Section 3.1.\nSo e.g. it sends the TSR value is '0', so the update is more recent than what's in the cache. We go to case 3 \"Proposed time is more recent\".  \n\nWhat may not be clear yet from the draft is that a device like client C, which is never itself acting as an SRP Registrar / mDNS advertising proxy, should still implement the API internally as described in Section 3.1. This would be good to clarify.  \n\nTo consider what text could fit in for this and where in the draft.",
           "createdAt": "2025-07-24T16:55:50Z",
-          "updatedAt": "2025-07-24T16:55:50Z"
+          "updatedAt": "2025-10-02T14:42:07Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, this is definitely something we need to say explicitly. TSR is there to _enable_ proxies, but is not _only to be used by_ proxies.",
+          "createdAt": "2026-03-11T10:29:20Z",
+          "updatedAt": "2026-03-11T10:29:20Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@EskoDijk I notice that this is assigned to you. Do you want to do it, or should I? Given that I'm a bit up to speed on the document from all the work today, I could definitely take this tomorrow if you don't have time for it.",
+          "createdAt": "2026-03-26T20:24:39Z",
+          "updatedAt": "2026-03-26T20:24:39Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Abhayakara Great, I'll assign it to you now!",
+          "createdAt": "2026-03-27T08:03:45Z",
+          "updatedAt": "2026-03-27T08:03:45Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh dear, now I actually have to do it. :)",
+          "createdAt": "2026-03-27T08:13:29Z",
+          "updatedAt": "2026-03-27T08:13:29Z"
         }
       ]
     },
@@ -145,12 +184,36 @@
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "discuss"
+      ],
       "body": "The document says:\n\n**Both times are the same**\n: In this case, the new record is added to the local registration database and put in the probing state.\n\nHowever, given that the data is already in the cache, there's actually no need to send any mDNS traffic here, and it's always better not to. So I _think_ we should just add the data to the authoritative database and take no other action.\n\n",
       "createdAt": "2025-07-24T08:12:38Z",
-      "updatedAt": "2025-07-24T08:12:38Z",
+      "updatedAt": "2025-10-02T15:39:21Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In this case, the existing data in the database *may* differ from the records in the request, even if TSR times are the same.\n\nExample:\n* local process A adds data for a name \"foo\", with TSR info / time T\n* 50 milliseconds later, local process A sends a correction for the data for the name \"foo\", i.e. a different record contents, again with TSR info / time T  (being the same time at a granualarity of seconds)\n\nIn this case the newest record data must be stored and also announced via mDNS  - even if the previous \"incorrect\" data value was already sent out via mDNS.\n\n\"Probing state\" may not be the right state for this if the previous source of the data was the mDNS registrar itself - if so, the names are already probed and claimed by the mDNS registrar! It can just send an update without probing.\nMaybe when another mDNS entity sent out the cached record, and also the TSR values are the same, then it needs to be more careful:\n* if cached data exists coming from another mDNS node, and the value of the record is identical - add the data to the database and take no action.\n* if cached data exists coming from another mDNS node, and the value of the record is different - report back some error/warning to the registrant?  There's clearly a conflict.\n\nFor the case \"**Proposed time is more recent**\" also the probing state is mentioned, this looks correct in case the cached data came from another mDNS node - it can then check with the probe if the other node still exists and what it's current TSR value is before overriding that. (It may be that meanwhile, the other mDNS node does have more recent data again. So the registration could still 'fail' in the end due to that.)",
+          "createdAt": "2025-10-02T15:23:48Z",
+          "updatedAt": "2025-10-02T15:23:48Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This should never happen in practice. If it does, we should probably enforce a delay so that there's a clear difference. I guess the canonical case where this could in principle happen would be with a Matter initial registration, where it sends two packets, one removing everything and a second one adding it all back. This is really bad behavior and I think we should do something about it rather than breaking the protocol to accommodate it.\n\nThe good news in the case of Matter is that since its first action is to remove everything, this invalidates the TSRs on the hostname and instance names. That is, there is no TSR anymore because the data was removed. If we then add the new Matter registration, there's no ambiguity, because only the added data is associated with a TSR, so even if these two events happen inside of the error window for TSR, we don't have an issue.\n\nFrom the SRP side, if we get two updates in quick succession, we should probably reject the second one with an error (FORMERR or SERVFAIL, I guess).",
+          "createdAt": "2025-10-02T15:37:00Z",
+          "updatedAt": "2025-10-02T15:37:00Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Also, on a practical level, the notion of conflict that you are proposing here is explicitly invalidated in this document. A name can have many RRsets associated with it, and each RRset can contain more than one record. So if we get several records with the same TSR time on the same name, they are explicitly defined in this draft as not being in conflict. So what would happen in the case you describe is that all the records would wind up in the cache. We don't actually have a way to detect this situation, nor can we: we are relying on this behavior for correctness.",
+          "createdAt": "2025-10-02T15:39:21Z",
+          "updatedAt": "2025-10-02T15:39:21Z"
+        }
+      ]
     },
     {
       "number": 7,
@@ -180,9 +243,24 @@
       "labels": [],
       "body": "The document says:\n\nFor each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning\nan index to each non-question resource record in the mDNS message. The index of each TSR option is then matched to the\nindex of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR\noption is then computed by taking the _current local clock time_ and subtracting from it the time offset in the TSR record.\n\nOur experience has been that there can be processing delays that are long enough to make a TSR timestamp look different than the current timestamp. Most operating systems offer a socket option to indicate when the packet was received, and we use this in mDNSResponder as the timestamp from which to substract the TSR time offset. This substantially reduced errors of this type.",
       "createdAt": "2025-07-24T08:29:59Z",
-      "updatedAt": "2025-07-24T08:29:59Z",
+      "updatedAt": "2026-03-26T16:33:28Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Agree, maybe in a section of \"Implementation Considerations\" ? Or similar.",
+          "createdAt": "2026-03-11T17:59:00Z",
+          "updatedAt": "2026-03-11T17:59:00Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I get the attraction of \"implementation considerations\" but actually I think it is more helpful to include it right before the bit on processing the packet, so that the context isn't lost.",
+          "createdAt": "2026-03-26T16:33:28Z",
+          "updatedAt": "2026-03-26T16:33:28Z"
+        }
+      ]
     },
     {
       "number": 9,
@@ -192,13 +270,58 @@
       "state": "OPEN",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "EskoDijk"
+      ],
       "labels": [],
       "body": "The document says:\n\n# Timeliness of Conflict Resolution\n\nIt is expected that if a conflict exists, it will be recent, and will be resolved quickly. Different hosts may be\nable to record shorter or longer time differences. However, because of this expectation of recentness, mDNS\nregistrars should never need to report a TSR of longer than seven days. It\u2019s reasonable to expect that every mDNS\nimplementation should be able to remember time intervals of at least seven days.\n\nHowever, I think this is talking about stale data, not about conflicting authority. So the point is, it's unlikely that we will see stale data that is more than seven days old, but even if we do, it's unlikely that the fresh data that supersedes it will also be more than seven days old. So I think this section should be updated to clarify that.",
       "createdAt": "2025-07-24T08:38:56Z",
-      "updatedAt": "2025-07-24T08:38:56Z",
+      "updatedAt": "2026-03-27T14:48:30Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Agree; so also the title needs updating to avoid \"conflict\". E.g. \"Timeliness and Stale Records\" ?",
+          "createdAt": "2026-03-11T10:52:40Z",
+          "updatedAt": "2026-03-11T10:52:40Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Comment from Tim during the interim / possible text:\n\nThe time of registration is represented in the mDNS message as a time in seconds relative to the time when the mDNS message is sent. If this difference is greater than seven days (7 * 24 * 60 * 60), the mDNS registrar MUST use a value of seven days rather than the larger value. The relative time represented in the TSR option is converted to an absolute time when stored in a cache or authority database on an mDNS registrar, and is converted to a relative time whenever an mDNS message is generated from local data.",
+          "createdAt": "2026-03-11T17:49:17Z",
+          "updatedAt": "2026-03-11T17:49:27Z"
+        },
+        {
+          "author": "moonshiner",
+          "authorAssociation": "NONE",
+          "body": "absolute time = local timestamp and a sentence to explain a reference point ",
+          "createdAt": "2026-03-11T17:55:02Z",
+          "updatedAt": "2026-03-11T17:55:02Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "One upshot of this is that we need to explain what absolute time means, e.g. time since a single reference point like when the device booted, or 1/1/1970, or whatever.",
+          "createdAt": "2026-03-11T17:55:10Z",
+          "updatedAt": "2026-03-11T17:55:10Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See the existing PR (https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/19/changes) which now has an explanation of 'absolute time' . Once that's in we can optionally change the name or further improve that.\n\nIn particular, it's not what most scientists / physicists consider as 'absolute time' but rather, can be relative. A key point mentioned is the monotonic clock i.e. it cannot go back in time unless the device reboots (and so the entire process for mDNS restarts).",
+          "createdAt": "2026-03-13T14:08:59Z",
+          "updatedAt": "2026-03-13T14:08:59Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I looked into the current text (Github) and the term \"conflict resolution\" (or a bit wider, search for \"conflict\") is used a lot for our process.\n\nWe define use of TSR as an improvement of \"mDNS conflict resolution\", which thus becomes \"TSR-based conflict resolution\" (or so). So the overall process of removing stale data is still referred to as conflict resolution everywhere you look in the draft.\n\nIn other words, in our own terminology, having 2 sources of the same data (non-conflicting due to TSR, but conflicting in the classic mDNS sense) and using TSR to be able to remove/suppress the stale version, is still called a form of \"conflict resolution\".\n\nWith that, it's not very useful to update the section title and text of the below to use another term:\n\n```\n# Timeliness of Conflict Resolution\n\nIt is expected that if a conflict exists, it will be recent, and will be resolved quickly. \n```\n\nI've now added a PR to clarify it's about stale data while using the existing terminology - see PR https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/38",
+          "createdAt": "2026-03-27T14:48:30Z",
+          "updatedAt": "2026-03-27T14:48:30Z"
+        }
+      ]
     },
     {
       "number": 10,
@@ -208,13 +331,51 @@
       "state": "OPEN",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "Abhayakara"
+      ],
       "labels": [],
       "body": "An additional issue that came up when we recently fixed our TSR implementation is that every proxy was probing and announcing, which, when there are five proxies, amounts to a huge amount of mDNS traffic, particularly when there is a synchronization event that causes a bunch of clients to register at nearly the same time.\n\nAdditionally, the old implementation would, when renewing, remove old data and replace it with new, which meant that we'd always send a goodbye packet, and that would produce Remove/Add event pairs in long-running queries.\n\nTo prevent this, we did a bit of a hack, which is that we register the new data, which flushes the old data, and then we let go of the old data registration. The effect of this is that we don't send a goodbye packet, and we don't probe unless the data has changed.\n\nI think it would be good to document this and suggest that there should be an API that has this exact behavior. Current mDNSResponder APIs do not allow for this other than in the hacky way I just described.",
       "createdAt": "2025-07-24T08:43:19Z",
-      "updatedAt": "2025-07-24T08:43:19Z",
+      "updatedAt": "2026-03-11T17:42:32Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It seems essential to not perform an mDNS \"goodbye\", and not trigger a multicast mDNS message with a set of answers, in case an SRP client simply renews its existing lease; or registers itself after a reboot and the actual data for the service is unchanged.\n\n(If I understand your point correctly.) We would need to add this point to the text, if it's not already in there. \n\nIs this the responsibility of the mDNS registrar?\nOr rather, should the mDNS registrant not make the call to the mDNS registrar in case of no-change?  We can also say this does not matter as long as the implementation produces the desired external effect.",
+          "createdAt": "2025-11-05T17:56:41Z",
+          "updatedAt": "2025-11-05T17:56:41Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "First, the mDNS registrar has to be updated because the TSR has changed. And there are two cases here, really:\n1. Nothing changed but the TSR\n2. One or more existing records are unchanged, and at least one record is added or removed.\nFor (1) the approach is straightforward: just update the TSR. We don't need to announce this, because nothing has changed.\nFor (2), we want to announce the new data, but not send goodbye packets for old data that's not being removed.\n\nSo yes, we need to add text to talk about this. Since TSR requires new support in an implementation, we can require the additional functionality to deal with cases 1 and 2.",
+          "createdAt": "2025-11-05T18:12:27Z",
+          "updatedAt": "2025-11-05T18:12:27Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Abhayakara This matches my expectations / understanding. For case (2), if for example only one SRV record is removed and the matching PTR record, then the mDNS registrar could do either:\n\na. Advertise all the records of the last SRP Update, including the unchanged ones, and set TTL=0 on the records that were removed.\nb. Only advertise the removed records with TTL=0.\n\nOption b would be a potentially (much) shorter packet. Option a. would have the advantage of refreshing/updating caches on other hosts, which might reduce the query traffic at some time in the future.",
+          "createdAt": "2025-11-05T19:18:30Z",
+          "updatedAt": "2025-11-05T19:18:30Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The cache refresh point is an interesting point. Currently we would not re-announce a record with an ongoing registration, as far as I know (perhaps @StuartCheshire knows better). So probably option b is most consistent with current implementations.",
+          "createdAt": "2025-11-05T19:24:47Z",
+          "updatedAt": "2025-11-05T19:24:47Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We hacked around this in mDNSResponder by using the DNSServiceRegister* API instead of the DNSServiceUpdateRecord API to do updates. This results in the old registration being removed as stale, and avoids the probing logic and prevents a goodbye packet being sent. But it's a crappy solution. I _think_ we can write some text in this version of the document that describes the problem. We may need to do an update later when we've learned more, but in this case since we're not going to add any normative requirements, I think descriptive text should be okay.",
+          "createdAt": "2026-03-11T10:25:13Z",
+          "updatedAt": "2026-03-11T10:25:13Z"
+        }
+      ]
     },
     {
       "number": 11,
@@ -228,9 +389,306 @@
       "labels": [],
       "body": "One case where mDNSResponder currently detects a conflict (I think this is in 6762 but will have to check) is when a message contains an answer or a probe for records that are registered locally, and all the records that are in the answer or probe are also present in the local authority database, but not all records in the local authority database are present in the probe.\n\nThis is done because the implication is that the set of data on the owner name on the probing/answering device is different than on the receiving device, and hence in conflict. However, it can happen as a result of marshaling an mDNS message that some data winds up in one packet and some winds up in the next, and so there can be the appearance of a conflict when no conflict exists.\n\nIn the case of the stale/not stale determination, this shouldn't be treated as a conflict. It's never a conflict. The TSR evaluation solves the problem completely. So we should say this explicitly in the document. I think we do mention marshaling conflicts, but don't actually go into any detail about it.",
       "createdAt": "2025-07-24T08:50:50Z",
-      "updatedAt": "2025-07-24T08:50:50Z",
+      "updatedAt": "2026-03-11T17:29:39Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ok sounds good.  Splitting up (marshaling into different packets) should always be possible, right?\nIn the TSR case, there should be no need to try to detect if the total set of records transmitted over N packets is the same as the local cached set of records. (I hope?)",
+          "createdAt": "2025-11-05T19:45:46Z",
+          "updatedAt": "2025-11-05T19:45:46Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Right, TSR says what data is fresh or stale, not what data is in conflict, so that code path only applies to non-TSR messages.",
+          "createdAt": "2025-11-05T19:47:59Z",
+          "updatedAt": "2025-11-05T19:47:59Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Additionally, if we get a non-TSR message and we have TSR data locally, that's immediately a conflict, and so we don't actually care about the partial send issue in that case.",
+          "createdAt": "2026-03-11T17:29:39Z",
+          "updatedAt": "2026-03-11T17:29:39Z"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "I_kwDOOs4T_87TFYNX",
+      "title": "Multiple proxies - clarify handling of \"older data transmitted first\" case",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/16",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "Abhayakara"
+      ],
+      "labels": [],
+      "body": "Assume there can be multiple Advertising Proxies (AP), and more generally nodes using mDNS+TSR which may be APs or other proxy type of entities.  These APs/nodes could be situated on a single link, such as an adjacent infrastructure link (AIL) as defined in the SNAC WG.\n\nCase to consider: an mDNS query is sent by a node on AIL, one proxy responds quite early with **older** data about a service, with TSR included. \nAnother proxy might respond later on with newer data.\n\n1. Should a proxy on AIL that has newer data for the same service then respond also, with the newer data, after it has seen someone else responding with older data? \n2. What if the sender of the query (client) has already started to use the older data? \n3. Or should this client wait for a specific time to see if more / newer data would get in?\n4. Would such a \"waiting time\" be dependent on the presence / value of the TSR Option in the answer?  Assuming it knows about TSR.\n    E.g. if TSR == 0 or 1 it's very likely the freshest data. If TSR is 3 days, maybe wait some more time.\n5. Do APs in general (current ones without the TSR option) suppress their mDNS answer, if they have already seen that answer/service being sent out by another node ?\n6. If so, will there be an exception for the case the AP has newer data to send than the data seen from other node(s)?   (This comes back to point 1)\n\nBased on earlier email question: https://mailarchive.ietf.org/arch/msg/dnssd/rL2VWxZueXNdXLQPipwByauHg4o/",
+      "createdAt": "2025-10-22T15:42:02Z",
+      "updatedAt": "2026-03-26T17:15:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(1) yes, it should. Effectively a stale response should be treated as no response. If we don't say that, we should.\n(2) there's nothing we can do about this. It shouldn't happen, because the stale data should already have been flushed when the fresh data was announced, but if it does happen, it happens. As Stuart likes to say, we are always out of date.\n(3) I don't think that works. We wind up paying a penalty on every query to fix a problem that should in principle never happen.\n(4) TSR and non-TSR data are in conflict, so this isn't the same situation.\n(5) Speaking of access points in particular, since they are in principle not suffering from the beacon interval problem, suppression should work correctly as described in RFC6762 section 7.4.\n(6) Stale data is the same as no data.",
+          "createdAt": "2026-03-11T10:18:27Z",
+          "updatedAt": "2026-03-11T10:18:27Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I just reread the document for this, and indeed we do not currently explicitly say what to do in the case of duplicate answer suppression. We should add a paragraph that says explicitly that stale data is ignored when doing duplicate answer suppression.",
+          "createdAt": "2026-03-11T10:22:23Z",
+          "updatedAt": "2026-03-11T10:22:23Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks, adding that paragraph makes sense.",
+          "createdAt": "2026-03-11T10:46:17Z",
+          "updatedAt": "2026-03-11T10:46:17Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Esko's opinion is that it would be useful to describe the case where stale data shows up, followed by fresh data: what does the querier see? We can describe this by example in an appendix: not normative.",
+          "createdAt": "2026-03-11T17:35:45Z",
+          "updatedAt": "2026-03-11T17:35:45Z"
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOOs4T_87TFZZm",
+      "title": "Multiple proxies - mixed use of TSR / non-TSR answers",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/17",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "Abhayakara"
+      ],
+      "labels": [],
+      "body": "Assume there can be multiple Advertising Proxies (AP), and more generally nodes using mDNS+TSR which may be APs or other proxy type of entities.  These APs/nodes could be situated on a single link, such as an adjacent infrastructure link (AIL) as defined in the SNAC WG.\n\nCase to consider: If TSR is not present in the 1st answer on the link, what do proxies/APs that support TSR do?\n\n1. send their own answer with TSR? \n2. Even when it's identical, or don't send it if data is identical?  Do we expect an AP to start comparing data? (Seems complex)\n3. Or only send own answer with TSR if they see an older with-TSR answer on the link from another node?\n\nBased on earlier email question: https://mailarchive.ietf.org/arch/msg/dnssd/rL2VWxZueXNdXLQPipwByauHg4o/",
+      "createdAt": "2025-10-22T15:43:37Z",
+      "updatedAt": "2026-03-26T17:15:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "A non-TSR answer represents a conflict, so the expectation is that it would be handled the way conflicts are normally handled. It is not possible for TSR and non-TSR advertising proxies to interoperate, and in fact I think that since we held the advertising proxy document for TSR, we should (if we don't already) make TSR a MUST for advertising proxies that implement the standard when it's published.",
+          "createdAt": "2026-03-11T10:14:00Z",
+          "updatedAt": "2026-03-11T10:14:00Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Indeed, TSR is already required for the dns-sd Advertising Proxy (MUST).\nThe non-TSR answer will be perceived as a conflict (per RFC 6762) only if the content of the answer is somehow different than what the AP stores itself. The records are then moved to probing state per RFC 6762 Section 9.\n\nI can do a check if I think some text is needed to clarify this.\n\nI'm missing a section \"processing mDNS messages *without* TSR\" !  And this topic doesn't seem to fit in any of the existing sections?",
+          "createdAt": "2026-03-11T10:32:50Z",
+          "updatedAt": "2026-03-11T10:32:50Z"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "I_kwDOOs4T_87TFco-",
+      "title": "APs/proxies with SRP replication - multiple answering APs/proxies?",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/18",
+      "state": "CLOSED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "EskoDijk"
+      ],
+      "labels": [],
+      "body": "Assume there can be multiple Advertising Proxies (AP), and more generally nodes using mDNS+TSR which may be APs or other proxy type of entities. These APs/nodes could be situated on a single link, such as an adjacent infrastructure link (AIL) as defined in the SNAC WG.\n\nCase: SRP Replication is used to replicate service registrations across multiple (N) SRP Registrars. These Registrars could be all on the same link (e.g., an AIL). And it could be a large number (e.g. N=10 is being tested/expected today). Each Registrar has its own AP included.\n\n1. All N SRP Registrars would use the same TSR value for particular new data that an SRP requester registered.\n2. How to avoid that a single query leads to N APs answering? (This would burden the link very much.)\n3. E.g. not answer if we've already seen an answer with the same TSR value?\n\n\nBased on earlier email question: https://mailarchive.ietf.org/arch/msg/dnssd/rL2VWxZueXNdXLQPipwByauHg4o/",
+      "createdAt": "2025-10-22T15:47:26Z",
+      "updatedAt": "2026-03-12T16:01:06Z",
+      "closedAt": "2026-03-12T16:01:05Z",
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In fact I think mDNS already says to do this, since it's useful even without TSR: the original document did take into account the need for proxies. However, the mDNS spec was written prior to WiFi, and doesn't take beacon intervals into account, so this is still an issue.\n\nThis is covered in section 7.4 of RFC6762. I think that we probably want to be more clever than that. However, if we try to do that in the current document, we don't actually have any experience, and so I think it's too soon to write it into a spec. I would propose that we leave this for a future document: we can actually do an implementation of a solution and see how it works, and then based on that write a new document that updates RFC6762 to address the problem.",
+          "createdAt": "2026-03-11T10:12:38Z",
+          "updatedAt": "2026-03-11T10:12:38Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Agree, it looks like 7.4 already covers this. Then we can close this issue for this document, I think.",
+          "createdAt": "2026-03-11T10:41:05Z",
+          "updatedAt": "2026-03-11T10:41:05Z"
+        },
+        {
+          "author": "chris-box",
+          "authorAssociation": "MEMBER",
+          "body": "If you'd like the DNSSD working group to consider a RFC6762 update, then it's worth mentioning this in the forthcoming charter update discussions (on list, and probably in interim 2).\n\nTed your sentence mDNS was written prior to WiFi surprised me, but looking back I see draft-cheshire-dnsext-multicastdns-00 was written in 2001 when 802.11b was in its early adopter phase. So definitely not widespread at that point.",
+          "createdAt": "2026-03-12T15:41:09Z",
+          "updatedAt": "2026-03-12T15:41:09Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks @chris-box . For the present draft, I'll close this issue.  I've created https://github.com/dnssd-wg/recharter/issues/8 in the 'charter' project to capture this task (if we want to pursue that) as a reminder.",
+          "createdAt": "2026-03-12T16:01:06Z",
+          "updatedAt": "2026-03-12T16:01:06Z"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOOs4T_87x1Cir",
+      "title": "Put field names in single quotes",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/20",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "EskoDijk"
+      ],
+      "labels": [],
+      "body": "The normal style in RFCs is to put field names in quotes for emphasis, but we haven't done this in the document. The task is to just go through and make sure whenever we reference a field, we use its name and put it in single quotes.",
+      "createdAt": "2026-03-11T10:06:54Z",
+      "updatedAt": "2026-03-11T17:09:44Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "agree to use single quotes for this.",
+          "createdAt": "2026-03-11T10:12:39Z",
+          "updatedAt": "2026-03-11T10:12:39Z"
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "id": "I_kwDOOs4T_87x1EJX",
+      "title": "ASCII art/SVG diagram for option format",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/21",
+      "state": "CLOSED",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "EskoDijk"
+      ],
+      "labels": [],
+      "body": "Right now we have text that describes the option, but no visual reference. We should plagiarize some recent IETF draft that has SVG for an option format and tweak it to depict TSR.",
+      "createdAt": "2026-03-11T10:08:03Z",
+      "updatedAt": "2026-03-26T13:03:24Z",
+      "closedAt": "2026-03-26T13:03:24Z",
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It's possible to make the visual in Ascii art (very easy to edit, just in the text editor).\nThen add the \"aasvg\" tag on top of the art and it gets rendered as SVG diagram by the build process.\n\nExample (not the real proposal yet :) ):\n\n```\n 0                   1                   2                   3\n 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n|           RR Index            |                               |\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+        Key Checksum           +\n|                               |                               |\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n|                      Time of Registration                     |\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n```",
+          "createdAt": "2026-03-11T10:16:53Z",
+          "updatedAt": "2026-03-11T10:18:00Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, fantastic. We should do this! :)",
+          "createdAt": "2026-03-11T10:30:32Z",
+          "updatedAt": "2026-03-11T10:30:32Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Now added a PR with the following format:\n\n```\n 0                   1                   2                   3\n 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1\n+-------------------------------+\n|           RR Index            |\n+-------------------------------+-------------------------------+\n|                           Key Checksum                        |\n+---------------------------------------------------------------+\n|                      Time of Registration                     |\n+---------------------------------------------------------------+\n```\n\nThis *excludes* any fields of the EDNS(0) option itself, currently. Maybe we want to show those as well - depending on what the custom is in the IETF DNS groups.\n",
+          "createdAt": "2026-03-11T13:43:26Z",
+          "updatedAt": "2026-03-11T13:43:26Z"
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "id": "I_kwDOOs4T_87x-BxO",
+      "title": "Section 3.3 says that TSR data is only in probes, which is not true.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/23",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[3.3. ](https://www.ietf.org/archive/id/draft-ietf-dnssd-tsr-01.html#section-3.3)[Processing questions for which TSR data exists](https://www.ietf.org/archive/id/draft-ietf-dnssd-tsr-01.html#name-processing-questions-for-wh)\n\nWe should correct this and clarify the section.",
+      "createdAt": "2026-03-11T17:22:25Z",
+      "updatedAt": "2026-03-11T17:22:25Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 24,
+      "id": "I_kwDOOs4T_87x-sXj",
+      "title": "Add section reference for 7 days text in current section 6.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/24",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-03-11T17:56:08Z",
+      "updatedAt": "2026-03-27T13:51:09Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Abhayakara  I've added an alternative PR for this: https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/36\n\nThe idea as I recall was to have normative requirements for the 7 days in one place only, and refer to that place from other sections (incl Section 6) and not repeat the normative part necessarily.\n\nThat's (\"MUST\") currently in Section 2.",
+          "createdAt": "2026-03-27T13:51:09Z",
+          "updatedAt": "2026-03-27T13:51:09Z"
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "id": "I_kwDOOs4T_872__O3",
+      "title": "TSR is incompatible with \"shared\" records",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/26",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "Abhayakara"
+      ],
+      "labels": [],
+      "body": "I ran into this issue doing the advertising proxy implementation last week: because TSR asserts ownership over all records on an owner name, it's not possible for TSR to be applicable to a shared record. When TSR is used for such records, we get conflicts, and nothing works.\n\nWe should have text in the document that makes this clear.",
+      "createdAt": "2026-03-26T13:31:24Z",
+      "updatedAt": "2026-03-26T14:45:45Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 29,
+      "id": "I_kwDOOs4T_873CpnS",
+      "title": "Can we make [I-D.ietf-dnssd-advertising-proxy] an informative reference?",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/29",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From the current text, we say that [I-D.ietf-dnssd-advertising-proxy]  is an example of a proxy that uses TSR. It doesn't need to be that one. So could we make this reference informative?\nIn the sense that TSR could be used without implementing [I-D.ietf-dnssd-advertising-proxy] necessarily, or parts thereof?",
+      "createdAt": "2026-03-26T14:47:51Z",
+      "updatedAt": "2026-03-26T14:51:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, no reason for it to be normative.",
+          "createdAt": "2026-03-26T14:51:10Z",
+          "updatedAt": "2026-03-26T14:51:10Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -239,7 +697,7 @@
       "id": "PR_kwDOOs4T_86clatt",
       "title": "Add terms for entities/actors in a terminology section and harmonize terms with RFC 9665",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/4",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -248,17 +706,19 @@
       ],
       "body": "This is a draft PR.\r\nShould eventually close #1 ",
       "createdAt": "2025-06-29T15:54:38Z",
-      "updatedAt": "2025-07-24T15:19:40Z",
+      "updatedAt": "2025-10-20T10:43:39Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "1e7493e0511420ef89ce984a0b0bf2daa2e4275b",
+      "baseRefOid": "48df3f152746be19f609704f9528141f7c598314",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "pr-terms-for-actors",
-      "headRefOid": "724ddeca6d72f348c613b6d6c7a2d3c75f42bd67",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "7b1265630ec4d7ce655fdf57b3e82087a998cb28",
+      "closedAt": "2025-10-20T10:43:34Z",
+      "mergedAt": "2025-10-20T10:43:34Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "b9d104ef1680a761c50651fe903ea784948fb829"
+      },
       "comments": [],
       "reviews": [
         {
@@ -300,6 +760,26 @@
               "updatedAt": "2025-07-24T15:19:40Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87EZVgV",
+          "commit": {
+            "abbreviatedOid": "724ddec"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-02T14:40:21Z",
+          "updatedAt": "2025-10-02T14:40:21Z",
+          "comments": [
+            {
+              "originalPosition": 65,
+              "body": "Text now updated in the latest push/commit.",
+              "createdAt": "2025-10-02T14:40:21Z",
+              "updatedAt": "2025-10-02T14:40:21Z"
+            }
+          ]
         }
       ]
     },
@@ -308,24 +788,26 @@
       "id": "PR_kwDOOs4T_86gaXrY",
       "title": "Fix typos",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/12",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "There are a couple of minor typos in the current revision; this pull request fixes them.",
       "createdAt": "2025-07-24T08:53:21Z",
-      "updatedAt": "2025-07-24T15:26:08Z",
+      "updatedAt": "2025-10-02T12:53:27Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
       "baseRefOid": "1e7493e0511420ef89ce984a0b0bf2daa2e4275b",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "ted-typos-20250724",
       "headRefOid": "4a41c68d5b07aad10c698843b9d2e5cdb3eb81c7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-10-02T12:53:23Z",
+      "mergedAt": "2025-10-02T12:53:23Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "48df3f152746be19f609704f9528141f7c598314"
+      },
       "comments": [],
       "reviews": [
         {
@@ -342,6 +824,1496 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOOs4T_86ryUxH",
+      "title": "Reword 'dataset' to known terms based on DNS and SRP (RFC 9665).",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/13",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "close #3 ",
+      "createdAt": "2025-10-02T15:01:37Z",
+      "updatedAt": "2025-10-20T10:49:42Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "b9d104ef1680a761c50651fe903ea784948fb829",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-dataset-term",
+      "headRefOid": "44bac7050f18ee6277375fb87b9fcd8a763fd3f9",
+      "closedAt": "2025-10-20T10:49:39Z",
+      "mergedAt": "2025-10-20T10:49:39Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "a4b96aa76191a57ecebff4f0ef6e4c5b255b526e"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOOs4T_86um9mJ",
+      "title": "update references sctl-advertising-proxy, and draft-ietf-dnssd-srp to newer",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/14",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "close #2 ",
+      "createdAt": "2025-10-20T10:58:02Z",
+      "updatedAt": "2025-10-20T16:33:20Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "a4b96aa76191a57ecebff4f0ef6e4c5b255b526e",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-ref-update-sctl",
+      "headRefOid": "f7c0ef3f79d6eeeba2cf3bb26de83349b03cd1a2",
+      "closedAt": "2025-10-20T16:33:16Z",
+      "mergedAt": "2025-10-20T16:33:15Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "cc99a81e1dc3ba3e26652421c5e354dc0444f333"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDOOs4T_86upLyZ",
+      "title": "Updated term 'registered sets' to 'DNS zone': using a more general formulation; editorial updates",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/15",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-10-20T14:25:33Z",
+      "updatedAt": "2025-10-20T16:31:50Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "a4b96aa76191a57ecebff4f0ef6e4c5b255b526e",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-dataset-term-2",
+      "headRefOid": "83f408d36052fd60770ab709a74baf259026b8e5",
+      "closedAt": "2025-10-20T16:31:47Z",
+      "mergedAt": "2025-10-20T16:31:47Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "e1ebf681d16be7825667c72e33bd6ad6a13dcff7"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87IFSWS",
+          "commit": {
+            "abbreviatedOid": "83f408d"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-20T15:02:06Z",
+          "updatedAt": "2025-10-20T15:02:06Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "PR_kwDOOs4T_86_ZBds",
+      "title": "Update and clarify terms related to 'TSR', avoid 'TSR record', avoid 'TSR RR'.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/19",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also a few misc editorial fixes.",
+      "createdAt": "2026-01-26T15:29:24Z",
+      "updatedAt": "2026-03-26T13:12:50Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "c4a44be47cfd0e061856bc8d6db3814aadfa9fbe",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-clarify-tsr-terms",
+      "headRefOid": "417861faf14584eb0501f721a1bc2fffa8aac708",
+      "closedAt": "2026-03-26T13:12:50Z",
+      "mergedAt": "2026-03-26T13:12:50Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "c6bd6e7a38df6ae909d31970d21a24a57724191b"
+      },
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "FYI @Abhayakara  I wanted to clarify the processing section, but ran into some terminology trouble. This PR aims to clarify that and check if my understanding is correct.",
+          "createdAt": "2026-01-26T15:30:16Z",
+          "updatedAt": "2026-01-26T15:30:16Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87qIWUI",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:17:56Z",
+          "updatedAt": "2026-03-11T09:17:56Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Rather than \"an indication of identity (a key checksum) to identify the source\" I would suggest saying \"a key tag to identify the owner\"",
+              "createdAt": "2026-03-11T09:17:56Z",
+              "updatedAt": "2026-03-11T09:17:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qIaHS",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:20:21Z",
+          "updatedAt": "2026-03-11T09:20:21Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I'm wondering if \"absolute time\" is really a good way of saying this. We do use this term all over the place, and I probably started it, but coming back and reading it now, it feels a bit off. If it's time relative to 1970-1-1 in seconds we should say that. This would be easy to fix by just adding another glossary entry that defines \"absolute time\".",
+              "createdAt": "2026-03-11T09:20:21Z",
+              "updatedAt": "2026-03-11T09:20:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qIbxe",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:21:17Z",
+          "updatedAt": "2026-03-11T09:21:17Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "(this could be tracked in a new issue)",
+              "createdAt": "2026-03-11T09:21:17Z",
+              "updatedAt": "2026-03-11T09:21:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qIgW3",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:23:58Z",
+          "updatedAt": "2026-03-11T09:23:58Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "asks <foo> to is valid grammer. requests <foo> for is valid, and requests that <foo> do is valid, but requests <foo> to is not really usual. So I would not make this change. I guess it feels a bit like we're talking about a person if we say \"asks\" but if that's the issue here, then I would suggest that we really go for it and say something like \"When an mDNS registrant sends a request to an mDNS registrar to register ...\"",
+              "createdAt": "2026-03-11T09:23:58Z",
+              "updatedAt": "2026-03-11T09:23:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJDCA",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:44:21Z",
+          "updatedAt": "2026-03-11T09:44:21Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "Unless there is more than one type of conflict indication, I think this change is confusing. Maybe a better approach would be to say more, although that's always dangerous. E.g.:\n\nmDNS registrars must have one or more ways of indicating to the registrant that a registration they have made is in conflict and therefore has failed. When indicating that a registration is stale, the registrar must use a different indicator (e.g. error code) than is used for cases of actual conflicts, since stale data is not in conflict, but merely stale.",
+              "createdAt": "2026-03-11T09:44:21Z",
+              "updatedAt": "2026-03-11T09:44:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJJFc",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:47:46Z",
+          "updatedAt": "2026-03-11T09:47:46Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "plusquamperfectum can be hard for non-native speakers; maybe \"had previously registered\" to make it easier?",
+              "createdAt": "2026-03-11T09:47:46Z",
+              "updatedAt": "2026-03-11T09:47:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJNCA",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:50:00Z",
+          "updatedAt": "2026-03-11T09:50:00Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Sorry, a \"key checksum\". The key tag is only 16 bits.",
+              "createdAt": "2026-03-11T09:50:00Z",
+              "updatedAt": "2026-03-11T09:50:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJOEC",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:50:33Z",
+          "updatedAt": "2026-03-11T09:50:34Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "we could just say rrtype in both cases\u2014this is the commonly-used term.",
+              "createdAt": "2026-03-11T09:50:34Z",
+              "updatedAt": "2026-03-11T09:50:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJcse",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T09:59:34Z",
+          "updatedAt": "2026-03-11T09:59:34Z",
+          "comments": [
+            {
+              "originalPosition": 104,
+              "body": "when we're talking about the names of values in a record, the style is to put the name in single quotes, so for example \"the 'time of registration' value\". I didn't follow this style when writing the previous version of the draft, but for some reason it really jumps out here. I think this correction is right, but I guess we also need to make that change for clarity. I'm also noticing that we don't have a diagram of the option format, which is generally appreciated.",
+              "createdAt": "2026-03-11T09:59:34Z",
+              "updatedAt": "2026-03-11T09:59:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJjLY",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T10:03:03Z",
+          "updatedAt": "2026-03-11T10:03:03Z",
+          "comments": [
+            {
+              "originalPosition": 137,
+              "body": "the double \"to\" was actually intended, but I agree that it's unclear. It could be made clearer by adding a redundant \"add\" in the middle: \"...added all the rrs it intends to add to the...\" Or we could come up with a less complicated way to say this, e.g., \"Once the mDNS responder has finished adding resource records to the mDNS message...\"",
+              "createdAt": "2026-03-11T10:03:03Z",
+              "updatedAt": "2026-03-11T10:03:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJk7L",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T10:03:59Z",
+          "updatedAt": "2026-03-11T10:04:00Z",
+          "comments": [
+            {
+              "originalPosition": 141,
+              "body": "604,800 seconds?",
+              "createdAt": "2026-03-11T10:04:00Z",
+              "updatedAt": "2026-03-11T10:04:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qJnKn",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "This is mostly ready to go\u2014I had a few nits, which would be good to apply, and also I think maybe we have an action item in here that could be a new issue.",
+          "createdAt": "2026-03-11T10:05:28Z",
+          "updatedAt": "2026-03-11T10:05:28Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qK1MQ",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T10:56:47Z",
+          "updatedAt": "2026-03-11T10:56:47Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "ok, we can keeps \"asks\"!",
+              "createdAt": "2026-03-11T10:56:47Z",
+              "updatedAt": "2026-03-11T10:56:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qK8oa",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T11:01:57Z",
+          "updatedAt": "2026-03-11T11:01:57Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "Ah, I was thinking about the particular instance of indication being returned right after the registration. There can be 1000s of such \"indications\" being returned over the lifetime of a service. And each of these indications can be of a particular type, and we can have several of them being a \"conflict\" indication even when using the exact same error code. \r\nSo you were more thinking about different types of conflict, which wasn't intended.",
+              "createdAt": "2026-03-11T11:01:57Z",
+              "updatedAt": "2026-03-11T11:01:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qK92d",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T11:02:47Z",
+          "updatedAt": "2026-03-11T11:02:47Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "ok!",
+              "createdAt": "2026-03-11T11:02:47Z",
+              "updatedAt": "2026-03-11T11:02:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qLA46",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T11:04:55Z",
+          "updatedAt": "2026-03-11T11:04:56Z",
+          "comments": [
+            {
+              "originalPosition": 104,
+              "body": "agree, plus you already created the issues for these 2 improvements.",
+              "createdAt": "2026-03-11T11:04:55Z",
+              "updatedAt": "2026-03-11T11:04:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qLCg6",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T11:06:10Z",
+          "updatedAt": "2026-03-11T11:06:10Z",
+          "comments": [
+            {
+              "originalPosition": 137,
+              "body": "ok, I can update the PR to find an improved version",
+              "createdAt": "2026-03-11T11:06:10Z",
+              "updatedAt": "2026-03-11T11:06:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87qLF97",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T11:08:10Z",
+          "updatedAt": "2026-03-11T11:08:10Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "Oh, right, I think it's fine if the stale indication is the same regardless of when it happens, so e.g. if you register stale data and it's in conflict with what's already in cache, then the response should be the same as if you register fresh data and ten minutes later receive fresher data. In our code at least the same callback gets called in both cases, so having two error codes to indicate this is just more work.",
+              "createdAt": "2026-03-11T11:08:10Z",
+              "updatedAt": "2026-03-11T11:08:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87rFdky",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-13T13:33:47Z",
+          "updatedAt": "2026-03-13T13:33:48Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "Ok, my point was just that if you get error E1 at time t1 and error E1 at time t2, there's just one error code, but you have 2 conflict indications. One indication instance at t=t1 and one instance at t=t2.\r\n\r\nThe text also says that after a registration action by a registrant the registrar \"MUST ... return an indication\" which I consider as a new indication. I will do a rephrase in the next commit that completely avoids this issue!",
+              "createdAt": "2026-03-13T13:33:48Z",
+              "updatedAt": "2026-03-13T13:33:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87rFiUQ",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-13T13:37:39Z",
+          "updatedAt": "2026-03-13T13:37:40Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "I recall that \"RR type\" is common, or \"RRTYPE\" when referring to the field name specifically. So that would favor \"RR type\"?",
+              "createdAt": "2026-03-13T13:37:40Z",
+              "updatedAt": "2026-03-13T13:37:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87rFkgB",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-13T13:39:21Z",
+          "updatedAt": "2026-03-13T13:39:21Z",
+          "comments": [
+            {
+              "originalPosition": 104,
+              "body": "Note: due to the discussion of the Option diagram, we wanted to change the name. I forgot the exact name we wanted to have so I - for this PR - went for 'time offset' which was already used in most of the text of the published version.",
+              "createdAt": "2026-03-13T13:39:21Z",
+              "updatedAt": "2026-03-13T13:39:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87rFwLt",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-13T13:47:09Z",
+          "updatedAt": "2026-03-13T13:47:09Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "simplified wording now in the new commit.",
+              "createdAt": "2026-03-13T13:47:09Z",
+              "updatedAt": "2026-03-13T13:47:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87rFxFT",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-13T13:47:36Z",
+          "updatedAt": "2026-03-13T13:47:37Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "added the definition in a new commit. Changing the name could be done, but in another PR then.",
+              "createdAt": "2026-03-13T13:47:36Z",
+              "updatedAt": "2026-03-13T13:47:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87rFysM",
+          "commit": {
+            "abbreviatedOid": "2750f45"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-13T13:48:28Z",
+          "updatedAt": "2026-03-13T13:48:29Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "I've now used \"RR type\" in the new commit - for both \"type\" instances, for clarity.",
+              "createdAt": "2026-03-13T13:48:29Z",
+              "updatedAt": "2026-03-13T13:48:29Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "PR_kwDOOs4T_87JtrAO",
+      "title": "Added TSR option figure, using aasvg",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/22",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-03-11T13:41:26Z",
+      "updatedAt": "2026-03-26T13:03:23Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "d397ff55350ea6679b0277e0b93c67fce9ca8ef4",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-option-fig",
+      "headRefOid": "5556ee8ad8f42b4db099db03fc5ed3810956862a",
+      "closedAt": "2026-03-26T13:03:23Z",
+      "mergedAt": "2026-03-26T13:03:23Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "c4a44be47cfd0e061856bc8d6db3814aadfa9fbe"
+      },
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Abhayakara Boxes are now closed at the edges.",
+          "createdAt": "2026-03-13T12:04:53Z",
+          "updatedAt": "2026-03-13T12:04:53Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87qROwl",
+          "commit": {
+            "abbreviatedOid": "66a2106"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-11T15:15:27Z",
+          "updatedAt": "2026-03-11T15:15:28Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "It's a bit confusing to have open space in the diagram other than at the end, so the key checksum and time of registration fields should be broken across lines.",
+              "createdAt": "2026-03-11T15:15:28Z",
+              "updatedAt": "2026-03-11T15:15:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87quh4J",
+          "commit": {
+            "abbreviatedOid": "66a2106"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-12T16:34:06Z",
+          "updatedAt": "2026-03-12T16:34:06Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Now updated! The breaking uses a format I use, which might not be IETF-standard.",
+              "createdAt": "2026-03-12T16:34:06Z",
+              "updatedAt": "2026-03-12T16:34:06Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "id": "PR_kwDOOs4T_87KYCn2",
+      "title": "Updated srp-replication draft to the WG adopted version; and make it an informative reference.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/25",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-03-13T14:02:35Z",
+      "updatedAt": "2026-03-26T13:00:10Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cc99a81e1dc3ba3e26652421c5e354dc0444f333",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-srp-replication-informative",
+      "headRefOid": "7c6d18e2173913a175818378a31e704999fc9ed9",
+      "closedAt": "2026-03-26T13:00:10Z",
+      "mergedAt": "2026-03-26T13:00:10Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "d397ff55350ea6679b0277e0b93c67fce9ca8ef4"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 27,
+      "id": "PR_kwDOOs4T_87NuXCI",
+      "title": "Update I-D generation template (auto-update)",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/27",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-03-26T13:34:57Z",
+      "updatedAt": "2026-03-26T13:49:48Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "c80009735fc73136388566b4500ddda24f7ca44b",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-update-template",
+      "headRefOid": "eb03b3e8b4298b0f27b2445fa55890fad495271a",
+      "closedAt": "2026-03-26T13:49:43Z",
+      "mergedAt": "2026-03-26T13:49:43Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 28,
+      "id": "PR_kwDOOs4T_87NwBm1",
+      "title": "- Add text indicating that TSR is invalid with \"shared\" records",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/28",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Update \"processing messages with\" section to cover the non-TSR case more clearly.\r\n- Add text talking about how TSR-supporting and non-TSR-supporting mDNS registrars behave\r\n\r\nCloses #26 \r\nCloses #17",
+      "createdAt": "2026-03-26T14:43:43Z",
+      "updatedAt": "2026-03-26T16:50:25Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "multiple-proxies-mixed",
+      "headRefOid": "1ca7d628ada9b30375403cd7618f80938b5bfc30",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87vW22Z",
+          "commit": {
+            "abbreviatedOid": "278c0ec"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-26T16:43:16Z",
+          "updatedAt": "2026-03-26T16:43:16Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "'no binary distinction' suggests a bit that the binary data of messages are the same, which is not the intended meaning here. Can we say 'there is no clean distinction'  or so?",
+              "createdAt": "2026-03-26T16:43:16Z",
+              "updatedAt": "2026-03-26T16:43:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vW8Lt",
+          "commit": {
+            "abbreviatedOid": "278c0ec"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks ok to me - added one comment where rewording may be required.",
+          "createdAt": "2026-03-26T16:47:02Z",
+          "updatedAt": "2026-03-26T16:47:02Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vXA1g",
+          "commit": {
+            "abbreviatedOid": "278c0ec"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-26T16:50:25Z",
+          "updatedAt": "2026-03-26T16:50:25Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "Good point. I updated as follows:\r\n\r\n```\r\n-It is important to note that there is no binary distinction between messages that contain TSR and messages that  \r\n-do not. mDNS messages, particularly in the case of proxies, can contain combined information answering  \r\n-multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an mDNS  \r\n-registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there  \r\n+It is important to note that mDNS messages, particularly in the case of proxies, can contain combined information  \r\n+answering multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an  \r\n+mDNS registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there\r\n```",
+              "createdAt": "2026-03-26T16:50:25Z",
+              "updatedAt": "2026-03-26T16:51:23Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "id": "PR_kwDOOs4T_87Nw6Dv",
+      "title": "Document Duplicate Answer Suppression behavior with TSR.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/30",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This adds a normative section documenting how TSR affects duplicate answer suppression, and an appendix showing what this looks like from the client perspective.\r\n\r\nCloses #16 ",
+      "createdAt": "2026-03-26T15:21:56Z",
+      "updatedAt": "2026-03-27T11:17:22Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "dupas",
+      "headRefOid": "7a67d905d751aa363a3c372aeafe1609a71c6445",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@EskoDijk I added a commit that I think addresses your concerns\u2014please let me know what you think!",
+          "createdAt": "2026-03-26T20:00:32Z",
+          "updatedAt": "2026-03-26T20:00:32Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87vW_4q",
+          "commit": {
+            "abbreviatedOid": "316e533"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-26T16:49:42Z",
+          "updatedAt": "2026-03-26T16:49:42Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "\"In the case of TSR,\" can be clarified. Do we mean the pre-empting response message has TSR option(s) in it, or the locally stored data has TSR associated to it, or any of these?",
+              "createdAt": "2026-03-26T16:49:42Z",
+              "updatedAt": "2026-03-26T16:49:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vXER0",
+          "commit": {
+            "abbreviatedOid": "316e533"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-26T16:52:49Z",
+          "updatedAt": "2026-03-26T16:52:50Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "It looks like these cases I wanted to know about follow later in the bullet list.\n\nMaybe we can say:\n\n\"In the case where TSR data is present or received, \"  \n\n(Or the equivalent term for TSR data if we have one)",
+              "createdAt": "2026-03-26T16:52:49Z",
+              "updatedAt": "2026-03-26T16:52:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vXI_n",
+          "commit": {
+            "abbreviatedOid": "316e533"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-26T16:56:07Z",
+          "updatedAt": "2026-03-26T16:56:07Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\nIn {{dupasexample}} we show what this might look like from the perspective of the mDNS registrant.\n```\n\nThis, or 'mDNS registrar' depending on the intention.",
+              "createdAt": "2026-03-26T16:56:07Z",
+              "updatedAt": "2026-03-26T16:56:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vo6G9",
+          "commit": {
+            "abbreviatedOid": "7a67d90"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T11:14:20Z",
+          "updatedAt": "2026-03-27T11:14:21Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "This looks somewhat misleading - can we say:\n\"with a TSR option value based on its local TSR time T\" ? (or so, or below)\n\"with a TSR option value derived from TSR time T\" ? (or so)\n\nand for 3., similar:\n\"with a TSR option value based on its more recent local TSR time T+300\" ? (or below)\n\"with a TSR option value based on its (fresher) local TSR time T+300\" ?\n\nThe confusion was about \"with TSR time\" making readers think it's the value of the TSR timestamp field. ",
+              "createdAt": "2026-03-27T11:14:21Z",
+              "updatedAt": "2026-03-27T11:14:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vo8Te",
+          "commit": {
+            "abbreviatedOid": "7a67d90"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T11:15:48Z",
+          "updatedAt": "2026-03-27T11:15:48Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "can we change \"not set\" -> \"clear\" ? For consistency with other text.",
+              "createdAt": "2026-03-27T11:15:48Z",
+              "updatedAt": "2026-03-27T11:15:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vo-NE",
+          "commit": {
+            "abbreviatedOid": "7a67d90"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "see review comments",
+          "createdAt": "2026-03-27T11:17:22Z",
+          "updatedAt": "2026-03-27T11:17:22Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "id": "PR_kwDOOs4T_87Nx7cw",
+      "title": "- Document suppression of goodbye announcements",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/31",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Document suppression of redundant probes\r\n- Document API requirement for withdrawal of valid data\r\n\r\nCloses #10 ",
+      "createdAt": "2026-03-26T16:12:57Z",
+      "updatedAt": "2026-03-27T13:32:44Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "goodbye-withdrawal",
+      "headRefOid": "1dc258f684d56a375e759e26556d7053dfaf7822",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closes #6 ",
+          "createdAt": "2026-03-26T16:15:58Z",
+          "updatedAt": "2026-03-26T16:15:58Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closes #7 ",
+          "createdAt": "2026-03-26T16:20:58Z",
+          "updatedAt": "2026-03-26T16:20:58Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87vpWUX",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T11:40:25Z",
+          "updatedAt": "2026-03-27T11:40:25Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "I can't understand this sentence and how it connects to the previous paragraph. Do we mean to say:\n\n\"This rule prevents the redundant or possibly harmful sending of \"goodbye\" announcements that would otherwise result from applying the behaviors specified in {{Section 8.4 of RFC6762}}.\"  \n\n?  Do we need to go into more detail?",
+              "createdAt": "2026-03-27T11:40:25Z",
+              "updatedAt": "2026-03-27T11:40:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vpYcp",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T11:42:11Z",
+          "updatedAt": "2026-03-27T11:42:11Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "\"If this is the case ...\" only applies if all these proxies are connected to the same IP link, I think.\n\nIf this is the intended scenario then we should add that information too.",
+              "createdAt": "2026-03-27T11:42:11Z",
+              "updatedAt": "2026-03-27T11:42:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrJmN",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:10:12Z",
+          "updatedAt": "2026-03-27T13:10:12Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "Try to avoid the 'we' use in all of the text? (I think - usually reviewers will require this to be removed at some point.)",
+              "createdAt": "2026-03-27T13:10:12Z",
+              "updatedAt": "2026-03-27T13:10:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrRV_",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:15:56Z",
+          "updatedAt": "2026-03-27T13:15:57Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Can we say \"an mDNS registrant\" here?  Using \"the\" seems to refer to the mDNS registrant in the above paragraph, which may not be intended.\n\nThe one in the above paragraph is a very specific mDNS registrant that \"registers data with\nan mDNS registrar for which the same data is already cached with the same TSR key checksum and a recent TSR time\" - which may not be case we want to refer to necessarily, for the current line.",
+              "createdAt": "2026-03-27T13:15:57Z",
+              "updatedAt": "2026-03-27T13:15:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrVyQ",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:19:23Z",
+          "updatedAt": "2026-03-27T13:19:23Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "\"goodbye\" is only sent if the 'goodbye' was not yet observed on the link?\nOtherwise we would always get multiple copies of goodbyes in case information is replicated.\n\nOn the other hand, maybe the replication case is not our core problem for this draft.",
+              "createdAt": "2026-03-27T13:19:23Z",
+              "updatedAt": "2026-03-27T13:19:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrX3C",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:20:56Z",
+          "updatedAt": "2026-03-27T13:20:56Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "```suggestion\nIn some cases, a proxy may need to stop being a proxy, but may be proxying RRs that are also being proxied by one or\n```",
+              "createdAt": "2026-03-27T13:20:56Z",
+              "updatedAt": "2026-03-27T13:20:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrgMD",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:26:57Z",
+          "updatedAt": "2026-03-27T13:26:58Z",
+          "comments": [
+            {
+              "originalPosition": 59,
+              "body": "we can clarify \"proxies\" here to \"proxy registrants\" or \"proxy mDNS registrants\".\n\nIt's not fully clear if the primary/secondary role is completely fixed or whether it can change during operation: for example, registration R1 at t=t1 uses \"secondary\" while registration R2 at t=t2>t1 uses \"primary\".  If the role changes during operation, should the mDNS registrar also adapt the behavior for any records it stores that were previously registered by this proxy registrant?",
+              "createdAt": "2026-03-27T13:26:58Z",
+              "updatedAt": "2026-03-27T13:26:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrjdE",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:28:54Z",
+          "updatedAt": "2026-03-27T13:28:54Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "this might be a 'SHOULD NOT', in the sense that it's not required for interoperability to do this behavior.  It could be strongly recommended for efficiency reasons. Maybe one reason to still respond is that the query did not get any answers for a (relatively) long period of time; i.e. implement an extra delay instead.\n",
+              "createdAt": "2026-03-27T13:28:54Z",
+              "updatedAt": "2026-03-27T13:28:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vrqbJ",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:32:44Z",
+          "updatedAt": "2026-03-27T13:32:44Z",
+          "comments": [
+            {
+              "originalPosition": 64,
+              "body": "Some timing would be required to be specified here?  The registrar will \"forget\" the queries after some time in an implementation with memory constraints.",
+              "createdAt": "2026-03-27T13:32:44Z",
+              "updatedAt": "2026-03-27T13:32:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "id": "PR_kwDOOs4T_87NyI0F",
+      "title": "Add section reference for timeliness",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/32",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #24 ",
+      "createdAt": "2026-03-26T16:24:23Z",
+      "updatedAt": "2026-03-27T13:51:48Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "timely",
+      "headRefOid": "335cf6ef64034409299965db03c921cd2a0dd3f4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See #36  for potential alternative to this.",
+          "createdAt": "2026-03-27T13:51:48Z",
+          "updatedAt": "2026-03-27T13:51:48Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 33,
+      "id": "PR_kwDOOs4T_87Nyi1I",
+      "title": "Receive time API considerations",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/33",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #8",
+      "createdAt": "2026-03-26T16:46:30Z",
+      "updatedAt": "2026-03-27T13:53:36Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "rectimeapi",
+      "headRefOid": "7b9acaf55574279f025945a88697fb49853a583e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87vsLSB",
+          "commit": {
+            "abbreviatedOid": "7b9acaf"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:52:49Z",
+          "updatedAt": "2026-03-27T13:52:49Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "again comment on use of \"we\" - avoid it?",
+              "createdAt": "2026-03-27T13:52:49Z",
+              "updatedAt": "2026-03-27T13:52:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vsMeA",
+          "commit": {
+            "abbreviatedOid": "7b9acaf"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:53:36Z",
+          "updatedAt": "2026-03-27T13:53:36Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "PR_kwDOOs4T_87NyxcI",
+      "title": "Delete sentence that claims only probes contain TSR.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/34",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #23 ",
+      "createdAt": "2026-03-26T16:59:35Z",
+      "updatedAt": "2026-03-27T13:56:02Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "noprobe",
+      "headRefOid": "6729caf5df9bd581e95562b049bad7a70146083b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87vsQZA",
+          "commit": {
+            "abbreviatedOid": "6729caf"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-27T13:56:02Z",
+          "updatedAt": "2026-03-27T13:56:02Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "id": "PR_kwDOOs4T_87N-3Jm",
+      "title": "Replace applicability text",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/35",
+      "state": "OPEN",
+      "author": "Abhayakara",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #5 ",
+      "createdAt": "2026-03-27T08:43:43Z",
+      "updatedAt": "2026-03-27T14:02:10Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "applicability",
+      "headRefOid": "74506ba3d252c842c2726311fa909333827927da",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87vsTN8",
+          "commit": {
+            "abbreviatedOid": "74506ba"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T13:57:51Z",
+          "updatedAt": "2026-03-27T13:57:51Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "```suggestion\n## Use of TSR with redundant mDNS proxies\n```",
+              "createdAt": "2026-03-27T13:57:51Z",
+              "updatedAt": "2026-03-27T13:57:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vsXVc",
+          "commit": {
+            "abbreviatedOid": "74506ba"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T14:00:24Z",
+          "updatedAt": "2026-03-27T14:00:24Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "\"A device that sometimes ...\" -> only relevant if it registers the same name via both methods. Maybe we should say that?",
+              "createdAt": "2026-03-27T14:00:24Z",
+              "updatedAt": "2026-03-27T14:00:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87vsZ-J",
+          "commit": {
+            "abbreviatedOid": "74506ba"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-27T14:02:10Z",
+          "updatedAt": "2026-03-27T14:02:10Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "conflict between SRP and mDNS -> maybe good to clarify that the SRP registration here gets mDNS-advertised through an Advertising Proxy.  The SRP registration itself doesn't imply a conflict, since SRP does not require proxying (the SRP registrar could support a pure unicast querying model).",
+              "createdAt": "2026-03-27T14:02:10Z",
+              "updatedAt": "2026-03-27T14:02:10Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "id": "PR_kwDOOs4T_87ODjcN",
+      "title": "Make 2 section references to the normative 7 days limit.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/36",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #24",
+      "createdAt": "2026-03-27T13:50:04Z",
+      "updatedAt": "2026-03-27T13:50:05Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "timely-v2",
+      "headRefOid": "b410eedb0a1ea1ed635ace2d89e2b0ce2bd062e4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 37,
+      "id": "PR_kwDOOs4T_87OENgh",
+      "title": "Quote and capitalize field names",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/37",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Close #20\r\n\r\nAlso removes duplicated text in the option description Section 2.",
+      "createdAt": "2026-03-27T14:21:45Z",
+      "updatedAt": "2026-03-27T14:21:45Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-quote-field-names",
+      "headRefOid": "fdb9937f37e4d96a2ac83ce9e173a471e6e09036",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 38,
+      "id": "PR_kwDOOs4T_87OEuvn",
+      "title": "Clarify that section Timeliness of Conflict Resolution is about stale data; more details",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/38",
+      "state": "OPEN",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Close #9",
+      "createdAt": "2026-03-27T14:47:54Z",
+      "updatedAt": "2026-03-27T14:47:55Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-timeliness-conflict",
+      "headRefOid": "f10c23317f7dc55114b69ab16fd0b9063612ccfa",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
