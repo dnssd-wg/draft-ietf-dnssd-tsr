@@ -511,11 +511,15 @@ using Apple's mDNSResponder implementation.
 2. mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T
 3. mDNS registrar for proxy C sends a multicast response of 2001:db8:0:17::1 with TSR time T+300
 
+Note that TSR times are absolute times, but these are represented in the mDNS message as relative times, so for example
+"TSR time T+300" when sent at time T+400 would be represented in the mDNS message as a time offset of 100 seconds, and
+if the message in (2) were sent at nearly the same time, it would have a time offset of about 400 seconds.
+
 In between (2) and (3) we would expect mDNS Requester A to see a callback to its DNSServiceQueryRecord call, providing a
 AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing bit clear.
 
 After (3) we would expect mDNS Requester A to see two callbacks to its DNSServiceQueryRecord call. The first would provide
-a AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd not set and the kDNSServiceFlagsMoreComing bit set. The
+a AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd clear and the kDNSServiceFlagsMoreComing bit set. The
 second would provide a AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
 bit clear.
 
