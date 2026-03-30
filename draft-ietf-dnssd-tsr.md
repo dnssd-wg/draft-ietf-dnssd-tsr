@@ -46,10 +46,10 @@ normative:
   RFC1034:
   RFC6762:
   RFC6891:
-  I-D.ietf-dnssd-advertising-proxy:
   RFC9665:
 
 informative:
+  I-D.ietf-dnssd-advertising-proxy:
   I-D.ietf-dnssd-srp-replication:
 
 
@@ -70,9 +70,10 @@ Multicast DNS has no single source of authority. Because of this, mDNS has a mec
 
 The current goal of mDNS conflict resolution is to prevent a newly advertised service from taking the place of
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
-entity advertising an mDNS service is in fact authoritative for that service. In the case of an advertising
-proxy {{I-D.ietf-dnssd-advertising-proxy}}, this is not the case: the source of truth for the service
-being advertised is an SRP {{RFC9665}} requester.
+entity advertising an mDNS service is in fact authoritative for that service. For mDNS proxies, such as
+an advertising proxy {{I-D.ietf-dnssd-advertising-proxy}}, this is not the case: the source of truth for
+the service being advertised may be another entity. For example, it may be an SRP {{RFC9665}} requester
+that registers its services with an SRP registrar.
 
 On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
@@ -84,7 +85,7 @@ conflicts where no actual conflict exists because of the way records in mDNS pac
 
 In the case of such an apparent conflict, the current behavior of mDNS is for the older (stale) registration to win, and the
 newer (current) information to be discarded. This behavior, which is entirely correct for services that are
-advertising on their own behalf, is exactly wrong when a service registration is being proxied.
+advertising on their own behalf, is exactly wrong when a service advertisement is being proxied.
 
 
 ## Current Behavior
@@ -169,7 +170,7 @@ The advertising proxy {{I-D.ietf-dnssd-advertising-proxy}} is an example of an m
 : a server that accepts SRP Updates sent by SRP requesters using the SRP {{RFC9665}}.
 DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
 {{I-D.ietf-dnssd-advertising-proxy}} located on the same host.
-In that case, the SRP registrar process acts as a registrant towards its local mDNS registrar process.
+In that case, the SRP registrar process acts as an mDNS registrant towards its local mDNS registrar process.
 
 **TSR data**
 : locally stored data, associated with a single DNS owner name, that keeps track of the absolute time when a set of
