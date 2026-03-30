@@ -46,6 +46,7 @@ normative:
   RFC1034:
   RFC6762:
   RFC6891:
+  RFC8766:
   RFC9665:
 
 informative:
@@ -493,7 +494,7 @@ capabilities to connect to a constrained network to reduce power use, but also t
 network either for backup or for bulk data transfers. In this situation we have two potentially competing mDNS
 advertisements.  The first is that of the mDNS registrar on the multihomed device, which is directly advertising
 its own service using mDNS. The second is the one or more advertising proxies that are advertising services
-registered via SRP using mDNS. Both datasets are come from the same source, and the advertising proxy will use TSR
+registered via SRP using mDNS. Both datasets are coming from the same source, and the advertising proxy will use TSR
 to identify the source. To avoid spurious conflicts, a device that sometimes registers with SRP and sometimes
 advertises with mDNS SHOULD use TSR when advertising with mDNS.
 
