@@ -285,7 +285,7 @@ responses is described in {{procmes}}.
 ## Processing questions for which TSR data exists
 
 When processing a question for which local TSR data is present, the mDNS registrar MUST first check to see if there is corresponding
-data in the mDNS message being processed. If there is, the question is part of a probe. In this case, before constructing a response,
+data in the mDNS message being processed. In this case, before constructing a response,
 the mDNS registrar MUST process the non-question records in the packet, since this could result in stale data being flushed. Processing
 is performed as described in {{procmes}}.
 
