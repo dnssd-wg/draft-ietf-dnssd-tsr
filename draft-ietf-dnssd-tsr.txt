@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 28 September 2026                             IoTconsultancy.nl
-                                                           27 March 2026
+Expires: 1 October 2026                                IoTconsultancy.nl
+                                                           30 March 2026
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 September 2026.
+   This Internet-Draft will expire on 1 October 2026.
 
 Copyright Notice
 
