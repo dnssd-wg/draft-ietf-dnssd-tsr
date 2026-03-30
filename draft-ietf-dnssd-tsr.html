@@ -1400,9 +1400,7 @@ resource records were last updated and includes a key checksum to identify the o
 <p id="section-2-1">Each Time Since Received (TSR) EDNS option is applicable to exactly one DNS owner name. So all the records for that owner
 name that appear in the answer, authority and/or additional sections of an mDNS message would be covered by a single TSR
 option.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">The TSR EDNS option consists of three fields: the RR index (two byte integer in network
-byte order), a key checksum (four bytes), and a time offset (four bytes).
-The TSR EDNS option has the following format:<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">The TSR EDNS option has the following format:<a href="#section-2-2" class="pilcrow">¶</a></p>
 <div id="section-2-3">
         <div class="alignLeft art-svg artwork" id="section-2-3.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="208" width="528" viewBox="0 0 528 208" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
@@ -1475,9 +1473,9 @@ The TSR EDNS option has the following format:<a href="#section-2-2" class="pilcr
           </svg><a href="#section-2-3.1" class="pilcrow">¶</a>
 </div>
 </div>
-<p id="section-2-4">It includes three fields in the OPTION-DATA (<span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>): the RR index (two-byte unsigned integer in network
-byte order), a key checksum (four bytes), and a time of registration (four bytes).<a href="#section-2-4" class="pilcrow">¶</a></p>
-<p id="section-2-5">The RR index is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
+<p id="section-2-4">The TSR EDNS option includes three fields in the OPTION-DATA (<span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>): 'RR Index' (two byte integer in network
+byte order), 'Key Checksum' (four bytes), and 'Time Offset' (four bytes).<a href="#section-2-4" class="pilcrow">¶</a></p>
+<p id="section-2-5">The 'RR Index' is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
 answer RRs, one authority RR and two additional RRs, an index of 0 would refer to the first answer, an index of 1 to the
 second answer, and index of 2 to the single authority record, and so on. Questions are excluded because they have no
 data associated with them, and so it makes no sense for them to have TSR options associated with them.<a href="#section-2-5" class="pilcrow">¶</a></p>
@@ -1485,14 +1483,14 @@ data associated with them, and so it makes no sense for them to have TSR options
 that name, and it applies to every RR in the mDNS Message with that owner name. It is not possible in the
 SRP protocol for two updates at two different times to contain records that apply to the same name: in such a
 situation, the second update completely replaces the first, so all data in the first update is then rendered stale.<a href="#section-2-6" class="pilcrow">¶</a></p>
-<p id="section-2-7">The second field, the key checksum, is simple 32-bit checksum of the public key that the owner of the data (for example
+<p id="section-2-7">The second field, 'Key Checksum', is a simple 32-bit checksum of the public key that the owner of the data (for example
 the SRP requester) used to authenticate itself. The key checksum is computed by treating the key as a series of 32-bit
 unsigned integers in network byte order, and adding these integers together to produce a 32-bit unsigned checksum.
 Overflow is not considered. This checksum need not be cryptographically secure: mDNS messages are not authenticated, so
 an attacker on the local link can always cause problems with mDNS by providing spurious responses. The purpose of
 the checksum is simply to notice whether, for a specific owner name, two different authoritative sources have provided
 information.<a href="#section-2-7" class="pilcrow">¶</a></p>
-<p id="section-2-8">The time offset field contains the difference, in seconds, between the the time at which the TSR option is being
+<p id="section-2-8">The 'Time Offset' field contains the difference, in seconds, between the the time at which the TSR option is being
 generated and the time of receipt of resource records for that owner name.<a href="#section-2-8" class="pilcrow">¶</a></p>
 <p id="section-2-9">The time offset is represented in the mDNS message as a time in seconds relative to the time when the mDNS message
 is sent. If this difference is greater than seven days (7 * 24 * 60 * 60), the mDNS registrar <span class="bcp14">MUST</span> use a value of seven days
@@ -1582,13 +1580,13 @@ described in <a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-processing-messages-contain" class="section-name selfRef">Processing messages containing TSR options</a>
         </h3>
 <p id="section-3.4-1">For each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning
-an index to each non-question resource record in the mDNS message. The index of each TSR option is then matched to the
+an index to each non-question resource record in the mDNS message. The 'RR Index' value of each TSR option is then matched to the
 index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
-option is then computed by taking the current local clock time and subtracting from it the time offset value in
+option is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
 the TSR option.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
-registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the index from the TSR option to search across the
-mDNS Packet since such an index can easily be out of bounds.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the 'RR Index' value in the TSR option to search across the
+mDNS packet since such an index can easily be out of bounds.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <p id="section-3.4-3">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
 the question section, or is a known answer (QD bit = 0 and it's a record in the answer section). For all such records, no
 special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
@@ -1655,7 +1653,7 @@ owner name, the index of the record being added (since it is the first), the key
 <p id="section-3.5-7">Once the mDNS responder has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
-produce the value for the time offset field, and this value is clamped to a maximum of seven days (604,800 seconds).<a href="#section-3.5-7" class="pilcrow">¶</a></p>
+produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds).<a href="#section-3.5-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1668,7 +1666,7 @@ produce the value for the time offset field, and this value is clamped to a maxi
 <p id="section-4-1">Because TSR computations are affected by network latency, comparisons can’t be considered accurate. It is
 therefore necessary to tolerate some amount of error. In practice, however, it should generally not be the case
 that two advertising proxies receive SRP updates from the same SRP requester at nearly the same time. So it should
-always be the case either that there is a clear ordering to the TSR time offsets, or that there is no conflict in the
+always be the case either that there is a clear ordering to the TSR 'Time Offset' values, or that there is no conflict in the
 data. For example with anycast, a retransmission could go to a different SRP registrar, but in this case both
 servers would simultaneously receive identical data, so the close ordering or even equality of the TSR time offsets
 should not affect the outcome.<a href="#section-4-1" class="pilcrow">¶</a></p>
@@ -1679,7 +1677,7 @@ should not affect the outcome.<a href="#section-4-1" class="pilcrow">¶</a></p>
       <h2 id="name-internal-handling-of-tsr-da">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-internal-handling-of-tsr-da" class="section-name selfRef">Internal Handling of TSR data</a>
       </h2>
-<p id="section-5-1">The TSR time offset value that is sent on the wire is expressed in seconds relative to the time of receipt of the
+<p id="section-5-1">The TSR 'Time Offset' value that is sent on the wire is expressed in seconds relative to the time of receipt of the
 registration. In order to derive this value, the mDNS registrar must remember the (local) time at
 which the registration occurred. This time is recorded as an absolute time, not a relative time. We refer to this as the time of
 receipt. When constructing a TSR option, the registrar computes the difference between the current time and the time of
