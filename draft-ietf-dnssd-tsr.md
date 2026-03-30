@@ -191,7 +191,7 @@ The TSR EDNS option consists of three fields: the RR index (two byte integer in 
 byte order), a key checksum (four bytes), and a time offset (four bytes).
 The TSR EDNS option has the following format:
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
