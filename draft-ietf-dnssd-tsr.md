@@ -399,19 +399,23 @@ When authoritative data is removed on an mDNS registrar because an mDNS message 
 data, the mDNS registrar MUST NOT send a "goodbye" announcement for any RR on that owner name as a result of flushing
 this stale data.
 
-This is because in the case where the mDNS registrant updates one or more RRsets on an owner name covered by TSR data,
-and as a result of this some records are removed, but some remain, the "goodbye" announcement will be sent or the cache
-flush bit will be used as specified in {{Section 8.4 of RFC6762}}, and so the "goodbye" announcement would be redundant
-or possibly harmful.
+The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
+by TSR data, and as a result of this some records are removed, but some remain, the mDNS registrar that was directly
+updated will either send "goodbye" announcement or an announcement with the cache flush bit set as specified in
+{{Section 8.4 of RFC6762}}. Since the mDNS registrar with the most current information has already done what is needed,
+if an mDNS registrar that is flushing locally-registered data were to send a "goodbye" announcement this would at
+best be redundant and hence wasteful use of multicast, and at worse might cause valid data to be flushed from the cache
+on some mDNS registrar.
 
 ## Suppression of redundant probing
 
 When mDNS proxies are doing any form of replication of the data they are publishing, it can be the case that one
-proxy does its probes first. If this is the case, proxies receiving replicated data will already have the correct
-data in cache with matching TSR times. To avoid redundant probing, when an mDNS registrant registers data with
-an mDNS registrar for which the same data is already cached with the same TSR key checksum and a recent TSR time,
-the mDNS registrar MUST skip probing. Recent here should take into account network delays: a difference of less
-than ten seconds between the cached TSR time and the registrant's TSR time should be considered "recent."
+proxy does its probes first. If this is the case, proxies on the same multicast link that receive replicated data
+will already have the correct data in cache with matching TSR times. To avoid redundant probing, when an mDNS
+registrant registers data with an mDNS registrar for which the same data is already cached with the same TSR key
+checksum and a recent TSR time, the mDNS registrar MUST skip probing. Recent here should take into account network
+delays: a difference of less than ten seconds between the cached TSR time and the registrant's TSR time should be
+considered "recent."
 
 In addition, when the TSR time for a set of RRs is updated by the mDNS registrant, but nothing else changes,
 the mDNS registrar MUST NOT re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
