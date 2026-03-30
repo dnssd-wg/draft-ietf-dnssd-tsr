@@ -118,15 +118,15 @@ an SRP registrar, it works poorly: an SRP registrar acting as an advertising pro
 DNS zone using mDNS. The sources of truth for this information are the SRP requesters,
 not the SRP registrar itself. The SRP registrar in this case acts as a proxy for the SRP requesters.
 
-In the case of an advertising proxy publishing records originating from an SRP Update, what we want to see published
-is not the oldest information, but the newest.
+In the case of an advertising proxy publishing records originating from an SRP Update, the most recent information
+is correct; the older information is simply stale, and not competing.
 When the SRP requester is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
 available, the SRP requester may wind up sending its SRP Updates to a different SRP registrar. This can happen as a result of
 a network partition, or in cases where the SRP registrar is advertised on a anycast address.
 
-When the SRP requester registers with a different SRP registrar, the behavior we get with the current mDNS conflict
-resolution approach is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
+When the SRP requester registers with a different SRP registrar, the behavior of the mDNS conflict
+resolution approach without TSR is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
 and the new (more recent) advertisement (A’) will be discoverable as separate services.
 
 This creates a new burden on consumers of such services: they need to parse through the whole list of services of
@@ -298,7 +298,20 @@ Once all non-question records have been processed, the responder MUST respond to
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
 described in {{tsrrr}}.
 
-## Processing messages that may contain TSR options {#procmes}
+## Receiving messages that may contain TSR options
+
+mDNS registrars that support TSR need to compute an absolute time based on a time offset. This means that registrars need
+to know when the packet was received. A naive implementation might assume that the time that the packet is read off the
+input queue by the registrant is close enough. However, in practice it can be the case on a heavily
+loaded system that the time of receipt and the time of processing are far enough apart to create the appearance of
+staleness.
+
+To avoid this, mDNS registrants that have an API available to get the actual time of receipt of a packet should make use
+of that API. For example, the SO_TIMESTAMP_CONTINUOUS socket option is available on Linux and BSD Unix platforms,
+including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread
+and queue them for later processing.
+
+## Processing messages thay may contain TSR options {#procmes}
 
 mDNS registrars that support the TSR option MUST check incoming messages for the presence of an EDNS(0) option containing
 TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
@@ -455,7 +468,7 @@ This maximum time interval is normatively defined in {{tsrrr}}.
 mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
 as if no TSR option was sent. This may result in such registrars temporarily caching stale data. However, in the
 normal course of processing, more recent data will win. In cases where it does not, the Reconfirm process which
-is part of {{RFC6762}} already works to clear stale data: since we expect SRP registrars to implement
+is part of {{RFC6762}} already works to clear stale data: since SRP registrars are expected to implement
 TSR, by the time a Reconfirm is attempted, all authoritative stale data should have been cleared.
 
 
