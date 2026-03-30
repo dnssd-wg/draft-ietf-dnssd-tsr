@@ -1567,7 +1567,7 @@ responses is described in <a href="#procmes" class="auto internal xref">Section 
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-processing-questions-for-wh" class="section-name selfRef">Processing questions for which TSR data exists</a>
         </h3>
 <p id="section-3.3-1">When processing a question for which local TSR data is present, the mDNS registrar <span class="bcp14">MUST</span> first check to see if there is corresponding
-data in the mDNS message being processed. If there is, the question is part of a probe. In this case, before constructing a response,
+data in the mDNS message being processed. In this case, before constructing a response,
 the mDNS registrar <span class="bcp14">MUST</span> process the non-question records in the packet, since this could result in stale data being flushed. Processing
 is performed as described in <a href="#procmes" class="auto internal xref">Section 3.4</a>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">Once all non-question records have been processed, the responder <span class="bcp14">MUST</span> respond to any questions that match

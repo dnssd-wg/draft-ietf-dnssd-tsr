@@ -410,11 +410,10 @@ Table of Contents
 
    When processing a question for which local TSR data is present, the
    mDNS registrar MUST first check to see if there is corresponding data
-   in the mDNS message being processed.  If there is, the question is
-   part of a probe.  In this case, before constructing a response, the
-   mDNS registrar MUST process the non-question records in the packet,
-   since this could result in stale data being flushed.  Processing is
-   performed as described in Section 3.4.
+   in the mDNS message being processed.  In this case, before
+   constructing a response, the mDNS registrar MUST process the non-
+   question records in the packet, since this could result in stale data
+   being flushed.  Processing is performed as described in Section 3.4.
 
    Once all non-question records have been processed, the responder MUST
    respond to any questions that match locally-registered resource
