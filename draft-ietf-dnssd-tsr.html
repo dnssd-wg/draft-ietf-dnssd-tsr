@@ -1191,7 +1191,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-processing-questions-for-wh" class="internal xref">Processing questions for which TSR data exists</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-processing-messages-contain" class="internal xref">Processing messages containing TSR options</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-processing-messages-that-ma" class="internal xref">Processing messages that may contain TSR options</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
                 <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-constructing-a-mdns-message" class="internal xref">Constructing a mDNS message with TSR options</a></p>
@@ -1509,43 +1509,45 @@ mDNS message with a TSR option is generated from local data.<a href="#section-2-
         <h3 id="name-validating-requested-local-">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-validating-requested-local-" class="section-name selfRef">Validating requested local RR registrations that include a TSR option</a>
         </h3>
-<p id="section-3.1-1">When an mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
-for that name, the mDNS registrar first checks to see if there are any records either in cache or from other local registrations
-on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">When such data exists, the registrar <span class="bcp14">MUST</span> check to see if it has TSR data for that owner name. If it does not, or if there
+<p id="section-3.1-1">When a local mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
+for that name, the mDNS registrar first checks that none of the records are marked shared. If any record is marked shared,
+the mDNS registrar <span class="bcp14">MUST</span> respond with an error indicating that the registration is invalid.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">It then checks to see if there are any records either in cache or from other local registrations
+on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">When such data exists, the registrar <span class="bcp14">MUST</span> check to see if it has TSR data for that owner name. If it does not, or if there
 is TSR data on that name but the key checksum does not match, the registrar <span class="bcp14">MUST</span> treat this registration as a conflict
-and return an appropriate error to the registrant.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">If such data exists and the key checksums match, there are three possibilities based on the known TSR time
-(from the existing data) and the proposed TSR time (from the TSR data in the registration request):<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-3.1-4">
-          <dt id="section-3.1-4.1"><strong>Known TSR time is more recent</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-4.2">
-            <p id="section-3.1-4.2.1">In this case, the registrar <span class="bcp14">MUST</span> treat the new registration as stale, and return an indication to the
+and return an appropriate error to the registrant.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">If such data exists and the key checksums match, there are three possibilities based on the known TSR time
+(from the existing data) and the proposed TSR time (from the TSR data in the registration request):<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.1-5">
+          <dt id="section-3.1-5.1"><strong>Known TSR time is more recent</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-5.2">
+            <p id="section-3.1-5.2.1">In this case, the registrar <span class="bcp14">MUST</span> treat the new registration as stale, and return an indication to the
 registrant that its registration is stale. This indication must be distinct from the "appropriate error" indication of
-conflict that was defined above.<a href="#section-3.1-4.2.1" class="pilcrow">¶</a></p>
+conflict that was defined above.<a href="#section-3.1-5.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.1-4.3"><strong>Both TSR times are the same</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-4.4">
-            <p id="section-3.1-4.4.1">In this case, the new record is added to the local registration database and put in the probing state.<a href="#section-3.1-4.4.1" class="pilcrow">¶</a></p>
+<dt id="section-3.1-5.3"><strong>Both TSR times are the same</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-5.4">
+            <p id="section-3.1-5.4.1">In this case, the new record is added to the local registration database and put in the probing state.<a href="#section-3.1-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.1-4.5"><strong>Proposed TSR time is more recent</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-4.6">
-            <p id="section-3.1-4.6.1">In this case, all cached data on the owner name is discarded. The registrant for any existing locally-registered data is notified that
+<dt id="section-3.1-5.5"><strong>Proposed TSR time is more recent</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-5.6">
+            <p id="section-3.1-5.6.1">In this case, all cached data on the owner name is discarded. The registrant for any existing locally-registered data is notified that
 the data they had previously registered is stale, and the stale data is removed from the local registration database. The new data is
-added and put in the probing state, and the TSR data is updated with the proposed TSR data.<a href="#section-3.1-4.6.1" class="pilcrow">¶</a></p>
+added and put in the probing state, and the TSR data is updated with the proposed TSR data.<a href="#section-3.1-5.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.1-5">It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
+<p id="section-3.1-6">It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see <span><a href="https://rfc-editor.org/rfc/rfc6762#section-2" class="relref">Section 2</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>).
 If an mDNS registrant registers an RR on a name for which the registrar already has data, cached or
 authoritative, on the same name, whether of the same RR type or a different RR type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar <span class="bcp14">MUST</span> treat
-this as an immediate conflict, and <span class="bcp14">MUST NOT</span> probe.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6">As with any local mDNS registration, the mDNS registrar treats all of the records in the registration as tentative (that
-is, in the probing state) until they have been probed and no conflicting answers have been received.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+this as an immediate conflict, and <span class="bcp14">MUST NOT</span> probe.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">As with any local mDNS registration, the mDNS registrar treats all of the records in the registration as tentative (that
+is, in the probing state) until they have been probed and no conflicting answers have been received.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="probing-resource-records-on-names-for-which-tsr-data-has-been-proposed">
@@ -1576,43 +1578,55 @@ described in <a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="
 </div>
 <div id="procmes">
 <section id="section-3.4">
-        <h3 id="name-processing-messages-contain">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-processing-messages-contain" class="section-name selfRef">Processing messages containing TSR options</a>
+        <h3 id="name-processing-messages-that-ma">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-processing-messages-that-ma" class="section-name selfRef">Processing messages that may contain TSR options</a>
         </h3>
-<p id="section-3.4-1">For each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning
-an index to each non-question resource record in the mDNS message. The 'RR Index' value of each TSR option is then matched to the
+<p id="section-3.4-1">mDNS registrars that support the TSR option <span class="bcp14">MUST</span> check incoming messages for the presence of an EDNS(0) option containing
+TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
+For non-proxy use cases, this should make no difference, since in such cases if multiple devices advertise records
+on the same owner name, these are actually in conflict. However, for the proxy use case, what this means is that two
+proxies that are proxying the same data cannot interoperate if one supports TSR and the other doesn't.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">It is important to note that mDNS messages, particularly in the case of proxies, can contain combined information
+answering multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an
+mDNS registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there
+is not. It's equally possible that such a registrar will send mDNS packets containing no TSR options at all.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
+the owner name of the TSR option by assigning
+an index to each non-question resource record in the mDNS message. The 'RR index' of each TSR option is then matched to the
 index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
 option is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
-the TSR option.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
+the TSR option.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-4">If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
 registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the 'RR Index' value in the TSR option to search across the
-mDNS packet since such an index can easily be out of bounds.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
+mDNS packet since such an index can easily be out of bounds.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
 the question section, or is a known answer (QD bit = 0 and it's a record in the answer section). For all such records, no
-special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
+special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is TSR data with that
-owner name locally. If there is not, the record is processed normally.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5">If there is local TSR data for the record's owner name, the mDNS registrar checks to see if there are any resource records
-in the local registration database (that is, not just in the cache) on that name. If there are, the record is treated as a
+owner name locally. If there is not, the record is processed normally.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">If there is local TSR data for the record's owner name, but no TSR data for that owner name in the mDNS message,
+the mDNS registrar checks to see if there are any resource records
+in the local registration database (that is, not just in the cache) on that name. If there are, all such records are treated as in
 conflict. This conflict exists even if the locally registered records are all shared records. In cases where there are
-records on the name in the cache, those records are all discarded, because they are in conflict with the new data.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">In the case that there is TSR data for the record in the mDNS packet, and no local TSR data, this always means that any
+records on the name in the cache, those records are all discarded, because they are in conflict with the new data.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-8">In the case that there is TSR data for the record in the mDNS packet, and there are local records on the same owner name
+for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
 section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
 to the mDNSResponder cache. Such records can never have TSR options associated with them.  However, resource records in
 the authority and additional sections of a query do need to be processed (but in the case of authority records, are not
-added to the cache).<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<p id="section-3.4-7">In cases where the TSR data for a particular name is present both locally and in the mDNS message, the mDNS responder
+added to the cache).<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+<p id="section-3.4-9">In cases where the TSR data for a particular name is present both locally and in the mDNS message, the mDNS responder
 <span class="bcp14">MUST</span> compare the key checksums. If they are different, then the records are always in conflict, and are handled according
-to the context of the conflict, as described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
-<p id="section-3.4-8">In cases where the key checksums match, the mDNS registrar <span class="bcp14">MUST</span> compare the times. When the TSR time from the mDNS Message
+to the context of the conflict, as described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+<p id="section-3.4-10">In cases where the key checksums match, the mDNS registrar <span class="bcp14">MUST</span> compare the times. When the TSR time from the mDNS Message
 is more recent than the local TSR time, local data in the cache is flushed and registered data is removed and reported
-to the registrant that registered it as stale.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">When the TSR times are the same, any resource records on that name in the answer section and additional section are added
-to the cache.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
-<p id="section-3.4-10">When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
-respect to any locally-registered data.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
+to the registrant that registered it as stale.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
+<p id="section-3.4-11">When the TSR times are the same, any resource records on that name in the answer section and additional section are added
+to the cache.<a href="#section-3.4-11" class="pilcrow">¶</a></p>
+<p id="section-3.4-12">When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
+respect to any locally-registered data.<a href="#section-3.4-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="constructing-a-mdns-message-with-tsr-options">
