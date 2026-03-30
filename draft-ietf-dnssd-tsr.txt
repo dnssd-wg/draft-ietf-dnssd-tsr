@@ -538,7 +538,7 @@ Table of Contents
    was generated when adding resource records to the message.  The time
    of receipt is subtracted from the current time to produce the value
    for the 'Time Offset' field, and this value is clamped to a maximum
-   of seven days (604,800 seconds).
+   of seven days (604,800 seconds) Section 2.
 
 4.  The effect of network latency on time computations
 
@@ -578,6 +578,8 @@ Table of Contents
    should never need to report a TSR 'Time Offset' value of longer than
    seven days.  It’s reasonable to expect that every mDNS implementation
    should be able to remember time intervals of at least seven days.
+
+   This maximum time interval is normatively defined in Section 2.
 
 7.  Legacy Behavior
 
