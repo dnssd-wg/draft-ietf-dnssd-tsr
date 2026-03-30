@@ -490,8 +490,11 @@ this can appear as a name conflict and result in renaming. So for this use case,
 It can also happen that a multihomed device uses SRP to register when connected to one sort of network, and uses
 mDNS to advertise when connected to another sort of network. For example, the device may have capabilities to
 connect to a constrained network to reduce power use, but also to occasionally connect to a WiFi network either
-for backup or for bulk data transfers. As with the redundant proxy case, the SRP registration and the mDNS
-advertisement can come into conflict. A device that sometimes registers with SRP and sometimes advertises with
+for backup or for bulk data transfers. In this situation we have two potentially competing mDNS advertisements.
+The first is that of the mDNS registrar on the multihomed device, which is directly advertising its own service
+using mDNS. The second is the one or more advertising proxies that are advertising services registered via SRP
+using mDNS. Both datasets are come from the same source, and the advertising proxy will use TSR to identify the
+source. To avoid spurious conflicts, a device that sometimes registers with SRP and sometimes advertises with
 mDNS SHOULD use TSR when advertising with mDNS.
 
 ## TSR in networks with non-compliant mDNS caches
