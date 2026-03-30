@@ -46,6 +46,7 @@ normative:
   RFC1034:
   RFC6762:
   RFC6891:
+  RFC8766:
   RFC9665:
 
 informative:
@@ -72,8 +73,7 @@ The current goal of mDNS conflict resolution is to prevent a newly advertised se
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
 entity advertising an mDNS service is in fact authoritative for that service. For mDNS proxies, such as
 an advertising proxy {{I-D.ietf-dnssd-advertising-proxy}}, this is not the case: the source of truth for
-the service being advertised may be another entity. For example, it may be an SRP {{RFC9665}} requester
-that registers its services with an SRP registrar.
+the service being advertised is an DNSSD Service Registration Protocol (SRP) {{RFC9665}} requester.
 
 On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
@@ -393,7 +393,7 @@ response is stale or conflicting. For this reason, an mDNS registrar MUST NOT su
 
 In {{dupasexample}} we show what this might look like from the perspective of an mDNS requester.
 
-## Constructing a mDNS message with TSR options
+## Constructing a mDNS message with TSR options {#construct}
 
 For each non-question record that is added to the mDNS message, one of three things must be true:
 
@@ -474,10 +474,58 @@ TSR, by the time a Reconfirm is attempted, all authoritative stale data should h
 
 # When to Use TSR
 
-TSR is only relevant for mDNS proxies. Regular mDNS registrants that don't support mDNS proxy are not expected to use it, since it
-will produce the wrong behavior for this use case. An mDNS proxy MUST explicitly allow its mDNS registrar to use
-TSR for conflict resolution. mDNS registrars MUST NOT record a time of receipt unless the registrant has
-specifically requested it.
+There are no cases where using TSR is harmful, but in the case of individual devices advertising individual services
+with mDNS, it may be of little benefit. The reason for this is that when two devices both claim the same name to
+use for advertising services, their advertisements will be seen as in conflict whether or not TSR is present. In
+this case, TSR does no harm, but most likely does not help.
+
+## Use of TSR with redundant proxies
+
+Use of TSR is most beneficial in the case of redundant mDNS proxies. The reason for this is that such proxies tend
+to publish data that could potentially produce name conflicts as a result of updates: when one proxy is publishing
+an old version of the data and another proxy is publishing a new version of the data, and these data differ,
+this can appear as a name conflict and result in renaming. So for this use case, the use of TSR is very beneficial.
+
+## Use of TSR with multihomed devices
+
+It can also happen that a multihomed device uses SRP to register when connected to one sort of network, and uses
+mDNS to advertise the same service when connected to another sort of network. For example, the device may have
+capabilities to connect to a constrained network to reduce power use, but also to occasionally connect to a WiFi
+network either for backup or for bulk data transfers. In this situation we have two potentially competing mDNS
+advertisements.  The first is that of the mDNS registrar on the multihomed device, which is directly advertising
+its own service using mDNS. The second is the one or more advertising proxies that are advertising services
+registered via SRP using mDNS. Both datasets are coming from the same source, and the advertising proxy will use TSR
+to identify the source. To avoid spurious conflicts, a device that sometimes registers with SRP and sometimes
+advertises with mDNS SHOULD use TSR when advertising with mDNS.
+
+## TSR in networks with non-compliant mDNS caches
+
+Some network infrastructure devices available commercially provide "mDNS cache" services or "mDNS proxy" services
+that purport to allow mDNS discovery across links that are separate at the IP layer and do not share a multicast
+domain. These services generally cause mDNS to become unreliable in various ways, and it would be helpful to be
+able to use TSR to distinguish between stale data advertised by such devices, and fresh data advertised directly
+from the device that is authoritative for that data.
+
+Unfortunately, for the most part these devices do not cache mDNS packets, but rather cache data advertised using
+mDNS. As a result, if such devices do not support TSR, we get no benefit from TSR.
+
+That said, such devices SHOULD support TSR, and if they do this might prevent some of their failure modes. What
+this would mean would be that any DNS RRs cached or forwarded by such devices would be accompanied by any TSR
+data applicable to them. When forwarded with no time delay, the TSR data could be copied verbatim (following
+the rules for generating packets with TSR given in {{construct}}).
+
+When such RRs are cached and later resent, they would also be accompanied by their TSR data. The mDNS cache service
+would need to record the time at which they were received. When retransmitting such cached data, the cache
+service would need to adjust the time offset in the TSR option, increasing it by the substracting the time
+at which the cached RRs were received from the current time, and then increasing the offset in the applicable
+TSR option by that amount, up to the limit of 7 days.
+
+The use of such caches and forwarders is NOT RECOMMENDED. We mention the use of TSR for such use cases because
+it can mitigate some of the failure modes of such caches and forwarders. However, the use of Discovery Proxy
+{{RFC8766}} in such instances is preferred: as the size of the network covered by such caching and forwarding
+services increases, the amount of mDNS traffic they create increases, and this is often addressed by limiting which
+services are available for discovery. Discovery Proxy uses unicast DNS, and therefore does not suffer from
+these limitations.
 
 
 # Registrant API considerations
