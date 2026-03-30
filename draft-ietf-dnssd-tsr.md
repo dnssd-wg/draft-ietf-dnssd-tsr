@@ -371,7 +371,8 @@ owner name, the index of the record being added (since it is the first), the key
 Once the mDNS responder has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
-produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds).
+produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds)
+{{tsrrr}}.
 
 
 # The effect of network latency on time computations
@@ -403,6 +404,8 @@ Different hosts may be able to record shorter or longer time offsets, depending 
 However, because of this expectation of recentness, mDNS
 registrars should never need to report a TSR 'Time Offset' value of longer than seven days.
 It’s reasonable to expect that every mDNS implementation should be able to remember time intervals of at least seven days.
+
+This maximum time interval is normatively defined in {{tsrrr}}.
 
 
 # Legacy Behavior
