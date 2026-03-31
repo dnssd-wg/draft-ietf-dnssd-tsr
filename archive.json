@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-29T01:17:35.761850+00:00",
+  "timestamp": "2026-03-31T01:15:46.646020+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -119,7 +119,7 @@
       "id": "I_kwDOOs4T_87CPxcH",
       "title": "Use of TSR by a non-proxy mDNS publisher?",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/5",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -128,8 +128,8 @@
       "labels": [],
       "body": "Section 8 currently says:\n\n> TSR is only relevant for mDNS proxies. Regular (non-proxy) mDNS registrants are not expected to use it, since it will produce the wrong behavior for this use case.\n\nIn IETF 121 a situation was raised as follows:\n* device client C registers its services via SRP (i.e. SRP Registrar as the Advertising Proxy)\n* client C switches network interface (e.g. Thread/6LoWPAN 15.4 to Wi-Fi) \n* client C now wants to register same services/hostname via mDNS directly. With different IP address(es).\n* new registration competes with existing proxied registration in SRP Registrar (?)\n\nThere has been some discussion whether the client C should use TSR in its mDNS advertisements, (to indicate it's \"newer\" ), or not.\n* What will/should other mDNS clients do in case of conflict?\n* What should the Advertising Proxy / SRP Registrar do when seeing the (newer) published services/hostname?\n\n",
       "createdAt": "2025-07-24T07:56:59Z",
-      "updatedAt": "2026-03-27T08:13:29Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T19:55:51Z",
+      "closedAt": "2026-03-30T19:55:51Z",
       "comments": [
         {
           "author": "Abhayakara",
@@ -236,15 +236,15 @@
       "id": "I_kwDOOs4T_87CQG7a",
       "title": "Should use time-of-receipt rather than time-of-processing",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The document says:\n\nFor each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning\nan index to each non-question resource record in the mDNS message. The index of each TSR option is then matched to the\nindex of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR\noption is then computed by taking the _current local clock time_ and subtracting from it the time offset in the TSR record.\n\nOur experience has been that there can be processing delays that are long enough to make a TSR timestamp look different than the current timestamp. Most operating systems offer a socket option to indicate when the packet was received, and we use this in mDNSResponder as the timestamp from which to substract the TSR time offset. This substantially reduced errors of this type.",
       "createdAt": "2025-07-24T08:29:59Z",
-      "updatedAt": "2026-03-26T16:33:28Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T19:47:19Z",
+      "closedAt": "2026-03-30T19:47:19Z",
       "comments": [
         {
           "author": "EskoDijk",
@@ -267,7 +267,7 @@
       "id": "I_kwDOOs4T_87CQNJN",
       "title": "Distinguish between \"conflict\" and \"stale\"",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/9",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -276,8 +276,8 @@
       "labels": [],
       "body": "The document says:\n\n# Timeliness of Conflict Resolution\n\nIt is expected that if a conflict exists, it will be recent, and will be resolved quickly. Different hosts may be\nable to record shorter or longer time differences. However, because of this expectation of recentness, mDNS\nregistrars should never need to report a TSR of longer than seven days. It\u2019s reasonable to expect that every mDNS\nimplementation should be able to remember time intervals of at least seven days.\n\nHowever, I think this is talking about stale data, not about conflicting authority. So the point is, it's unlikely that we will see stale data that is more than seven days old, but even if we do, it's unlikely that the fresh data that supersedes it will also be more than seven days old. So I think this section should be updated to clarify that.",
       "createdAt": "2025-07-24T08:38:56Z",
-      "updatedAt": "2026-03-27T14:48:30Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T15:55:00Z",
+      "closedAt": "2026-03-30T15:55:00Z",
       "comments": [
         {
           "author": "EskoDijk",
@@ -420,7 +420,7 @@
       "id": "I_kwDOOs4T_87TFYNX",
       "title": "Multiple proxies - clarify handling of \"older data transmitted first\" case",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/16",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -429,8 +429,8 @@
       "labels": [],
       "body": "Assume there can be multiple Advertising Proxies (AP), and more generally nodes using mDNS+TSR which may be APs or other proxy type of entities.  These APs/nodes could be situated on a single link, such as an adjacent infrastructure link (AIL) as defined in the SNAC WG.\n\nCase to consider: an mDNS query is sent by a node on AIL, one proxy responds quite early with **older** data about a service, with TSR included. \nAnother proxy might respond later on with newer data.\n\n1. Should a proxy on AIL that has newer data for the same service then respond also, with the newer data, after it has seen someone else responding with older data? \n2. What if the sender of the query (client) has already started to use the older data? \n3. Or should this client wait for a specific time to see if more / newer data would get in?\n4. Would such a \"waiting time\" be dependent on the presence / value of the TSR Option in the answer?  Assuming it knows about TSR.\n    E.g. if TSR == 0 or 1 it's very likely the freshest data. If TSR is 3 days, maybe wait some more time.\n5. Do APs in general (current ones without the TSR option) suppress their mDNS answer, if they have already seen that answer/service being sent out by another node ?\n6. If so, will there be an exception for the case the AP has newer data to send than the data seen from other node(s)?   (This comes back to point 1)\n\nBased on earlier email question: https://mailarchive.ietf.org/arch/msg/dnssd/rL2VWxZueXNdXLQPipwByauHg4o/",
       "createdAt": "2025-10-22T15:42:02Z",
-      "updatedAt": "2026-03-26T17:15:19Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T19:36:28Z",
+      "closedAt": "2026-03-30T19:36:28Z",
       "comments": [
         {
           "author": "Abhayakara",
@@ -467,7 +467,7 @@
       "id": "I_kwDOOs4T_87TFZZm",
       "title": "Multiple proxies - mixed use of TSR / non-TSR answers",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/17",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -476,8 +476,8 @@
       "labels": [],
       "body": "Assume there can be multiple Advertising Proxies (AP), and more generally nodes using mDNS+TSR which may be APs or other proxy type of entities.  These APs/nodes could be situated on a single link, such as an adjacent infrastructure link (AIL) as defined in the SNAC WG.\n\nCase to consider: If TSR is not present in the 1st answer on the link, what do proxies/APs that support TSR do?\n\n1. send their own answer with TSR? \n2. Even when it's identical, or don't send it if data is identical?  Do we expect an AP to start comparing data? (Seems complex)\n3. Or only send own answer with TSR if they see an older with-TSR answer on the link from another node?\n\nBased on earlier email question: https://mailarchive.ietf.org/arch/msg/dnssd/rL2VWxZueXNdXLQPipwByauHg4o/",
       "createdAt": "2025-10-22T15:43:37Z",
-      "updatedAt": "2026-03-26T17:15:11Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T16:58:05Z",
+      "closedAt": "2026-03-30T16:58:05Z",
       "comments": [
         {
           "author": "Abhayakara",
@@ -547,7 +547,7 @@
       "id": "I_kwDOOs4T_87x1Cir",
       "title": "Put field names in single quotes",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/20",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -556,8 +556,8 @@
       "labels": [],
       "body": "The normal style in RFCs is to put field names in quotes for emphasis, but we haven't done this in the document. The task is to just go through and make sure whenever we reference a field, we use its name and put it in single quotes.",
       "createdAt": "2026-03-11T10:06:54Z",
-      "updatedAt": "2026-03-11T17:09:44Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T15:57:25Z",
+      "closedAt": "2026-03-30T15:57:25Z",
       "comments": [
         {
           "author": "EskoDijk",
@@ -613,15 +613,15 @@
       "id": "I_kwDOOs4T_87x-BxO",
       "title": "Section 3.3 says that TSR data is only in probes, which is not true.",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "[3.3. ](https://www.ietf.org/archive/id/draft-ietf-dnssd-tsr-01.html#section-3.3)[Processing questions for which TSR data exists](https://www.ietf.org/archive/id/draft-ietf-dnssd-tsr-01.html#name-processing-questions-for-wh)\n\nWe should correct this and clarify the section.",
       "createdAt": "2026-03-11T17:22:25Z",
-      "updatedAt": "2026-03-11T17:22:25Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T08:32:10Z",
+      "closedAt": "2026-03-30T08:32:10Z",
       "comments": []
     },
     {
@@ -629,15 +629,15 @@
       "id": "I_kwDOOs4T_87x-sXj",
       "title": "Add section reference for 7 days text in current section 6.",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/24",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-03-11T17:56:08Z",
-      "updatedAt": "2026-03-27T13:51:09Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T16:02:15Z",
+      "closedAt": "2026-03-30T16:02:15Z",
       "comments": [
         {
           "author": "EskoDijk",
@@ -653,7 +653,7 @@
       "id": "I_kwDOOs4T_872__O3",
       "title": "TSR is incompatible with \"shared\" records",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/26",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -662,8 +662,8 @@
       "labels": [],
       "body": "I ran into this issue doing the advertising proxy implementation last week: because TSR asserts ownership over all records on an owner name, it's not possible for TSR to be applicable to a shared record. When TSR is used for such records, we get conflicts, and nothing works.\n\nWe should have text in the document that makes this clear.",
       "createdAt": "2026-03-26T13:31:24Z",
-      "updatedAt": "2026-03-26T14:45:45Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T16:58:05Z",
+      "closedAt": "2026-03-30T16:58:05Z",
       "comments": []
     },
     {
@@ -671,15 +671,17 @@
       "id": "I_kwDOOs4T_873CpnS",
       "title": "Can we make [I-D.ietf-dnssd-advertising-proxy] an informative reference?",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/29",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "EskoDijk"
+      ],
       "labels": [],
       "body": "From the current text, we say that [I-D.ietf-dnssd-advertising-proxy]  is an example of a proxy that uses TSR. It doesn't need to be that one. So could we make this reference informative?\nIn the sense that TSR could be used without implementing [I-D.ietf-dnssd-advertising-proxy] necessarily, or parts thereof?",
       "createdAt": "2026-03-26T14:47:51Z",
-      "updatedAt": "2026-03-26T14:51:10Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-30T15:53:52Z",
+      "closedAt": "2026-03-30T15:53:52Z",
       "comments": [
         {
           "author": "Abhayakara",
@@ -1571,24 +1573,26 @@
       "id": "PR_kwDOOs4T_87NwBm1",
       "title": "- Add text indicating that TSR is invalid with \"shared\" records",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/28",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- Update \"processing messages with\" section to cover the non-TSR case more clearly.\r\n- Add text talking about how TSR-supporting and non-TSR-supporting mDNS registrars behave\r\n\r\nCloses #26 \r\nCloses #17",
       "createdAt": "2026-03-26T14:43:43Z",
-      "updatedAt": "2026-03-26T16:50:25Z",
+      "updatedAt": "2026-03-30T16:58:03Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "baseRefOid": "826eb138d9eabde9bfb05d8b77d59150843f2f5d",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "multiple-proxies-mixed",
-      "headRefOid": "1ca7d628ada9b30375403cd7618f80938b5bfc30",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "799e62d500746eaca44c0544e53d7a377a849995",
+      "closedAt": "2026-03-30T16:58:03Z",
+      "mergedAt": "2026-03-30T16:58:03Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "7a3df38acee93ef8e9c532015fe9d4bb3ab96345"
+      },
       "comments": [],
       "reviews": [
         {
@@ -1651,24 +1655,26 @@
       "id": "PR_kwDOOs4T_87Nw6Dv",
       "title": "Document Duplicate Answer Suppression behavior with TSR.",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/30",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This adds a normative section documenting how TSR affects duplicate answer suppression, and an appendix showing what this looks like from the client perspective.\r\n\r\nCloses #16 ",
       "createdAt": "2026-03-26T15:21:56Z",
-      "updatedAt": "2026-03-27T11:17:22Z",
+      "updatedAt": "2026-03-30T19:36:33Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "baseRefOid": "826eb138d9eabde9bfb05d8b77d59150843f2f5d",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "dupas",
-      "headRefOid": "7a67d905d751aa363a3c372aeafe1609a71c6445",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3a3a447c95dc11640a35c8c15a9e13f3415333f3",
+      "closedAt": "2026-03-30T19:36:26Z",
+      "mergedAt": "2026-03-30T19:36:26Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "5713aadc8e243e78e5d6c90b16a2b54de121255b"
+      },
       "comments": [
         {
           "author": "Abhayakara",
@@ -1791,6 +1797,39 @@
           "createdAt": "2026-03-27T11:17:22Z",
           "updatedAt": "2026-03-27T11:17:22Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wUpOE",
+          "commit": {
+            "abbreviatedOid": "7a67d90"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-30T16:51:13Z",
+          "updatedAt": "2026-03-30T16:51:13Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "I would hope that they would not be confused by this, but I added text to make it explicit.",
+              "createdAt": "2026-03-30T16:51:13Z",
+              "updatedAt": "2026-03-30T16:51:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wYMgn",
+          "commit": {
+            "abbreviatedOid": "3a3a447"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "looks ok, thanks - merging.",
+          "createdAt": "2026-03-30T19:36:00Z",
+          "updatedAt": "2026-03-30T19:36:00Z",
+          "comments": []
         }
       ]
     },
@@ -1806,13 +1845,13 @@
       "labels": [],
       "body": "- Document suppression of redundant probes\r\n- Document API requirement for withdrawal of valid data\r\n\r\nCloses #10 ",
       "createdAt": "2026-03-26T16:12:57Z",
-      "updatedAt": "2026-03-27T13:32:44Z",
+      "updatedAt": "2026-03-30T16:43:38Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "baseRefOid": "826eb138d9eabde9bfb05d8b77d59150843f2f5d",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "goodbye-withdrawal",
-      "headRefOid": "1dc258f684d56a375e759e26556d7053dfaf7822",
+      "headRefOid": "cfae2fb4bb9224c5efcbc7abafb582c32ce27d10",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -2013,6 +2052,39 @@
               "updatedAt": "2026-03-27T13:32:44Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wJLbf",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-03-30T08:35:06Z",
+          "updatedAt": "2026-03-30T08:35:06Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wUeMa",
+          "commit": {
+            "abbreviatedOid": "1dc258f"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-30T16:43:00Z",
+          "updatedAt": "2026-03-30T16:43:00Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "I've added that clarification, although it's not really necessary since we say later that this rule only applies when data with the right timestamp is in the cache.",
+              "createdAt": "2026-03-30T16:43:00Z",
+              "updatedAt": "2026-03-30T16:43:00Z"
+            }
+          ]
         }
       ]
     },
@@ -2021,21 +2093,21 @@
       "id": "PR_kwDOOs4T_87NyI0F",
       "title": "Add section reference for timeliness",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/32",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #24 ",
       "createdAt": "2026-03-26T16:24:23Z",
-      "updatedAt": "2026-03-27T13:51:48Z",
+      "updatedAt": "2026-03-30T16:29:28Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
       "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "timely",
       "headRefOid": "335cf6ef64034409299965db03c921cd2a0dd3f4",
-      "closedAt": null,
+      "closedAt": "2026-03-30T16:29:28Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -2046,33 +2118,56 @@
           "body": "See #36  for potential alternative to this.",
           "createdAt": "2026-03-27T13:51:48Z",
           "updatedAt": "2026-03-27T13:51:48Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Esko already did a fix for this.",
+          "createdAt": "2026-03-30T16:29:28Z",
+          "updatedAt": "2026-03-30T16:29:28Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_87wJKw5",
+          "commit": {
+            "abbreviatedOid": "335cf6e"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "see my earlier comment pointing to the alternative PR: proposing to only point towards the normative text for 7 days, as a way to avoid repeating the normative requirement in other places.",
+          "createdAt": "2026-03-30T08:34:34Z",
+          "updatedAt": "2026-03-30T08:34:34Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 33,
       "id": "PR_kwDOOs4T_87Nyi1I",
       "title": "Receive time API considerations",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/33",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #8",
       "createdAt": "2026-03-26T16:46:30Z",
-      "updatedAt": "2026-03-27T13:53:36Z",
+      "updatedAt": "2026-03-30T19:47:22Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "baseRefOid": "5713aadc8e243e78e5d6c90b16a2b54de121255b",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "rectimeapi",
-      "headRefOid": "7b9acaf55574279f025945a88697fb49853a583e",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "c31f98789fa968fdd103d569540540509942b140",
+      "closedAt": "2026-03-30T19:47:18Z",
+      "mergedAt": "2026-03-30T19:47:18Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "e9687af902b9bb2a8b6edfb1dded5b611913bef9"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2107,6 +2202,19 @@
           "createdAt": "2026-03-27T13:53:36Z",
           "updatedAt": "2026-03-27T13:53:36Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wYWbu",
+          "commit": {
+            "abbreviatedOid": "c6d72e9"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-30T19:44:11Z",
+          "updatedAt": "2026-03-30T19:44:11Z",
+          "comments": []
         }
       ]
     },
@@ -2115,24 +2223,26 @@
       "id": "PR_kwDOOs4T_87NyxcI",
       "title": "Delete sentence that claims only probes contain TSR.",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/34",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #23 ",
       "createdAt": "2026-03-26T16:59:35Z",
-      "updatedAt": "2026-03-27T13:56:02Z",
+      "updatedAt": "2026-03-30T08:32:13Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
       "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "noprobe",
       "headRefOid": "6729caf5df9bd581e95562b049bad7a70146083b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-03-30T08:32:08Z",
+      "mergedAt": "2026-03-30T08:32:08Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "838ca9c5db4d974421a43a2456653afd32905587"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2155,24 +2265,26 @@
       "id": "PR_kwDOOs4T_87N-3Jm",
       "title": "Replace applicability text",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/35",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #5 ",
       "createdAt": "2026-03-27T08:43:43Z",
-      "updatedAt": "2026-03-27T14:02:10Z",
+      "updatedAt": "2026-03-30T19:55:54Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "cd5e4e2c315ff33bf8e9b0127d92cf2dca0a84fc",
+      "baseRefOid": "e9687af902b9bb2a8b6edfb1dded5b611913bef9",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "applicability",
-      "headRefOid": "74506ba3d252c842c2726311fa909333827927da",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e95417eb8d8c517315dc0aa3e5c5a0ec6564080d",
+      "closedAt": "2026-03-30T19:55:50Z",
+      "mergedAt": "2026-03-30T19:55:50Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "05a5d8d327d120834669dc8a20643df38a52d744"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2234,6 +2346,32 @@
               "updatedAt": "2026-03-27T14:02:10Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wJI6S",
+          "commit": {
+            "abbreviatedOid": "74506ba"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-03-30T08:33:03Z",
+          "updatedAt": "2026-03-30T08:33:03Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_87wYh93",
+          "commit": {
+            "abbreviatedOid": "b2aafdd"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Added 8766 to references to fix the build; PR approved.",
+          "createdAt": "2026-03-30T19:52:53Z",
+          "updatedAt": "2026-03-30T19:52:53Z",
+          "comments": []
         }
       ]
     },
@@ -2242,24 +2380,26 @@
       "id": "PR_kwDOOs4T_87ODjcN",
       "title": "Make 2 section references to the normative 7 days limit.",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/36",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #24",
       "createdAt": "2026-03-27T13:50:04Z",
-      "updatedAt": "2026-03-27T13:50:05Z",
+      "updatedAt": "2026-03-30T16:02:14Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
+      "baseRefOid": "2bba6130465e31699a553db550d0e38264f35736",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "timely-v2",
-      "headRefOid": "b410eedb0a1ea1ed635ace2d89e2b0ce2bd062e4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "795571178737dac52eba975f124c403e49d4cb3e",
+      "closedAt": "2026-03-30T16:02:14Z",
+      "mergedAt": "2026-03-30T16:02:14Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "826eb138d9eabde9bfb05d8b77d59150843f2f5d"
+      },
       "comments": [],
       "reviews": []
     },
@@ -2268,24 +2408,26 @@
       "id": "PR_kwDOOs4T_87OENgh",
       "title": "Quote and capitalize field names",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/37",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Close #20\r\n\r\nAlso removes duplicated text in the option description Section 2.",
       "createdAt": "2026-03-27T14:21:45Z",
-      "updatedAt": "2026-03-27T14:21:45Z",
+      "updatedAt": "2026-03-30T15:57:24Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
       "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "pr-quote-field-names",
       "headRefOid": "fdb9937f37e4d96a2ac83ce9e173a471e6e09036",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-03-30T15:57:24Z",
+      "mergedAt": "2026-03-30T15:57:24Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "2bba6130465e31699a553db550d0e38264f35736"
+      },
       "comments": [],
       "reviews": []
     },
@@ -2294,24 +2436,82 @@
       "id": "PR_kwDOOs4T_87OEuvn",
       "title": "Clarify that section Timeliness of Conflict Resolution is about stale data; more details",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/38",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "EskoDijk",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Close #9",
       "createdAt": "2026-03-27T14:47:54Z",
-      "updatedAt": "2026-03-27T14:47:55Z",
+      "updatedAt": "2026-03-30T15:54:59Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
       "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "pr-timeliness-conflict",
       "headRefOid": "f10c23317f7dc55114b69ab16fd0b9063612ccfa",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-03-30T15:54:58Z",
+      "mergedAt": "2026-03-30T15:54:58Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "5dd33670bacedbdd7dbe01d012058c17245a0f80"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 39,
+      "id": "PR_kwDOOs4T_87OiPdZ",
+      "title": "CI build error fix (workaround) ",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/39",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "described in https://github.com/martinthomson/aasvg/issues/25\r\n\r\nBy pinning the aasvg version, the parsing issue for illegal tags in svg should be avoided.",
+      "createdAt": "2026-03-30T08:29:36Z",
+      "updatedAt": "2026-03-30T08:31:09Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "e86de10f8a4ea940f7e9685a5e5a66bd4535663a",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-fix-ci-aasvg",
+      "headRefOid": "9cfdda0a11b72ac197865a98deafbefb5858791f",
+      "closedAt": "2026-03-30T08:31:05Z",
+      "mergedAt": "2026-03-30T08:31:05Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "80f706f889381a7d20bb128bacab06fa6a82f72c"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 40,
+      "id": "PR_kwDOOs4T_87Oiscw",
+      "title": "Make ref to AdvProxy informative; and related minor text updates.",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/40",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-03-30T08:54:10Z",
+      "updatedAt": "2026-03-30T15:53:51Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "838ca9c5db4d974421a43a2456653afd32905587",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-ref-advproxy-informative",
+      "headRefOid": "c41bcbcdbb47be2f70c12d058b6c422ac53536a8",
+      "closedAt": "2026-03-30T15:53:51Z",
+      "mergedAt": "2026-03-30T15:53:51Z",
+      "mergedBy": "Abhayakara",
+      "mergeCommit": {
+        "oid": "e6f24ff1fb9f7d6bba08b14f745e1bdf80c59729"
+      },
       "comments": [],
       "reviews": []
     }
