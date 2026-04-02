@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-31T01:15:46.646020+00:00",
+  "timestamp": "2026-04-02T01:13:14.388221+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -189,7 +189,7 @@
       ],
       "body": "The document says:\n\n**Both times are the same**\n: In this case, the new record is added to the local registration database and put in the probing state.\n\nHowever, given that the data is already in the cache, there's actually no need to send any mDNS traffic here, and it's always better not to. So I _think_ we should just add the data to the authoritative database and take no other action.\n\n",
       "createdAt": "2025-07-24T08:12:38Z",
-      "updatedAt": "2025-10-02T15:39:21Z",
+      "updatedAt": "2026-03-31T10:11:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -212,6 +212,27 @@
           "body": "Also, on a practical level, the notion of conflict that you are proposing here is explicitly invalidated in this document. A name can have many RRsets associated with it, and each RRset can contain more than one record. So if we get several records with the same TSR time on the same name, they are explicitly defined in this draft as not being in conflict. So what would happen in the case you describe is that all the records would wind up in the cache. We don't actually have a way to detect this situation, nor can we: we are relying on this behavior for correctness.",
           "createdAt": "2025-10-02T15:39:21Z",
           "updatedAt": "2025-10-02T15:39:21Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "So are we relying here on the mDNS registrant to not send multiple record updates to the mDNS registrar within a 1 second period?\n\nIf so, the following would be illegal then (?):\n1. at time t=0 ms, register record type X on name example.local\n2. at time t=100 ms, register record type Y on name example.local\n\nIf it's illegal to do so, my question is why not enforce this rule at the mDNS registrar side, to avoid future bugs/errors? And is this limitation a good idea, shouldn't the registrant just be allowed to register its (new) records?\n\nIf it's not illegal to do so, the following would happen (correct me if I'm wrong):\n1. record type X example.local is put in probing state\n2. record type Y example.local is *not* put in probing state (if we would apply the change requested by this Github issue, to not probe)\n\nWhy shouldn't record type Y be probed just like type X?",
+          "createdAt": "2026-03-31T07:33:02Z",
+          "updatedAt": "2026-03-31T07:33:02Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That's not how SRP works. SRP registers all records on a name at once. So the scenario where this could occur is if the client registers all the records on a name at once, and then a short time later submits a new registration for all the records on a name that's different.\n\nThis could happen in practice, and is not strictly forbidden. However, it's such an edge situation that trying to optimize it is silly. The probe is already checking to see that we can register that name, and we can't get name conflicts on names covered by the same TSR merely because there are different records. So the first probe should suffice here\u2014there's no reason at all to do a second probe. We do need to do an _announcement_ of all the records once we come out of the probing state.\n\nIt's a bit tempting to try to add another field to the TSR record that's a hash of the update, so that if we get two updates within the error interval (which is probably >1s) we can tell that they are different. My only reason for not doing this is that it is a significant change which would delay publication, and yields very little improvement in practice, since events like this really shouldn't ever happen.\n\nOf course, they _can_ happen, e.g. when a new address appears moments after an SRP registration that didn't include it. We could do something clever in this case like require the registrar to add at least ten seconds to the received time in this situation, since that should hopefully be enough to get around any delays in the network. But if we're doing that, why not actually fix it with the hash?",
+          "createdAt": "2026-03-31T09:44:10Z",
+          "updatedAt": "2026-03-31T09:44:10Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Abhayakara forgive my ignorance :-)   So the probe is for the name + type ANY, to ensure the name isn't in use already. When new records are added with the same name, very quickly after a probe has completed, there's no need to re-probe. And if a probe is already ongoing for that name we just \"join\" it (i.e. wait for that existing probe to conclude).\n\nI still wonder why probing is needed for case 3 (\"Proposed TSR time is more recent\"), if the previous (now stale) data was already present in the local mDNS registrar's database and it had already probed and claimed that name before. \nSee RFC 6762 Section 8.4:\n\n> The host does not need to repeat the Probing step because it has already\n   established unique ownership of that name.\n\nAnd the reason I'm focusing on these \"quick\" successive updates is \n* TSR does not require that the mDNS registrant is an entity that uses SRP; it's currently targeting to be more general also - a different type of proxy could be used.\n* when using SRP the client's first message may get delayed, such that from the SRP registrar point of view there are 2 updates that follow at almost the same time (e.g. 100 ms difference) and both updates are immediately sent to the mDNS registrar upon receipt, for example.\n   * is it the responsibility of the mDNS registrant (= SRP registrar + advProxy) to throttle/delay the 2nd registration in such case? Or should the mDNS registrar do this (such that it also keeps correctness in case of non-SRP protocols using TSR, or in case of buggy implementations) ?\n   * or can we design TSR handling such that this case doesn't matter anymore ... ?",
+          "createdAt": "2026-03-31T10:11:18Z",
+          "updatedAt": "2026-03-31T10:11:18Z"
         }
       ]
     },
