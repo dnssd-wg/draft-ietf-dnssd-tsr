@@ -376,8 +376,8 @@ respect to any locally-registered data.
 {{Section 7.4 of RFC6762}}, Duplicate Answer Suppression, describes behavior intended to prevent the redundant transmission
 of duplicate answers. When an mDNS query is received for which the mDNS registrar has authoritative data, the mDNS registrar
 will wait for a random amount of time before sending a response. If, during that time, a response is received that contains
-all the answers it would have sent, it suppresses sending these answers, since they are redundant. Here we will refer to
-such a response as a pre-empting response.
+all the answers it would have sent, it suppresses sending these answers, since they are redundant.
+Such a response is referred to as a "pre-empting response".
 
 In the case where TSR data is present locally or in a pre-empting response, it can be the case that the data in a pre-empting
 response is stale or conflicting. For this reason, an mDNS registrar MUST NOT suppress duplicate answers when:
@@ -391,7 +391,38 @@ response is stale or conflicting. For this reason, an mDNS registrar MUST NOT su
   present in the pre-empting response, but the local TSR time for that owner name is more recent than the TSR time
   for that owner name in the pre-empting response
 
-In {{dupasexample}} we show what this might look like from the perspective of an mDNS requester.
+{{dupasexample}} shows what this might look like from the perspective of an mDNS requester.
+
+## Suppression of Goodbye announcements
+
+When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
+data, the mDNS registrar MUST NOT send a "goodbye" announcement for any RR on that owner name as a result of flushing
+this stale data.
+
+The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
+by TSR data, and as a result of this some records are removed, but some remain, the mDNS registrar that was directly
+updated will either send "goodbye" announcement or an announcement with the cache flush bit set as specified in
+{{Section 8.4 of RFC6762}}. Since the mDNS registrar with the most current information has already done what is needed,
+if an mDNS registrar that is flushing locally-registered data were to send a "goodbye" announcement this would at
+best be redundant and hence wasteful use of multicast, and at worse might cause valid data to be flushed from the cache
+on some mDNS registrar.
+
+## Suppression of redundant probing
+
+When mDNS proxies are doing any form of replication of the data they are publishing, it can be the case that one
+proxy does its probes first. If this is the case, proxies on the same multicast link that receive replicated data
+will already have the correct data in cache with matching TSR times. To avoid redundant probing, when an mDNS
+registrant registers data with an mDNS registrar for which the same data is already cached with the same TSR key
+checksum and a recent TSR time, the mDNS registrar MUST skip probing. Recent here should take into account network
+delays: a difference of less than ten seconds between the cached TSR time and the registrant's TSR time should be
+considered "recent."
+
+In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
+the mDNS registrar MUST NOT re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
+announcement should be sent for such RRs, but no probe announcement is set for RRs that are not removed.
+If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
+the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
+there to be competing mDNS updates being probed or announced at the same time.
 
 ## Constructing a mDNS message with TSR options {#construct}
 
@@ -541,7 +572,30 @@ SRP registrar may receive a registration from a peer during startup synchronizat
 occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
 the registration to use the time that the registrant registers the service as the time of receipt.
 
+## Removing data that is still valid
 
+In some cases, a proxy may need to stop being a proxy, but may be proxying RRs that are also being proxied by one or
+more other proxies. In this case, if the proxy sends a "goodbye" announcement for such RRs, they will be removed
+from the caches of mDNS registrars that receive such announcements.
+
+To prevent this, an mDNS registrar implementation that implements TSR MUST provide a way for an mDNS registrant to indicate
+that such data is being withdrawn from publication by that registrant, but is still valid. When the registrant indicates that
+this is the case, the mDNS registrar MUST NOT send goodbye announcements for such data.
+
+## Primary/Secondary indication
+
+When more than one proxy is authoritative for a particular RR, this can generate excessive answer traffic, and also
+redundant goodbye announcements. mDNS registrar implementations that support TSR MUST provide a way for a new proxy mDNS
+registrant to indicate that it is primary or secondary. When an RR registered by a secondary proxy is later removed, the
+mDNS registrant MUST NOT send a goodbye packet for that RR.
+
+Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrar MUST NOT
+respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received within 5 seconds
+of the initial query reception, should it respond.
+
+Note that any change of indication from primary to secondary, or vice versa, while an mDNS registrant already has
+records registered on the mDNS registrar is out of scope of this specification and an API to indicate such changes
+is not required on the mDNS registrar.
 
 # Security Considerations
 
