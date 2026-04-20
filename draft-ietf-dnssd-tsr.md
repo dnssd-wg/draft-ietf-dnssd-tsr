@@ -572,11 +572,6 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
 
 --- back
 
-# Acknowledgments
-{:numbered="false"}
-
-TODO acknowledge reviewers and contributors.
-
 # Duplicate Answer Suppression Example {#dupasexample}
 
 As described in {{dupans}}, it is possible that two proxies may respond to an mDNS query with answers to the same question,
@@ -612,3 +607,8 @@ its response. However, it is possible that B might not see the response from C. 
 responses, but since the TSR time on the second response is earlier than the TSR time on the first response, we would see
 only one callback, providing an AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
 bit clear.
+
+# Acknowledgments
+{:numbered="false"}
+
+TODO acknowledge reviewers and contributors.
