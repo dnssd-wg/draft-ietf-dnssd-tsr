@@ -13,7 +13,7 @@ being proxied, rather than advertised directly, e.g. when using a combined DNS-S
 registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
 DNS owner name was most recently updated. 
     " name="description">
-<meta content="xml2rfc 3.32.0" name="generator">
+<meta content="xml2rfc 3.33.0" name="generator">
 <meta content="mDNS" name="keyword">
 <meta content="TSR" name="keyword">
 <meta content="conflict resolution" name="keyword">
@@ -21,14 +21,14 @@ DNS owner name was most recently updated.
 <meta content="DNS" name="keyword">
 <meta content="draft-ietf-dnssd-tsr-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.32.0
-    Python 3.12.12
+  xml2rfc 3.33.0
+    Python 3.12.13
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.0.2
-    platformdirs 4.9.4
+    platformdirs 4.9.6
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.32.5
@@ -1053,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TSR EDNS option for mDNS</td>
-<td class="right">March 2026</td>
+<td class="right">April 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Dijk</td>
-<td class="center">Expires 1 October 2026</td>
+<td class="center">Expires 22 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-tsr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-03-30" class="published">30 March 2026</time>
+<time datetime="2026-04-20" class="published">20 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-01">1 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-22">22 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1132,7 +1132,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1191,16 +1191,22 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-processing-questions-for-wh" class="internal xref">Processing questions for which TSR data exists</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-processing-messages-contain" class="internal xref">Processing messages containing TSR options</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-receiving-messages-that-may" class="internal xref">Receiving messages that may contain TSR options</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
-                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-suppression-of-goodbye-anno" class="internal xref">Suppression of Goodbye announcements</a></p>
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-processing-messages-thay-ma" class="internal xref">Processing messages thay may contain TSR options</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.6">
-                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-suppression-of-redundant-pr" class="internal xref">Suppression of redundant probing</a></p>
+                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-duplicate-answer-suppressio" class="internal xref">Duplicate answer suppression behavior</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.7">
-                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-constructing-a-mdns-message" class="internal xref">Constructing a mDNS message with TSR options</a></p>
+                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-suppression-of-goodbye-anno" class="internal xref">Suppression of Goodbye announcements</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.8">
+                <p id="section-toc.1-1.3.2.8.1"><a href="#section-3.8" class="auto internal xref">3.8</a>.  <a href="#name-suppression-of-redundant-pr" class="internal xref">Suppression of redundant probing</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.9">
+                <p id="section-toc.1-1.3.2.9.1"><a href="#section-3.9" class="auto internal xref">3.9</a>.  <a href="#name-constructing-a-mdns-message" class="internal xref">Constructing a mDNS message with TSR options</a></p>
 </li>
             </ul>
 </li>
@@ -1218,6 +1224,17 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-when-to-use-tsr" class="internal xref">When to Use TSR</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-use-of-tsr-with-redundant-p" class="internal xref">Use of TSR with redundant proxies</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-use-of-tsr-with-multihomed-" class="internal xref">Use of TSR with multihomed devices</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-tsr-in-networks-with-non-co" class="internal xref">TSR in networks with non-compliant mDNS caches</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-registrant-api-consideratio" class="internal xref">Registrant API considerations</a></p>
@@ -1248,10 +1265,13 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-duplicate-answer-suppression" class="internal xref">Duplicate Answer Suppression Example</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1269,8 +1289,7 @@ Multicast DNS has no single source of authority. Because of this, mDNS has a mec
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
 entity advertising an mDNS service is in fact authoritative for that service. For mDNS proxies, such as
 an advertising proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span>, this is not the case: the source of truth for
-the service being advertised may be another entity. For example, it may be an SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> requester
-that registers its services with an SRP registrar.<a href="#section-1-2" class="pilcrow">¶</a></p>
+the service being advertised is an DNSSD Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> requester.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
 original server may still be advertising the old SRP registration using mDNS. If the information in the new SRP
@@ -1314,14 +1333,14 @@ information is rejected.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 an SRP registrar, it works poorly: an SRP registrar acting as an advertising proxy publishes the contents of its
 DNS zone using mDNS. The sources of truth for this information are the SRP requesters,
 not the SRP registrar itself. The SRP registrar in this case acts as a proxy for the SRP requesters.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">In the case of an advertising proxy publishing records originating from an SRP Update, what we want to see published
-is not the oldest information, but the newest.
+<p id="section-1.2-2">In the case of an advertising proxy publishing records originating from an SRP Update, the most recent information
+is correct; the older information is simply stale, and not competing.
 When the SRP requester is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
 available, the SRP requester may wind up sending its SRP Updates to a different SRP registrar. This can happen as a result of
 a network partition, or in cases where the SRP registrar is advertised on a anycast address.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
-<p id="section-1.2-3">When the SRP requester registers with a different SRP registrar, the behavior we get with the current mDNS conflict
-resolution approach is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
+<p id="section-1.2-3">When the SRP requester registers with a different SRP registrar, the behavior of the mDNS conflict
+resolution approach without TSR is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
 and the new (more recent) advertisement (A’) will be discoverable as separate services.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
 <p id="section-1.2-4">This creates a new burden on consumers of such services: they need to parse through the whole list of services of
 their type, using metadata from the TXT record in the service instance data, if possible, to determine that
@@ -1355,50 +1374,55 @@ not during regular operation.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a>
           <dd class="break"></dd>
 <dt id="section-1.3-2.3"><strong>mDNS registrar</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.4">
-            <p id="section-1.3-2.4.1">an mDNS <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> implementation on a host that accepts local requests for advertising/registering DNS records from
-one or more registrants. This could for example be an mDNS daemon process running in an operating system, accepting
-API calls from local processes to register or update DNS records for that process.<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.4.1">an mDNS <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> implementation on a host that accepts local requests for querying, advertising and registering
+DNS records from one or more requesters and/or registrants. This could for example be an mDNS daemon process running
+in an operating system, accepting API calls from local processes to register or update DNS records for that process.<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.3-2.5"><strong>mDNS registrant</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.6">
-            <p id="section-1.3-2.6.1">an entity or software process requesting a DNS name to be advertised by the (local) mDNS registrar.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.6.1">an entity or software process that is attempting to register information for advertisement to a (local) mDNS registrar.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.7"><strong>mDNS proxy</strong></dt>
+<dt id="section-1.3-2.7"><strong>mDNS requester</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.8">
-            <p id="section-1.3-2.8.1">a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
-mDNS records on behalf of one or more entities not located on the host itself.
-The advertising proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.8.1">an entity or software process that issues mDNS queries to a local mDNS registrar<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.9"><strong>SRP requester</strong></dt>
+<dt id="section-1.3-2.9"><strong>mDNS proxy</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.10">
-            <p id="section-1.3-2.10.1">a client that uses the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> to send an SRP Update to an SRP registrar.<a href="#section-1.3-2.10.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.10.1">a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
+mDNS records on behalf of one or more entities not located on the host itself.
+The advertising proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-2.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.11"><strong>SRP registrar</strong></dt>
+<dt id="section-1.3-2.11"><strong>SRP requester</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.12">
-            <p id="section-1.3-2.12.1">a server that accepts SRP Updates sent by SRP requesters using the SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>.
+            <p id="section-1.3-2.12.1">a client that uses the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> to send an SRP Update to an SRP registrar.<a href="#section-1.3-2.12.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.3-2.13"><strong>SRP registrar</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.14">
+            <p id="section-1.3-2.14.1">a server that accepts SRP Updates sent by SRP requesters using the SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>.
 DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
 <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> located on the same host.
-In that case, the SRP registrar process acts as an mDNS registrant towards its local mDNS registrar process.<a href="#section-1.3-2.12.1" class="pilcrow">¶</a></p>
+In that case, the SRP registrar process acts as an mDNS registrant towards its local mDNS registrar process.<a href="#section-1.3-2.14.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.13"><strong>TSR data</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.14">
-            <p id="section-1.3-2.14.1">locally stored data, associated with a single DNS owner name, that keeps track of the absolute time when a set of
-resource records were last updated and includes a key checksum to identify the owner of these records.<a href="#section-1.3-2.14.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-1.3-2.15"><strong>TSR option</strong></dt>
+<dt id="section-1.3-2.15"><strong>TSR data</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.16">
-            <p id="section-1.3-2.16.1">an EDNS0 Time Since Received (TSR) option as defined by this specification.<a href="#section-1.3-2.16.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.16.1">locally stored data, associated with a single DNS owner name, that keeps track of the absolute time when a set of
+resource records were last updated and includes a key checksum to identify the owner of these records.<a href="#section-1.3-2.16.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.17"><strong>TSR time</strong></dt>
+<dt id="section-1.3-2.17"><strong>TSR option</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.18">
-            <p id="section-1.3-2.18.1">the (node-local) absolute time indicated by a particular TSR data.<a href="#section-1.3-2.18.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.18.1">an EDNS0 Time Since Received (TSR) option as defined by this specification.<a href="#section-1.3-2.18.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.3-2.19"><strong>TSR time</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-2.20">
+            <p id="section-1.3-2.20.1">the (node-local) absolute time indicated by a particular TSR data.<a href="#section-1.3-2.20.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1523,43 +1547,45 @@ mDNS message with a TSR option is generated from local data.<a href="#section-2-
         <h3 id="name-validating-requested-local-">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-validating-requested-local-" class="section-name selfRef">Validating requested local RR registrations that include a TSR option</a>
         </h3>
-<p id="section-3.1-1">When an mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
-for that name, the mDNS registrar first checks to see if there are any records either in cache or from other local registrations
-on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">When such data exists, the registrar <span class="bcp14">MUST</span> check to see if it has TSR data for that owner name. If it does not, or if there
+<p id="section-3.1-1">When a local mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
+for that name, the mDNS registrar first checks that none of the records are marked shared. If any record is marked shared,
+the mDNS registrar <span class="bcp14">MUST</span> respond with an error indicating that the registration is invalid.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">It then checks to see if there are any records either in cache or from other local registrations
+on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">When such data exists, the registrar <span class="bcp14">MUST</span> check to see if it has TSR data for that owner name. If it does not, or if there
 is TSR data on that name but the key checksum does not match, the registrar <span class="bcp14">MUST</span> treat this registration as a conflict
-and return an appropriate error to the registrant.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">If such data exists and the key checksums match, there are three possibilities based on the known TSR time
-(from the existing data) and the proposed TSR time (from the TSR data in the registration request):<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-3.1-4">
-          <dt id="section-3.1-4.1"><strong>Known TSR time is more recent</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-4.2">
-            <p id="section-3.1-4.2.1">In this case, the registrar <span class="bcp14">MUST</span> treat the new registration as stale, and return an indication to the
+and return an appropriate error to the registrant.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">If such data exists and the key checksums match, there are three possibilities based on the known TSR time
+(from the existing data) and the proposed TSR time (from the TSR data in the registration request):<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.1-5">
+          <dt id="section-3.1-5.1"><strong>Known TSR time is more recent</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-5.2">
+            <p id="section-3.1-5.2.1">In this case, the registrar <span class="bcp14">MUST</span> treat the new registration as stale, and return an indication to the
 registrant that its registration is stale. This indication must be distinct from the "appropriate error" indication of
-conflict that was defined above.<a href="#section-3.1-4.2.1" class="pilcrow">¶</a></p>
+conflict that was defined above.<a href="#section-3.1-5.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.1-4.3"><strong>Both TSR times are the same</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-4.4">
-            <p id="section-3.1-4.4.1">In this case, the new record is added to the local registration database and put in the probing state.<a href="#section-3.1-4.4.1" class="pilcrow">¶</a></p>
+<dt id="section-3.1-5.3"><strong>Both TSR times are the same</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-5.4">
+            <p id="section-3.1-5.4.1">In this case, the new record is added to the local registration database and put in the probing state.<a href="#section-3.1-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.1-4.5"><strong>Proposed TSR time is more recent</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-4.6">
-            <p id="section-3.1-4.6.1">In this case, all cached data on the owner name is discarded. The registrant for any existing locally-registered data is notified that
+<dt id="section-3.1-5.5"><strong>Proposed TSR time is more recent</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-5.6">
+            <p id="section-3.1-5.6.1">In this case, all cached data on the owner name is discarded. The registrant for any existing locally-registered data is notified that
 the data they had previously registered is stale, and the stale data is removed from the local registration database. The new data is
-added and put in the probing state, and the TSR data is updated with the proposed TSR data.<a href="#section-3.1-4.6.1" class="pilcrow">¶</a></p>
+added and put in the probing state, and the TSR data is updated with the proposed TSR data.<a href="#section-3.1-5.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.1-5">It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
+<p id="section-3.1-6">It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see <span><a href="https://rfc-editor.org/rfc/rfc6762#section-2" class="relref">Section 2</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>).
 If an mDNS registrant registers an RR on a name for which the registrar already has data, cached or
 authoritative, on the same name, whether of the same RR type or a different RR type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar <span class="bcp14">MUST</span> treat
-this as an immediate conflict, and <span class="bcp14">MUST NOT</span> probe.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6">As with any local mDNS registration, the mDNS registrar treats all of the records in the registration as tentative (that
-is, in the probing state) until they have been probed and no conflicting answers have been received.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+this as an immediate conflict, and <span class="bcp14">MUST NOT</span> probe.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">As with any local mDNS registration, the mDNS registrar treats all of the records in the registration as tentative (that
+is, in the probing state) until they have been probed and no conflicting answers have been received.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="probing-resource-records-on-names-for-which-tsr-data-has-been-proposed">
@@ -1571,7 +1597,7 @@ is, in the probing state) until they have been probed and no conflicting answers
 no conflicting data for records in the probing state. The behavior for records that are in the probing state with owner names to
 which no TSR data applies remains unchanged.  When there is TSR data on a name for which records are being probed,
 the mDNS registar <span class="bcp14">MUST</span> include TSR options for each such name as described in <a href="#tsrrr" class="auto internal xref">Section 2</a>. Handling of
-responses is described in <a href="#procmes" class="auto internal xref">Section 3.4</a>.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+responses is described in <a href="#procmes" class="auto internal xref">Section 3.5</a>.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="processing-questions-for-which-tsr-data-exists">
@@ -1582,130 +1608,191 @@ responses is described in <a href="#procmes" class="auto internal xref">Section 
 <p id="section-3.3-1">When processing a question for which local TSR data is present, the mDNS registrar <span class="bcp14">MUST</span> first check to see if there is corresponding
 data in the mDNS message being processed. In this case, before constructing a response,
 the mDNS registrar <span class="bcp14">MUST</span> process the non-question records in the packet, since this could result in stale data being flushed. Processing
-is performed as described in <a href="#procmes" class="auto internal xref">Section 3.4</a>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+is performed as described in <a href="#procmes" class="auto internal xref">Section 3.5</a>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">Once all non-question records have been processed, the responder <span class="bcp14">MUST</span> respond to any questions that match
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
 described in <a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="procmes">
+<div id="receiving-messages-that-may-contain-tsr-options">
 <section id="section-3.4">
-        <h3 id="name-processing-messages-contain">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-processing-messages-contain" class="section-name selfRef">Processing messages containing TSR options</a>
+        <h3 id="name-receiving-messages-that-may">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-receiving-messages-that-may" class="section-name selfRef">Receiving messages that may contain TSR options</a>
         </h3>
-<p id="section-3.4-1">For each TSR option in an mDNS message, the mDNS registrar first determines the owner name of the TSR option by assigning
-an index to each non-question resource record in the mDNS message. The 'RR Index' value of each TSR option is then matched to the
+<p id="section-3.4-1">mDNS registrars that support TSR need to compute an absolute time based on a time offset. This means that registrars need
+to know when the packet was received. A naive implementation might assume that the time that the packet is read off the
+input queue by the registrant is close enough. However, in practice it can be the case on a heavily
+loaded system that the time of receipt and the time of processing are far enough apart to create the appearance of
+staleness.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">To avoid this, mDNS registrants that have an API available to get the actual time of receipt of a packet should make use
+of that API. For example, the SO_TIMESTAMP_CONTINUOUS socket option is available on Linux and BSD Unix platforms,
+including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread
+and queue them for later processing.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="procmes">
+<section id="section-3.5">
+        <h3 id="name-processing-messages-thay-ma">
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-processing-messages-thay-ma" class="section-name selfRef">Processing messages thay may contain TSR options</a>
+        </h3>
+<p id="section-3.5-1">mDNS registrars that support the TSR option <span class="bcp14">MUST</span> check incoming messages for the presence of an EDNS(0) option containing
+TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
+For non-proxy use cases, this should make no difference, since in such cases if multiple devices advertise records
+on the same owner name, these are actually in conflict. However, for the proxy use case, what this means is that two
+proxies that are proxying the same data cannot interoperate if one supports TSR and the other doesn't.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">It is important to note that mDNS messages, particularly in the case of proxies, can contain combined information
+answering multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an
+mDNS registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there
+is not. It's equally possible that such a registrar will send mDNS packets containing no TSR options at all.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-3">When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
+the owner name of the TSR option by assigning
+an index to each non-question resource record in the mDNS message. The 'RR index' of each TSR option is then matched to the
 index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
 option is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
-the TSR option.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
+the TSR option.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+<p id="section-3.5-4">If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
 registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the 'RR Index' value in the TSR option to search across the
-mDNS packet since such an index can easily be out of bounds.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
+mDNS packet since such an index can easily be out of bounds.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+<p id="section-3.5-5">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
 the question section, or is a known answer (QD bit = 0 and it's a record in the answer section). For all such records, no
-special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
+special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
+<p id="section-3.5-6">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is TSR data with that
-owner name locally. If there is not, the record is processed normally.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5">If there is local TSR data for the record's owner name, the mDNS registrar checks to see if there are any resource records
-in the local registration database (that is, not just in the cache) on that name. If there are, the record is treated as a
+owner name locally. If there is not, the record is processed normally.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
+<p id="section-3.5-7">If there is local TSR data for the record's owner name, but no TSR data for that owner name in the mDNS message,
+the mDNS registrar checks to see if there are any resource records
+in the local registration database (that is, not just in the cache) on that name. If there are, all such records are treated as in
 conflict. This conflict exists even if the locally registered records are all shared records. In cases where there are
-records on the name in the cache, those records are all discarded, because they are in conflict with the new data.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">In the case that there is TSR data for the record in the mDNS packet, and no local TSR data, this always means that any
+records on the name in the cache, those records are all discarded, because they are in conflict with the new data.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
+<p id="section-3.5-8">In the case that there is TSR data for the record in the mDNS packet, and there are local records on the same owner name
+for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
 section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
 to the mDNSResponder cache. Such records can never have TSR options associated with them.  However, resource records in
 the authority and additional sections of a query do need to be processed (but in the case of authority records, are not
-added to the cache).<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<p id="section-3.4-7">In cases where the TSR data for a particular name is present both locally and in the mDNS message, the mDNS responder
+added to the cache).<a href="#section-3.5-8" class="pilcrow">¶</a></p>
+<p id="section-3.5-9">In cases where the TSR data for a particular name is present both locally and in the mDNS message, the mDNS responder
 <span class="bcp14">MUST</span> compare the key checksums. If they are different, then the records are always in conflict, and are handled according
-to the context of the conflict, as described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
-<p id="section-3.4-8">In cases where the key checksums match, the mDNS registrar <span class="bcp14">MUST</span> compare the times. When the TSR time from the mDNS Message
+to the context of the conflict, as described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
+<p id="section-3.5-10">In cases where the key checksums match, the mDNS registrar <span class="bcp14">MUST</span> compare the times. When the TSR time from the mDNS Message
 is more recent than the local TSR time, local data in the cache is flushed and registered data is removed and reported
-to the registrant that registered it as stale.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">When the TSR times are the same, any resource records on that name in the answer section and additional section are added
-to the cache.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
-<p id="section-3.4-10">When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
-respect to any locally-registered data.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
+to the registrant that registered it as stale.<a href="#section-3.5-10" class="pilcrow">¶</a></p>
+<p id="section-3.5-11">When the TSR times are the same, any resource records on that name in the answer section and additional section are added
+to the cache.<a href="#section-3.5-11" class="pilcrow">¶</a></p>
+<p id="section-3.5-12">When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
+respect to any locally-registered data.<a href="#section-3.5-12" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dupans">
+<section id="section-3.6">
+        <h3 id="name-duplicate-answer-suppressio">
+<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-duplicate-answer-suppressio" class="section-name selfRef">Duplicate answer suppression behavior</a>
+        </h3>
+<p id="section-3.6-1"><span><a href="https://rfc-editor.org/rfc/rfc6762#section-7.4" class="relref">Section 7.4</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>, Duplicate Answer Suppression, describes behavior intended to prevent the redundant transmission
+of duplicate answers. When an mDNS query is received for which the mDNS registrar has authoritative data, the mDNS registrar
+will wait for a random amount of time before sending a response. If, during that time, a response is received that contains
+all the answers it would have sent, it suppresses sending these answers, since they are redundant.
+Such a response is referred to as a "pre-empting response".<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-2">In the case where TSR data is present locally or in a pre-empting response, it can be the case that the data in a pre-empting
+response is stale or conflicting. For this reason, an mDNS registrar <span class="bcp14">MUST NOT</span> suppress duplicate answers when:<a href="#section-3.6-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.6-3.1">
+            <p id="section-3.6-3.1.1">the TSR key checksum for the owner name in a pre-empting response does not match the local TSR key checksum for that
+owner name<a href="#section-3.6-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.6-3.2">
+            <p id="section-3.6-3.2.1">TSR data is present locally for that owner name but is not present in the pre-empting response<a href="#section-3.6-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.6-3.3">
+            <p id="section-3.6-3.3.1">A TSR option is present for that owner name in the pre-empting response, but local authoritative data for that owner
+name is present but has no associated TSR data<a href="#section-3.6-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.6-3.4">
+            <p id="section-3.6-3.4.1">local authoritative data for that owner name is present and includes TSR data, a TSR option for that owner name is
+present in the pre-empting response, but the local TSR time for that owner name is more recent than the TSR time
+for that owner name in the pre-empting response<a href="#section-3.6-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.6-4"><a href="#dupasexample" class="auto internal xref">Appendix A</a> shows what this might look like from the perspective of an mDNS requester.<a href="#section-3.6-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="suppression-of-goodbye-announcements">
-<section id="section-3.5">
+<section id="section-3.7">
         <h3 id="name-suppression-of-goodbye-anno">
-<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-suppression-of-goodbye-anno" class="section-name selfRef">Suppression of Goodbye announcements</a>
+<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-suppression-of-goodbye-anno" class="section-name selfRef">Suppression of Goodbye announcements</a>
         </h3>
-<p id="section-3.5-1">When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
+<p id="section-3.7-1">When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
 data, the mDNS registrar <span class="bcp14">MUST NOT</span> send a "goodbye" announcement for any RR on that owner name as a result of flushing
-this stale data.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.5-2">The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
+this stale data.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.7-2">The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
 by TSR data, and as a result of this some records are removed, but some remain, the mDNS registrar that was directly
 updated will either send "goodbye" announcement or an announcement with the cache flush bit set as specified in
 <span><a href="https://rfc-editor.org/rfc/rfc6762#section-8.4" class="relref">Section 8.4</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>. Since the mDNS registrar with the most current information has already done what is needed,
 if an mDNS registrar that is flushing locally-registered data were to send a "goodbye" announcement this would at
 best be redundant and hence wasteful use of multicast, and at worse might cause valid data to be flushed from the cache
-on some mDNS registrar.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+on some mDNS registrar.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="suppression-of-redundant-probing">
-<section id="section-3.6">
+<section id="section-3.8">
         <h3 id="name-suppression-of-redundant-pr">
-<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-suppression-of-redundant-pr" class="section-name selfRef">Suppression of redundant probing</a>
+<a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-suppression-of-redundant-pr" class="section-name selfRef">Suppression of redundant probing</a>
         </h3>
-<p id="section-3.6-1">When mDNS proxies are doing any form of replication of the data they are publishing, it can be the case that one
+<p id="section-3.8-1">When mDNS proxies are doing any form of replication of the data they are publishing, it can be the case that one
 proxy does its probes first. If this is the case, proxies on the same multicast link that receive replicated data
 will already have the correct data in cache with matching TSR times. To avoid redundant probing, when an mDNS
 registrant registers data with an mDNS registrar for which the same data is already cached with the same TSR key
 checksum and a recent TSR time, the mDNS registrar <span class="bcp14">MUST</span> skip probing. Recent here should take into account network
 delays: a difference of less than ten seconds between the cached TSR time and the registrant's TSR time should be
-considered "recent."<a href="#section-3.6-1" class="pilcrow">¶</a></p>
-<p id="section-3.6-2">In addition, when the TSR time for a set of RRs is updated by the mDNS registrant, but nothing else changes,
+considered "recent."<a href="#section-3.8-1" class="pilcrow">¶</a></p>
+<p id="section-3.8-2">In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
 the mDNS registrar <span class="bcp14">MUST NOT</span> re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
 announcement should be sent for such RRs, but no probe announcement is set for RRs that are not removed.
-If some RRs are added, the probing stage can be skipped because we already know that we were up to date. So
-the new RRs can simply be announced immediately. We can assume that updates do not happen frequently enough for
-there to be competing mDNS updates being probed or announced at the same time.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
+If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
+the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
+there to be competing mDNS updates being probed or announced at the same time.<a href="#section-3.8-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="constructing-a-mdns-message-with-tsr-options">
-<section id="section-3.7">
+<div id="construct">
+<section id="section-3.9">
         <h3 id="name-constructing-a-mdns-message">
-<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-constructing-a-mdns-message" class="section-name selfRef">Constructing a mDNS message with TSR options</a>
+<a href="#section-3.9" class="section-number selfRef">3.9. </a><a href="#name-constructing-a-mdns-message" class="section-name selfRef">Constructing a mDNS message with TSR options</a>
         </h3>
-<p id="section-3.7-1">For each non-question record that is added to the mDNS message, one of three things must be true:<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.9-1">For each non-question record that is added to the mDNS message, one of three things must be true:<a href="#section-3.9-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.7-2.1">
-            <p id="section-3.7-2.1.1">The mDNS server is has resource records locally registered on that owner name, which may or may not be in the probing
-state.<a href="#section-3.7-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.9-2.1">
+            <p id="section-3.9-2.1.1">The mDNS server is has resource records locally registered on that owner name, which may or may not be in the probing
+state.<a href="#section-3.9-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.7-2.2">
-            <p id="section-3.7-2.2.1">It is sending an answer which is either an announcement or a response containing data it has already validated and for
-which it is authoritative<a href="#section-3.7-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.9-2.2">
+            <p id="section-3.9-2.2.1">It is sending an answer which is either an announcement or a response containing data it has already validated and for
+which it is authoritative<a href="#section-3.9-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.7-2.3">
-            <p id="section-3.7-2.3.1">The message is a query (QD=0) and the record is in the answer section, and is therefore a "known answer."<a href="#section-3.7-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.9-2.3">
+            <p id="section-3.9-2.3.1">The message is a query (QD=0) and the record is in the answer section, and is therefore a "known answer."<a href="#section-3.9-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.7-3">As described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>, an mDNS registrar asking a question about one
+<p id="section-3.9-3">As described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>, an mDNS registrar asking a question about one
 or more RRs on a particular name populates the answer section of its mDNS message with the answers it already knows, to
 avoid unnecessary responses. However, in this case it can't also be probing for records on the same name, because probes
-are only done for unique (non-shared) records.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
-<p id="section-3.7-4">The requirements in <a href="#locval" class="auto internal xref">Section 3.1</a> mean that there can never be an mDNS probe that contains known answers on an
-owner name for which any RR is being probed to which a TSR option applies.<a href="#section-3.7-4" class="pilcrow">¶</a></p>
-<p id="section-3.7-5">This means that for any particular owner name that might be represented in an mDNS packet, it must be the case either that
+are only done for unique (non-shared) records.<a href="#section-3.9-3" class="pilcrow">¶</a></p>
+<p id="section-3.9-4">The requirements in <a href="#locval" class="auto internal xref">Section 3.1</a> mean that there can never be an mDNS probe that contains known answers on an
+owner name for which any RR is being probed to which a TSR option applies.<a href="#section-3.9-4" class="pilcrow">¶</a></p>
+<p id="section-3.9-5">This means that for any particular owner name that might be represented in an mDNS packet, it must be the case either that
 it is not a known answer, or that it is a known answer and no other records exist in the mDNS packet with the same owner
 name to which a TSR option would apply.  That is, one of two things must be true about the set of all records with a
 particular owner name being added to the mDNS packet: either a TSR option applies to all of the records, or it applies to
-none of the records. Furthermore, either a record is a known answer from cache, or it is a locally-registered record.<a href="#section-3.7-5" class="pilcrow">¶</a></p>
-<p id="section-3.7-6">When constructing an mDNS message, the mDNS registrar maintains a set of names and associated TSR data. Initially this set is
+none of the records. Furthermore, either a record is a known answer from cache, or it is a locally-registered record.<a href="#section-3.9-5" class="pilcrow">¶</a></p>
+<p id="section-3.9-6">When constructing an mDNS message, the mDNS registrar maintains a set of names and associated TSR data. Initially this set is
 empty. When the registrar adds a record to the mDNS message, if that record is locally registered, and if the registrar
 has TSR data for that name, it first checks to see if it has already added TSR data for that name to the set. If not, then
 it adds a new entry to the set containing the TSR data for the owner name of the RR. The data added consists of the
-owner name, the index of the record being added (since it is the first), the key checksum, and the time offset.<a href="#section-3.7-6" class="pilcrow">¶</a></p>
-<p id="section-3.7-7">Once the mDNS responder has finished adding resource records to the mDNS message,
+owner name, the index of the record being added (since it is the first), the key checksum, and the time offset.<a href="#section-3.9-6" class="pilcrow">¶</a></p>
+<p id="section-3.9-7">Once the mDNS responder has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
 produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds)
-<a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.7-7" class="pilcrow">¶</a></p>
+<a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.9-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1759,7 +1846,7 @@ It’s reasonable to expect that every mDNS implementation should be able to rem
 <p id="section-7-1">mDNS registrars and queriers that do not support the TSR option are expected to ignore the option, so they will behave
 as if no TSR option was sent. This may result in such registrars temporarily caching stale data. However, in the
 normal course of processing, more recent data will win. In cases where it does not, the Reconfirm process which
-is part of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> already works to clear stale data: since we expect SRP registrars to implement
+is part of <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> already works to clear stale data: since SRP registrars are expected to implement
 TSR, by the time a Reconfirm is attempted, all authoritative stale data should have been cleared.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1768,10 +1855,66 @@ TSR, by the time a Reconfirm is attempted, all authoritative stale data should h
       <h2 id="name-when-to-use-tsr">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-when-to-use-tsr" class="section-name selfRef">When to Use TSR</a>
       </h2>
-<p id="section-8-1">TSR is only relevant for mDNS proxies. Regular mDNS registrants that don't support mDNS proxy are not expected to use it, since it
-will produce the wrong behavior for this use case. An mDNS proxy <span class="bcp14">MUST</span> explicitly allow its mDNS registrar to use
-TSR for conflict resolution. mDNS registrars <span class="bcp14">MUST NOT</span> record a time of receipt unless the registrant has
-specifically requested it.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">There are no cases where using TSR is harmful, but in the case of individual devices advertising individual services
+with mDNS, it may be of little benefit. The reason for this is that when two devices both claim the same name to
+use for advertising services, their advertisements will be seen as in conflict whether or not TSR is present. In
+this case, TSR does no harm, but most likely does not help.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<div id="use-of-tsr-with-redundant-proxies">
+<section id="section-8.1">
+        <h3 id="name-use-of-tsr-with-redundant-p">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-use-of-tsr-with-redundant-p" class="section-name selfRef">Use of TSR with redundant proxies</a>
+        </h3>
+<p id="section-8.1-1">Use of TSR is most beneficial in the case of redundant mDNS proxies. The reason for this is that such proxies tend
+to publish data that could potentially produce name conflicts as a result of updates: when one proxy is publishing
+an old version of the data and another proxy is publishing a new version of the data, and these data differ,
+this can appear as a name conflict and result in renaming. So for this use case, the use of TSR is very beneficial.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="use-of-tsr-with-multihomed-devices">
+<section id="section-8.2">
+        <h3 id="name-use-of-tsr-with-multihomed-">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-use-of-tsr-with-multihomed-" class="section-name selfRef">Use of TSR with multihomed devices</a>
+        </h3>
+<p id="section-8.2-1">It can also happen that a multihomed device uses SRP to register when connected to one sort of network, and uses
+mDNS to advertise the same service when connected to another sort of network. For example, the device may have
+capabilities to connect to a constrained network to reduce power use, but also to occasionally connect to a WiFi
+network either for backup or for bulk data transfers. In this situation we have two potentially competing mDNS
+advertisements.  The first is that of the mDNS registrar on the multihomed device, which is directly advertising
+its own service using mDNS. The second is the one or more advertising proxies that are advertising services
+registered via SRP using mDNS. Both datasets are coming from the same source, and the advertising proxy will use TSR
+to identify the source. To avoid spurious conflicts, a device that sometimes registers with SRP and sometimes
+advertises with mDNS <span class="bcp14">SHOULD</span> use TSR when advertising with mDNS.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="tsr-in-networks-with-non-compliant-mdns-caches">
+<section id="section-8.3">
+        <h3 id="name-tsr-in-networks-with-non-co">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-tsr-in-networks-with-non-co" class="section-name selfRef">TSR in networks with non-compliant mDNS caches</a>
+        </h3>
+<p id="section-8.3-1">Some network infrastructure devices available commercially provide "mDNS cache" services or "mDNS proxy" services
+that purport to allow mDNS discovery across links that are separate at the IP layer and do not share a multicast
+domain. These services generally cause mDNS to become unreliable in various ways, and it would be helpful to be
+able to use TSR to distinguish between stale data advertised by such devices, and fresh data advertised directly
+from the device that is authoritative for that data.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-2">Unfortunately, for the most part these devices do not cache mDNS packets, but rather cache data advertised using
+mDNS. As a result, if such devices do not support TSR, we get no benefit from TSR.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.3-3">That said, such devices <span class="bcp14">SHOULD</span> support TSR, and if they do this might prevent some of their failure modes. What
+this would mean would be that any DNS RRs cached or forwarded by such devices would be accompanied by any TSR
+data applicable to them. When forwarded with no time delay, the TSR data could be copied verbatim (following
+the rules for generating packets with TSR given in <a href="#construct" class="auto internal xref">Section 3.9</a>).<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-4">When such RRs are cached and later resent, they would also be accompanied by their TSR data. The mDNS cache service
+would need to record the time at which they were received. When retransmitting such cached data, the cache
+service would need to adjust the time offset in the TSR option, increasing it by the substracting the time
+at which the cached RRs were received from the current time, and then increasing the offset in the applicable
+TSR option by that amount, up to the limit of 7 days.<a href="#section-8.3-4" class="pilcrow">¶</a></p>
+<p id="section-8.3-5">The use of such caches and forwarders is <span class="bcp14">NOT RECOMMENDED</span>. We mention the use of TSR for such use cases because
+it can mitigate some of the failure modes of such caches and forwarders. However, the use of Discovery Proxy
+<span>[<a href="#RFC8766" class="cite xref">RFC8766</a>]</span> in such instances is preferred: as the size of the network covered by such caching and forwarding
+services increases, the amount of mDNS traffic they create increases, and this is often addressed by limiting which
+services are available for discovery. Discovery Proxy uses unicast DNS, and therefore does not suffer from
+these limitations.<a href="#section-8.3-5" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="registrant-api-considerations">
@@ -1793,10 +1936,10 @@ the registration to use the time that the registrant registers the service as th
         <h3 id="name-removing-data-that-is-still">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-removing-data-that-is-still" class="section-name selfRef">Removing data that is still valid</a>
         </h3>
-<p id="section-9.1-1">In some cases, a proxy may need to stop being a proxy, but may be proxying RRs that is also being proxied by one or
+<p id="section-9.1-1">In some cases, a proxy may need to stop being a proxy, but may be proxying RRs that are also being proxied by one or
 more other proxies. In this case, if the proxy sends a "goodbye" announcement for such RRs, they will be removed
 from the caches of mDNS registrars that receive such announcements.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.1-2">To prevent this, mDNS registrant implementations that implement TSR <span class="bcp14">MUST</span> provide a way for an mDNS registrant to indicate
+<p id="section-9.1-2">To prevent this, an mDNS registrar implementation that implements TSR <span class="bcp14">MUST</span> provide a way for an mDNS registrant to indicate
 that such data is being withdrawn from publication by that registrant, but is still valid. When the registrant indicates that
 this is the case, the mDNS registrar <span class="bcp14">MUST NOT</span> send goodbye announcements for such data.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
 </section>
@@ -1807,11 +1950,15 @@ this is the case, the mDNS registrar <span class="bcp14">MUST NOT</span> send go
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-primary-secondary-indicatio" class="section-name selfRef">Primary/Secondary indication</a>
         </h3>
 <p id="section-9.2-1">When more than one proxy is authoritative for a particular RR, this can generate excessive answer traffic, and also
-redundant goodbye announcements. mDNS registrar implementations that support TSR <span class="bcp14">MUST</span> provide a way for proxies
-to indicate that they are primary or secondary. When an RR registered by a secondary proxy is later removed, the
+redundant goodbye announcements. mDNS registrar implementations that support TSR <span class="bcp14">MUST</span> provide a way for a new proxy mDNS
+registrant to indicate that it is primary or secondary. When an RR registered by a secondary proxy is later removed, the
 mDNS registrant <span class="bcp14">MUST NOT</span> send a goodbye packet for that RR.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<p id="section-9.2-2">Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrant <span class="bcp14">MUST NOT</span>
-respond to the initial mDNS query for that RR. Only if a second mDNS query is received should it respond.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.2-2">Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrar <span class="bcp14">MUST NOT</span>
+respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received within 5 seconds
+of the initial query reception, should it respond.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.2-3">Note that any change of indication from primary to secondary, or vice versa, while an mDNS registrant already has
+records registered on the mDNS registrar is out of scope of this specification and an API to indicate such changes
+is not required on the mDNS registrar.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1876,6 +2023,10 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
         <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC8766">[RFC8766]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span>, <span class="refTitle">"Discovery Proxy for Multicast DNS-Based Service Discovery"</span>, <span class="seriesInfo">RFC 8766</span>, <span class="seriesInfo">DOI 10.17487/RFC8766</span>, <time datetime="2020-06" class="refDate">June 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8766">https://www.rfc-editor.org/rfc/rfc8766</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC9665">[RFC9665]</dt>
       <dd>
 <span class="refAuthor">Lemon, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"Service Registration Protocol for DNS-Based Service Discovery"</span>, <span class="seriesInfo">RFC 9665</span>, <span class="seriesInfo">DOI 10.17487/RFC9665</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9665">https://www.rfc-editor.org/rfc/rfc9665</a>&gt;</span>. </dd>
@@ -1902,16 +2053,65 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
 </div>
 </section>
 </div>
-<div id="acknowledgments">
+<div id="dupasexample">
 <section id="appendix-A">
+      <h2 id="name-duplicate-answer-suppression">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-duplicate-answer-suppression" class="section-name selfRef">Duplicate Answer Suppression Example</a>
+      </h2>
+<p id="appendix-A-1">As described in <a href="#dupans" class="auto internal xref">Section 3.6</a>, it is possible that two proxies may respond to an mDNS query with answers to the same question,
+where the data for a particular owner name in both answers is authoritative and unique, but where the TSR time in the
+earlier message is earlier than the TSR time in the later message. In this case, we will see the data from the earlier
+message added and then removed, followed by the data in the later message being added. Consider the following example
+using Apple's mDNSResponder implementation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="appendix-A-2">
+<li id="appendix-A-2.1">
+          <p id="appendix-A-2.1.1">mDNS requester A sends a multicast query for AAAA records on the name "example.local"<a href="#appendix-A-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="appendix-A-2.2">
+          <p id="appendix-A-2.2.1">mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="appendix-A-2.3">
+          <p id="appendix-A-2.3.1">mDNS registrar for proxy C sends a multicast response of 2001:db8:0:17::1 with TSR time T+300<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="appendix-A-3">Note that TSR times are absolute times, but these are represented in the mDNS message as relative times, so for example
+"TSR time T+300" when sent at time T+400 would be represented in the mDNS message as a time offset of 100 seconds, and
+if the message in (2) were sent at nearly the same time, it would have a time offset of about 400 seconds.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">In between (2) and (3) we would expect mDNS Requester A to see a callback to its DNSServiceQueryRecord call, providing a
+AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing bit clear.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">After (3) we would expect mDNS Requester A to see two callbacks to its DNSServiceQueryRecord call. The first would provide
+a AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd clear and the kDNSServiceFlagsMoreComing bit set. The
+second would provide a AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
+bit clear.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<p id="appendix-A-6">Note that we would not normally see the reverse sequence:<a href="#appendix-A-6" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="appendix-A-7">
+<li id="appendix-A-7.1">
+          <p id="appendix-A-7.1.1">mDNS requester A sends a multicast query for AAAA records on the name "example.local"<a href="#appendix-A-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="appendix-A-7.2">
+          <p id="appendix-A-7.2.1">mDNS registrar for proxy C sends a multicast response of 2001:db8:0:17::1 with TSR time T+300<a href="#appendix-A-7.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="appendix-A-7.3">
+          <p id="appendix-A-7.3.1">mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T<a href="#appendix-A-7.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="appendix-A-8">This is because in this case we would expect known answer suppression to result in the mDNS registrar for proxy B suppressing
+its response. However, it is possible that B might not see the response from C. In that situation, A would receive both
+responses, but since the TSR time on the second response is earlier than the TSR time on the first response, we would see
+only one callback, providing an AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
+bit clear.<a href="#appendix-A-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-B">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">TODO acknowledge reviewers and contributors.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-1">TODO acknowledge reviewers and contributors.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-B">
+<section id="appendix-C">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
