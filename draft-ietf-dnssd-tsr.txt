@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 1 October 2026                                IoTconsultancy.nl
-                                                           30 March 2026
+Expires: 22 October 2026                               IoTconsultancy.nl
+                                                           20 April 2026
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 October 2026.
+   This Internet-Draft will expire on 22 October 2026.
 
 Copyright Notice
 
@@ -83,19 +83,25 @@ Table of Contents
      3.2.  Probing resource records on names for which TSR data has
            been proposed
      3.3.  Processing questions for which TSR data exists
-     3.4.  Processing messages that may contain TSR options
-     3.5.  Constructing a mDNS message with TSR options
+     3.4.  Receiving messages that may contain TSR options
+     3.5.  Processing messages thay may contain TSR options
+     3.6.  Duplicate answer suppression behavior
+     3.7.  Constructing a mDNS message with TSR options
    4.  The effect of network latency on time computations
    5.  Internal Handling of TSR data
    6.  Timeliness of Conflict Resolution
    7.  Legacy Behavior
    8.  When to Use TSR
+     8.1.  Use of TSR with redundant proxies
+     8.2.  Use of TSR with multihomed devices
+     8.3.  TSR in networks with non-compliant mDNS caches
    9.  Registrant API considerations
    10. Security Considerations
    11. IANA Considerations
    12. References
      12.1.  Normative References
      12.2.  Informative References
+   Appendix A.  Duplicate Answer Suppression Example
    Acknowledgments
    Authors' Addresses
 
@@ -113,9 +119,8 @@ Table of Contents
    assumes that the entity advertising an mDNS service is in fact
    authoritative for that service.  For mDNS proxies, such as an
    advertising proxy [I-D.ietf-dnssd-advertising-proxy], this is not the
-   case: the source of truth for the service being advertised may be
-   another entity.  For example, it may be an SRP [RFC9665] requester
-   that registers its services with an SRP registrar.
+   case: the source of truth for the service being advertised is an
+   DNSSD Service Registration Protocol (SRP) [RFC9665] requester.
 
    On a link with more than one SRP registrar, an SRP requester may
    register with one SRP registrar, and then subsequently update its
@@ -182,20 +187,21 @@ Table of Contents
    the SRP requesters.
 
    In the case of an advertising proxy publishing records originating
-   from an SRP Update, what we want to see published is not the oldest
-   information, but the newest.  When the SRP requester is able to
-   continue registering with the same SRP registrar, this works well:
-   stale data is automatically removed and replaced with current data.
-   However, if more than one SRP registrar is available, the SRP
-   requester may wind up sending its SRP Updates to a different SRP
-   registrar.  This can happen as a result of a network partition, or in
-   cases where the SRP registrar is advertised on a anycast address.
+   from an SRP Update, the most recent information is correct; the older
+   information is simply stale, and not competing.  When the SRP
+   requester is able to continue registering with the same SRP
+   registrar, this works well: stale data is automatically removed and
+   replaced with current data.  However, if more than one SRP registrar
+   is available, the SRP requester may wind up sending its SRP Updates
+   to a different SRP registrar.  This can happen as a result of a
+   network partition, or in cases where the SRP registrar is advertised
+   on a anycast address.
 
    When the SRP requester registers with a different SRP registrar, the
-   behavior we get with the current mDNS conflict resolution approach is
-   that the SRP requester will be given a new name, and both the old
-   (stale) advertisement (A) and the new (more recent) advertisement
-   (A’) will be discoverable as separate services.
+   behavior of the mDNS conflict resolution approach without TSR is that
+   the SRP requester will be given a new name, and both the old (stale)
+   advertisement (A) and the new (more recent) advertisement (A’) will
+   be discoverable as separate services.
 
    This creates a new burden on consumers of such services: they need to
    parse through the whole list of services of their type, using
@@ -233,14 +239,18 @@ Table of Contents
       regular operation.
 
    *mDNS registrar*  an mDNS [RFC6762] implementation on a host that
-      accepts local requests for advertising/registering DNS records
-      from one or more registrants.  This could for example be an mDNS
-      daemon process running in an operating system, accepting API calls
-      from local processes to register or update DNS records for that
-      process.
+      accepts local requests for querying, advertising and registering
+      DNS records from one or more requesters and/or registrants.  This
+      could for example be an mDNS daemon process running in an
+      operating system, accepting API calls from local processes to
+      register or update DNS records for that process.
 
-   *mDNS registrant*  an entity or software process requesting a DNS
-      name to be advertised by the (local) mDNS registrar.
+   *mDNS registrant*  an entity or software process that is attempting
+      to register information for advertisement to a (local) mDNS
+      registrar.
+
+   *mDNS requester*  an entity or software process that issues mDNS
+      queries to a local mDNS registrar
 
    *mDNS proxy*  a host that runs an mDNS registrar and at least one
       mDNS registrant acting as a proxy.  That is, it needs to advertise
@@ -407,7 +417,7 @@ Table of Contents
    there is TSR data on a name for which records are being probed, the
    mDNS registar MUST include TSR options for each such name as
    described in Section 2.  Handling of responses is described in
-   Section 3.4.
+   Section 3.5.
 
 3.3.  Processing questions for which TSR data exists
 
@@ -416,14 +426,32 @@ Table of Contents
    in the mDNS message being processed.  In this case, before
    constructing a response, the mDNS registrar MUST process the non-
    question records in the packet, since this could result in stale data
-   being flushed.  Processing is performed as described in Section 3.4.
+   being flushed.  Processing is performed as described in Section 3.5.
 
    Once all non-question records have been processed, the responder MUST
    respond to any questions that match locally-registered resource
    records for which a known answer is not present in the query.
    Responses are constructed as described in Section 2.
 
-3.4.  Processing messages that may contain TSR options
+3.4.  Receiving messages that may contain TSR options
+
+   mDNS registrars that support TSR need to compute an absolute time
+   based on a time offset.  This means that registrars need to know when
+   the packet was received.  A naive implementation might assume that
+   the time that the packet is read off the input queue by the
+   registrant is close enough.  However, in practice it can be the case
+   on a heavily loaded system that the time of receipt and the time of
+   processing are far enough apart to create the appearance of
+   staleness.
+
+   To avoid this, mDNS registrants that have an API available to get the
+   actual time of receipt of a packet should make use of that API.  For
+   example, the SO_TIMESTAMP_CONTINUOUS socket option is available on
+   Linux and BSD Unix platforms, including MacOS.  When such APIs are
+   not available, another option is to receive such packets on a high
+   priority thread and queue them for later processing.
+
+3.5.  Processing messages thay may contain TSR options
 
    mDNS registrars that support the TSR option MUST check incoming
    messages for the presence of an EDNS(0) option containing TSR
@@ -512,7 +540,42 @@ Table of Contents
    not added to the cache, and no action is taken with respect to any
    locally-registered data.
 
-3.5.  Constructing a mDNS message with TSR options
+3.6.  Duplicate answer suppression behavior
+
+   Section 7.4 of [RFC6762], Duplicate Answer Suppression, describes
+   behavior intended to prevent the redundant transmission of duplicate
+   answers.  When an mDNS query is received for which the mDNS registrar
+   has authoritative data, the mDNS registrar will wait for a random
+   amount of time before sending a response.  If, during that time, a
+   response is received that contains all the answers it would have
+   sent, it suppresses sending these answers, since they are redundant.
+   Here we will refer to such a response as a pre-empting response.
+
+   In the case where TSR data is present locally or in a pre-empting
+   response, it can be the case that the data in a pre-empting response
+   is stale or conflicting.  For this reason, an mDNS registrar MUST NOT
+   suppress duplicate answers when:
+
+   *  the TSR key checksum for the owner name in a pre-empting response
+      does not match the local TSR key checksum for that owner name
+
+   *  TSR data is present locally for that owner name but is not present
+      in the pre-empting response
+
+   *  A TSR option is present for that owner name in the pre-empting
+      response, but local authoritative data for that owner name is
+      present but has no associated TSR data
+
+   *  local authoritative data for that owner name is present and
+      includes TSR data, a TSR option for that owner name is present in
+      the pre-empting response, but the local TSR time for that owner
+      name is more recent than the TSR time for that owner name in the
+      pre-empting response
+
+   In Appendix A we show what this might look like from the perspective
+   of an mDNS requester.
+
+3.7.  Constructing a mDNS message with TSR options
 
    For each non-question record that is added to the mDNS message, one
    of three things must be true:
@@ -615,18 +678,88 @@ Table of Contents
    caching stale data.  However, in the normal course of processing,
    more recent data will win.  In cases where it does not, the Reconfirm
    process which is part of [RFC6762] already works to clear stale data:
-   since we expect SRP registrars to implement TSR, by the time a
+   since SRP registrars are expected to implement TSR, by the time a
    Reconfirm is attempted, all authoritative stale data should have been
    cleared.
 
 8.  When to Use TSR
 
-   TSR is only relevant for mDNS proxies.  Regular mDNS registrants that
-   don't support mDNS proxy are not expected to use it, since it will
-   produce the wrong behavior for this use case.  An mDNS proxy MUST
-   explicitly allow its mDNS registrar to use TSR for conflict
-   resolution. mDNS registrars MUST NOT record a time of receipt unless
-   the registrant has specifically requested it.
+   There are no cases where using TSR is harmful, but in the case of
+   individual devices advertising individual services with mDNS, it may
+   be of little benefit.  The reason for this is that when two devices
+   both claim the same name to use for advertising services, their
+   advertisements will be seen as in conflict whether or not TSR is
+   present.  In this case, TSR does no harm, but most likely does not
+   help.
+
+8.1.  Use of TSR with redundant proxies
+
+   Use of TSR is most beneficial in the case of redundant mDNS proxies.
+   The reason for this is that such proxies tend to publish data that
+   could potentially produce name conflicts as a result of updates: when
+   one proxy is publishing an old version of the data and another proxy
+   is publishing a new version of the data, and these data differ, this
+   can appear as a name conflict and result in renaming.  So for this
+   use case, the use of TSR is very beneficial.
+
+8.2.  Use of TSR with multihomed devices
+
+   It can also happen that a multihomed device uses SRP to register when
+   connected to one sort of network, and uses mDNS to advertise the same
+   service when connected to another sort of network.  For example, the
+   device may have capabilities to connect to a constrained network to
+   reduce power use, but also to occasionally connect to a WiFi network
+   either for backup or for bulk data transfers.  In this situation we
+   have two potentially competing mDNS advertisements.  The first is
+   that of the mDNS registrar on the multihomed device, which is
+   directly advertising its own service using mDNS.  The second is the
+   one or more advertising proxies that are advertising services
+   registered via SRP using mDNS.  Both datasets are coming from the
+   same source, and the advertising proxy will use TSR to identify the
+   source.  To avoid spurious conflicts, a device that sometimes
+   registers with SRP and sometimes advertises with mDNS SHOULD use TSR
+   when advertising with mDNS.
+
+8.3.  TSR in networks with non-compliant mDNS caches
+
+   Some network infrastructure devices available commercially provide
+   "mDNS cache" services or "mDNS proxy" services that purport to allow
+   mDNS discovery across links that are separate at the IP layer and do
+   not share a multicast domain.  These services generally cause mDNS to
+   become unreliable in various ways, and it would be helpful to be able
+   to use TSR to distinguish between stale data advertised by such
+   devices, and fresh data advertised directly from the device that is
+   authoritative for that data.
+
+   Unfortunately, for the most part these devices do not cache mDNS
+   packets, but rather cache data advertised using mDNS.  As a result,
+   if such devices do not support TSR, we get no benefit from TSR.
+
+   That said, such devices SHOULD support TSR, and if they do this might
+   prevent some of their failure modes.  What this would mean would be
+   that any DNS RRs cached or forwarded by such devices would be
+   accompanied by any TSR data applicable to them.  When forwarded with
+   no time delay, the TSR data could be copied verbatim (following the
+   rules for generating packets with TSR given in Section 3.7).
+
+   When such RRs are cached and later resent, they would also be
+   accompanied by their TSR data.  The mDNS cache service would need to
+   record the time at which they were received.  When retransmitting
+   such cached data, the cache service would need to adjust the time
+   offset in the TSR option, increasing it by the substracting the time
+   at which the cached RRs were received from the current time, and then
+   increasing the offset in the applicable TSR option by that amount, up
+   to the limit of 7 days.
+
+   The use of such caches and forwarders is NOT RECOMMENDED.  We mention
+   the use of TSR for such use cases because it can mitigate some of the
+   failure modes of such caches and forwarders.  However, the use of
+   Discovery Proxy [RFC8766] in such instances is preferred: as the size
+   of the network covered by such caching and forwarding services
+   increases, the amount of mDNS traffic they create increases, and this
+   is often addressed by limiting which services are available for
+   discovery.  Discovery Proxy uses unicast DNS, and therefore does not
+   suffer from these limitations.
 
 9.  Registrant API considerations
 
@@ -706,6 +839,10 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
+   [RFC8766]  Cheshire, S., "Discovery Proxy for Multicast DNS-Based
+              Service Discovery", RFC 8766, DOI 10.17487/RFC8766, June
+              2020, <https://www.rfc-editor.org/rfc/rfc8766>.
+
    [RFC9665]  Lemon, T. and S. Cheshire, "Service Registration Protocol
               for DNS-Based Service Discovery", RFC 9665,
               DOI 10.17487/RFC9665, June 2025,
@@ -727,6 +864,65 @@ Table of Contents
               dnssd-srp-replication-02, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-dnssd-
               srp-replication-02>.
+
+Appendix A.  Duplicate Answer Suppression Example
+
+   As described in Section 3.6, it is possible that two proxies may
+   respond to an mDNS query with answers to the same question, where the
+   data for a particular owner name in both answers is authoritative and
+   unique, but where the TSR time in the earlier message is earlier than
+   the TSR time in the later message.  In this case, we will see the
+   data from the earlier message added and then removed, followed by the
+   data in the later message being added.  Consider the following
+   example using Apple's mDNSResponder implementation.
+
+   1.  mDNS requester A sends a multicast query for AAAA records on the
+       name "example.local"
+
+   2.  mDNS registrar for proxy B sends a multicast response of
+       2001:db8:0:42::1 with TSR time T
+
+   3.  mDNS registrar for proxy C sends a multicast response of
+       2001:db8:0:17::1 with TSR time T+300
+
+   Note that TSR times are absolute times, but these are represented in
+   the mDNS message as relative times, so for example "TSR time T+300"
+   when sent at time T+400 would be represented in the mDNS message as a
+   time offset of 100 seconds, and if the message in (2) were sent at
+   nearly the same time, it would have a time offset of about 400
+   seconds.
+
+   In between (2) and (3) we would expect mDNS Requester A to see a
+   callback to its DNSServiceQueryRecord call, providing a AAAA record
+   of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd bit set and the
+   kDNSServiceFlagsMoreComing bit clear.
+
+   After (3) we would expect mDNS Requester A to see two callbacks to
+   its DNSServiceQueryRecord call.  The first would provide a AAAA
+   record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd clear and the
+   kDNSServiceFlagsMoreComing bit set.  The second would provide a AAAA
+   record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and
+   the kDNSServiceFlagsMoreComing bit clear.
+
+   Note that we would not normally see the reverse sequence:
+
+   1.  mDNS requester A sends a multicast query for AAAA records on the
+       name "example.local"
+
+   2.  mDNS registrar for proxy C sends a multicast response of
+       2001:db8:0:17::1 with TSR time T+300
+
+   3.  mDNS registrar for proxy B sends a multicast response of
+       2001:db8:0:42::1 with TSR time T
+
+   This is because in this case we would expect known answer suppression
+   to result in the mDNS registrar for proxy B suppressing its response.
+   However, it is possible that B might not see the response from C.  In
+   that situation, A would receive both responses, but since the TSR
+   time on the second response is earlier than the TSR time on the first
+   response, we would see only one callback, providing an AAAA record of
+   2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the
+   kDNSServiceFlagsMoreComing bit clear.
 
 Acknowledgments
 
