@@ -77,7 +77,7 @@ the service being advertised is an DNSSD Service Registration Protocol (SRP) {{R
 
 On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
-original server may still be advertising the old SRP registration using mDNS. If the information in the new SRP
+original SRP registrar may still be advertising the old SRP registration using mDNS. If the information in the new SRP
 registration is identical to that in the old registration, this is often not a problem. However if some information has
 changed (e.g., a new IP address has been added, or a TXT record updated), then the new registration will be seen to
 be in conflict with the old registration. In addition, the method used in mDNS to detect conflicts can sometimes produce apparent
@@ -91,29 +91,29 @@ advertising on their own behalf, is exactly wrong when a service advertisement i
 ## Current Behavior
 
 When a new service is to be advertised, the registrant (the entity requesting the registration) typically registers the
-service with a central mDNS registrar on the host on which it is running.  This mDNS registrar may have an internal
-database of services already registered, and may detect a conflict with one of those services. This can be true whether
-the conflicting database entry is data for which the mDNS registrar is authoritative, or data it has received via mDNS and
-cached.
+service with a central mDNS registrar on the host on which it is running.  This mDNS registrar locally stores services
+that have already been registered, and may detect a conflict with one of those registered services. This can be true whether
+the conflicting service entry is data for which the mDNS registrar is authoritative (stored in its local registration
+database), or an entry it has received via mDNS (stored in its cache).
 
 In the case of such a conflict, no network transaction is required: the mDNS registrar detects it locally. It
 addresses the conflict in one of two ways. The first alternative is that the mDNS registrar will report the
 conflict to the registrant as an error, which it must fix. Alternatively, if the registrant has indicated that
-the mDNS registrar should automatically choose a new name for it in case of conflict, the mDNS registrar does so
-automatically, without notifying the registrant.
+the mDNS registrar should automatically choose a new name for the service in case of conflict, the mDNS registrar does so
+automatically, without necessarily notifying the registrant.
 
 Once any locally-detectable conflicts have been resolved, the mDNS registrar probes (see {{Section 8.1 of RFC6762}})
-local network to see if any other host has already registered a service the conflicts with the proposed new
-service. If such a service is present on the network, the mDNS registrar follows the same process previously
-described, either reporting the error to the registrant or automatically choosing a new name.
+the local network to see if any other host has already registered a service name that conflicts with the proposed new
+service name. If such a service name is present on the network, the mDNS registrar follows the same process previously
+described: either report the error to the mDNS registrant or automatically choose a new name.
 
 The effect of this approach is that generally whichever registrant first registers a service under a particular name
-wins. If a registrant comes along later and registers the same service with conflicting information, the newcomer’s
-information is rejected.
+wins. If another registrant comes along later and registers the same service name with conflicting service information,
+the newcomer’s information is rejected.
 
 ## Problem Statement
 
-The current behavior works well for registrants registering on their own behalf. However, for example in the case of
+The current behavior works well for registrants registering services on their own behalf. However, for example in the case of
 an SRP registrar, it works poorly: an SRP registrar acting as an advertising proxy publishes the contents of its
 DNS zone using mDNS. The sources of truth for this information are the SRP requesters,
 not the SRP registrar itself. The SRP registrar in this case acts as a proxy for the SRP requesters.
@@ -123,23 +123,24 @@ is correct; the older information is simply stale, and not competing.
 When the SRP requester is able to continue registering with the same SRP registrar, this works well: stale
 data is automatically removed and replaced with current data. However, if more than one SRP registrar is
 available, the SRP requester may wind up sending its SRP Updates to a different SRP registrar. This can happen as a result of
-a network partition, or in cases where the SRP registrar is advertised on a anycast address.
+a network partition event, or in cases where the SRP registrar is contacted using an anycast address.
 
-When the SRP requester registers with a different SRP registrar, the behavior of the mDNS conflict
-resolution approach without TSR is that the SRP requester will be given a new name, and both the old (stale) advertisement (A)
-and the new (more recent) advertisement (A’) will be discoverable as separate services.
+When the SRP requester sends its SRP Update to a different SRP registrar, the behavior of the mDNS conflict
+resolution approach without TSR is that the SRP requester's service will be given a new name, and both the old (stale)
+service advertisement (A) and the new (more recent) service advertisement (A’) will be discoverable as separate services.
 
 This creates a new burden on consumers of such services: they need to parse through the whole list of services of
 their type, using metadata from the TXT record in the service instance data, if possible, to determine that
 service A and service A’ are the same service. If no such information is present in the TXT record, the only way
-to determine that one of these two registrations is stale is to attempt to use the advertised service, which may
+to determine that one of these two advertised services is stale is to attempt to use the advertised service, which may
 no longer be reachable if, for example, the change that produced the conflict was an IP address change. When the
-SRP lease for the stale service expires, that service's advertisement will be removed, and the service will no
-longer be discoverable under the original name, even if the IP address hasn't changed.
+SRP lease for the stale service expires, that service's mDNS advertisement will be removed, and the service will no
+longer be discoverable under the original name, even if its IP address hasn't changed.
 
 This document proposes an enhancement to the current conflict resolution algorithm for mDNS, which allows an mDNS
-proxy to report the time at which it received the registration for DNS records it is newly advertising, and the source from which
-it was received. This is done using a new Time Since Received (TSR) EDNS(0) ({{RFC6891}}) option, of which there must be exactly one
+proxy to report the time at which it received the registration for DNS records it is advertising, and the source from which
+these records were received.
+This is done using a new Time Since Received (TSR) EDNS(0) ({{RFC6891}}) option, of which there must be exactly one
 per name being advertised by the mDNS proxy.
 
 ## Conventions, Terms and Definitions
@@ -150,16 +151,34 @@ per name being advertised by the mDNS proxy.
 with any other clock, nor is it an absolute time in the sense of UTC. The clock may restart upon boot of the node but
 not during regular operation.
 
+**authoritative data**
+: DNS records stored in the local registration database, for which an mDNS registrar is authoritative (as defined
+  by {{RFC6762}}).
+
+**cache**
+: each mDNS registrar maintains a cache of DNS records received from hosts on the local network, as described in {{RFC6762}}.
+  Information in the cache represents the mDNS registrar's current understanding of what records are advertised on the network.
+  Authoritative data may be present in the cache, but the presence of data in the cache does not in itself indicate that
+  the mDNS registrar is authoritative for that data.
+
+**local registration database**
+: a database of DNS records maintained by the mDNS registrar. Records in this database are registered locally with
+  the mDNS registrar. The mDNS registrar is authoritative for all DNS records in this database.
+  When the mDNS registrar receives queries that match records in this database, the mDNS registrar can respond to these
+  queries with the matching records.
+
 **mDNS registrar**
 : an mDNS {{RFC6762}} implementation on a host that accepts local requests for querying, advertising and registering
 DNS records from one or more requesters and/or registrants. This could for example be an mDNS daemon process running
 in an operating system, accepting API calls from local processes to register or update DNS records for that process.
+It stores the locally-registered records in its local registration database.
 
 **mDNS registrant**
-: an entity or software process that is attempting to register information for advertisement to a (local) mDNS registrar.
+: an entity or software process that is attempting to register records for advertisement to a (local) mDNS registrar.
 
 **mDNS requester**
-: an entity or software process that issues mDNS queries to a local mDNS registrar
+: an entity or software process that issues mDNS queries to a local mDNS registrar, via an API call.
+  The mDNS registrar is responsible for executing these queries and notifying the mDNS requester about the answer(s).
 
 **mDNS proxy**
 : a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
@@ -234,7 +253,7 @@ generated and the time of receipt of resource records for that owner name.
 The time offset is represented in the mDNS message as a time in seconds relative to the time when the mDNS message
 is sent. If this difference is greater than seven days (7 * 24 * 60 * 60), the mDNS registrar MUST use a value of seven days
 rather than the larger value.  The relative time value in the TSR option is converted to an absolute (local) time when stored
-in a cache or authority database on an mDNS registrar as TSR data, and is converted back to a relative time whenever an
+in a cache or a local registration database on an mDNS registrar as TSR data, and is converted back to a relative time whenever an
 mDNS message with a TSR option is generated from local data.
 
 
@@ -246,8 +265,9 @@ When a local mDNS registrant asks an mDNS registrar to register one or more reco
 for that name, the mDNS registrar first checks that none of the records are marked shared. If any record is marked shared,
 the mDNS registrar MUST respond with an error indicating that the registration is invalid.
 
-It then checks to see if there are any records either in cache or from other local registrations
-on that owner name. If no such data exists, the mDNS registrar puts the record(s) in this registration in the probing state.
+It then checks to see if there are any records either in cache or in its local registration database
+on that owner name. If no such data exists, the mDNS registrar stores the record(s) in this registration in its local
+registration database and puts them in the probing state.
 
 When such data exists, the registrar MUST check to see if it has TSR data for that owner name. If it does not, or if there
 is TSR data on that name but the key checksum does not match, the registrar MUST treat this registration as a conflict
@@ -257,27 +277,32 @@ If such data exists and the key checksums match, there are three possibilities b
 (from the existing data) and the proposed TSR time (from the TSR data in the registration request):
 
 **Known TSR time is more recent**
-: In this case, the registrar MUST treat the new registration as stale, and return an indication to the
+: In this case, the registrar MUST treat the requested data as stale, and return an indication to the
   registrant that its registration is stale. This indication must be distinct from the "appropriate error" indication of
   conflict that was defined above.
 
 **Both TSR times are the same**
-: In this case, the new record is added to the local registration database and put in the probing state.
+: In this case, cached data (if any) on the owner name is discarded first. Then, the requested records are added to
+  the local registration database, updating existing records (if any). Since the requested records are considered
+  identical to the known records, based on TSR time, no probing or announcing is performed for these records.
 
 **Proposed TSR time is more recent**
-: In this case, all cached data on the owner name is discarded. The registrant for any existing locally-registered data is notified that
-  the data they had previously registered is stale, and the stale data is removed from the local registration database. The new data is
-  added and put in the probing state, and the TSR data is updated with the proposed TSR data.
+: In this case, cached data (if any) on the owner name is discarded first.
+  The registrant for any existing locally-registered data is notified that
+  the data they had previously registered is stale, and the stale data is removed from the local registration database.
+  The requested records are added to the local registration database and put in the probing state,
+  and the TSR data is replaced by the proposed TSR data.
 
 It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see {{Section 2 of RFC6762}}).
-If an mDNS registrant registers an RR on a name for which the registrar already has data, cached or
+If an mDNS registrant tries to register an RR on a name for which the registrar already has data, cached or
 authoritative, on the same name, whether of the same RR type or a different RR type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar MUST treat
-this as an immediate conflict, and MUST NOT probe.
+this as an immediate conflict, and MUST NOT add the data to its local registration database and MUST NOT probe.
 
-As with any local mDNS registration, the mDNS registrar treats all of the records in the registration as tentative (that
-is, in the probing state) until they have been probed and no conflicting answers have been received.
+For the third case, as with any local mDNS registration, the mDNS registrar treats all of the records in the registration
+request as tentative (that is, they are put in the probing state) until they have been probed and no conflicting answers
+from other mDNS hosts have been received.
 
 ## Probing resource records on names for which TSR data has been proposed
 
@@ -287,31 +312,31 @@ which no TSR data applies remains unchanged.  When there is TSR data on a name f
 the mDNS registar MUST include TSR options for each such name as described in {{tsrrr}}. Handling of
 responses is described in {{procmes}}.
 
-## Processing questions for which TSR data exists
+## Processing mDNS questions for which TSR data exists
 
 When processing a question for which local TSR data is present, the mDNS registrar MUST first check to see if there is corresponding
 data in the mDNS message being processed. In this case, before constructing a response,
 the mDNS registrar MUST process the non-question records in the packet, since this could result in stale data being flushed. Processing
 is performed as described in {{procmes}}.
 
-Once all non-question records have been processed, the responder MUST respond to any questions that match
+Once all non-question records have been processed, the registrar MUST respond to any questions that match
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
 described in {{tsrrr}}.
 
-## Receiving messages that may contain TSR options
+## Receiving mDNS messages that may contain TSR options
 
 mDNS registrars that support TSR need to compute an absolute time based on a time offset. This means that registrars need
 to know when the packet was received. A naive implementation might assume that the time that the packet is read off the
-input queue by the registrant is close enough. However, in practice it can be the case on a heavily
+input queue by the registrar is close enough. However, in practice it can be the case on a heavily
 loaded system that the time of receipt and the time of processing are far enough apart to create the appearance of
 staleness.
 
-To avoid this, mDNS registrants that have an API available to get the actual time of receipt of a packet should make use
+To avoid this, mDNS registrars that have an API available to get the actual time of receipt of a packet should make use
 of that API. For example, the SO_TIMESTAMP_CONTINUOUS socket option is available on Linux and BSD Unix platforms,
 including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread
 and queue them for later processing.
 
-## Processing messages thay may contain TSR options {#procmes}
+## Processing mDNS messages thay may contain TSR options {#procmes}
 
 mDNS registrars that support the TSR option MUST check incoming messages for the presence of an EDNS(0) option containing
 TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
@@ -345,25 +370,25 @@ owner name locally. If there is not, the record is processed normally.
 
 If there is local TSR data for the record's owner name, but no TSR data for that owner name in the mDNS message,
 the mDNS registrar checks to see if there are any resource records
-in the local registration database (that is, not just in the cache) on that name. If there are, all such records are treated as in
+in the local registration database on that name. If there are, all such records are treated as in
 conflict. This conflict exists even if the locally registered records are all shared records. In cases where there are
 records on the name in the cache, those records are all discarded, because they are in conflict with the new data.
 
-In the case that there is TSR data for the record in the mDNS packet, and there are local records on the same owner name
+In the case that there is TSR data for the record in the mDNS message, and there are local records on the same owner name
 for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
 section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
-to the mDNSResponder cache. Such records can never have TSR options associated with them.  However, resource records in
+to the cache. Such records can never have TSR options associated with them.  However, resource records in
 the authority and additional sections of a query do need to be processed (but in the case of authority records, are not
 added to the cache).
 
-In cases where the TSR data for a particular name is present both locally and in the mDNS message, the mDNS responder
-MUST compare the key checksums. If they are different, then the records are always in conflict, and are handled according
+In cases where the TSR data for a particular name is present both locally and in the mDNS message, the mDNS registrar
+MUST compare the key checksums. If these are different, then the records are always in conflict, and are handled according
 to the context of the conflict, as described in {{Section 9 of RFC6762}}.
 
-In cases where the key checksums match, the mDNS registrar MUST compare the times. When the TSR time from the mDNS Message
-is more recent than the local TSR time, local data in the cache is flushed and registered data is removed and reported
-to the registrant that registered it as stale.
+In cases where the key checksums match, the mDNS registrar MUST compare the times. When the TSR time from the mDNS message
+is more recent than the local TSR time, the local data in the cache is flushed.
+Stale data in the local registration database is removed, and the mDNS registrant is informed that this data is stale.
 
 When the TSR times are the same, any resource records on that name in the answer section and additional section are added
 to the cache.
@@ -409,17 +434,46 @@ on some mDNS registrar.
 
 ## Suppression of redundant probing
 
-When mDNS proxies are doing any form of replication of the data they are publishing, it can be the case that one
-proxy does its probes first. If this is the case, proxies on the same multicast link that receive replicated data
-will already have the correct data in cache with matching TSR times. To avoid redundant probing, when an mDNS
+When mDNS proxies are doing any form of replication of the records they are publishing, it can be the case that one
+proxy sends its probes for a new set of records first.
+If this is the case, some or all proxies on the same multicast link that receive the replicated data
+may already have (at the time of probing) the correct data in their local registration database with matching TSR times,
+waiting to be probed.
+
+In such case, these proxies will determine that the records in the received probe message are identical to the locally-registered
+set of records, and therefore per <xref target="RFC6762" section="8.2.1" sectionFormat="of"/> no conflict is detected
+and no response to the probe will be sent.
+An mDNS registrar that receives a probe, for a new set of records that it has just placed in the probing state, MUST
+suppress sending its own probe messages as this would be redundant: the probing
+is already being performed on the link.
+
+\[TBD for WG: for the above, the response to a probe in case of a true conflict (by another mDNS host) will typically
+  be 'fast' with unicast as per RFC 6762. For this reason, the suppression of probing would be dangerous in the above
+  case, as most of the proxies that suppress their probing would not see the actual conflict (if any).
+  Unless the replication algorithm takes care of withdrawing the records on all proxies.\]
+
+Conversely, it can also be the case that one proxy already sent its mDNS probes and announced the new records before
+some other proxy on the same multicast link fully completed the replication process for these records.
+In that case, the announced records will be stored already in the cache of this other proxy at the time that its
+local mDNS registrant (i.e. the replicating proxy process) performs the registration of these records and the associated
+probing.
+
+To avoid redundant probing for such cases, when an mDNS
 registrant registers data with an mDNS registrar for which the same data is already cached with the same TSR key
-checksum and a recent TSR time, the mDNS registrar MUST skip probing. Recent here should take into account network
+checksum and an equal TSR time, the mDNS registrar MUST skip probing.
+This requirement follows the second case ("Both TSR times are the same") in {{locval}}.
+
+\[TBD for WG: the below 'recent' rule text instead of 'equal' as used in above sentence seems to conflict the section
+ 'locval' {{locval}} 3 cases. Only when TSR time is equal, will the probing be suppressed.
+
+Recent here should take into account network
 delays: a difference of less than ten seconds between the cached TSR time and the registrant's TSR time should be
 considered "recent."
+\]
 
 In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
 the mDNS registrar MUST NOT re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
-announcement should be sent for such RRs, but no probe announcement is set for RRs that are not removed.
+announcement should be sent for such RRs, but no probe is sent for RRs that are not removed.
 If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
 the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
 there to be competing mDNS updates being probed or announced at the same time.
@@ -428,10 +482,10 @@ there to be competing mDNS updates being probed or announced at the same time.
 
 For each non-question record that is added to the mDNS message, one of three things must be true:
 
-* The mDNS server is has resource records locally registered on that owner name, which may or may not be in the probing
+* The mDNS registrar has locally-registered resource record(s) on that owner name, which may or may not be in the probing
   state.
 * It is sending an answer which is either an announcement or a response containing data it has already validated and for
-  which it is authoritative
+  which it is authoritative.
 * The message is a query (QD=0) and the record is in the answer section, and is therefore a "known answer."
 
 As described in {{Section 7.1 of RFC6762}}, an mDNS registrar asking a question about one
@@ -454,7 +508,7 @@ has TSR data for that name, it first checks to see if it has already added TSR d
 it adds a new entry to the set containing the TSR data for the owner name of the RR. The data added consists of the
 owner name, the index of the record being added (since it is the first), the key checksum, and the time offset.
 
-Once the mDNS responder has finished adding resource records to the mDNS message,
+Once the mDNS registrar has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
 produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds)
@@ -468,7 +522,7 @@ therefore necessary to tolerate some amount of error. In practice, however, it s
 that two advertising proxies receive SRP updates from the same SRP requester at nearly the same time. So it should
 always be the case either that there is a clear ordering to the TSR 'Time Offset' values, or that there is no conflict in the
 data. For example with anycast, a retransmission could go to a different SRP registrar, but in this case both
-servers would simultaneously receive identical data, so the close ordering or even equality of the TSR time offsets
+SRP registrars would simultaneously receive identical data, so the close ordering or even equality of the TSR time offsets
 should not affect the outcome.
 
 
@@ -547,7 +601,7 @@ the rules for generating packets with TSR given in {{construct}}).
 
 When such RRs are cached and later resent, they would also be accompanied by their TSR data. The mDNS cache service
 would need to record the time at which they were received. When retransmitting such cached data, the cache
-service would need to adjust the time offset in the TSR option, increasing it by the substracting the time
+service would need to adjust the time offset in the TSR option, increasing it by the subtracting the time
 at which the cached RRs were received from the current time, and then increasing the offset in the applicable
 TSR option by that amount, up to the limit of 7 days.
 
