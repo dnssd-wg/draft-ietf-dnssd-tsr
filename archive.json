@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-02T01:13:14.388221+00:00",
+  "timestamp": "2026-04-21T01:22:03.801034+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -183,13 +183,15 @@
       "state": "OPEN",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "EskoDijk"
+      ],
       "labels": [
         "discuss"
       ],
       "body": "The document says:\n\n**Both times are the same**\n: In this case, the new record is added to the local registration database and put in the probing state.\n\nHowever, given that the data is already in the cache, there's actually no need to send any mDNS traffic here, and it's always better not to. So I _think_ we should just add the data to the authoritative database and take no other action.\n\n",
       "createdAt": "2025-07-24T08:12:38Z",
-      "updatedAt": "2026-03-31T10:11:19Z",
+      "updatedAt": "2026-04-20T12:06:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -349,7 +351,7 @@
       "id": "I_kwDOOs4T_87CQQOb",
       "title": "Additional API considerations",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/10",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -358,8 +360,8 @@
       "labels": [],
       "body": "An additional issue that came up when we recently fixed our TSR implementation is that every proxy was probing and announcing, which, when there are five proxies, amounts to a huge amount of mDNS traffic, particularly when there is a synchronization event that causes a bunch of clients to register at nearly the same time.\n\nAdditionally, the old implementation would, when renewing, remove old data and replace it with new, which meant that we'd always send a goodbye packet, and that would produce Remove/Add event pairs in long-running queries.\n\nTo prevent this, we did a bit of a hack, which is that we register the new data, which flushes the old data, and then we let go of the old data registration. The effect of this is that we don't send a goodbye packet, and we don't probe unless the data has changed.\n\nI think it would be good to document this and suggest that there should be an API that has this exact behavior. Current mDNSResponder APIs do not allow for this other than in the hacky way I just described.",
       "createdAt": "2025-07-24T08:43:19Z",
-      "updatedAt": "2026-03-11T17:42:32Z",
-      "closedAt": null,
+      "updatedAt": "2026-04-20T09:46:49Z",
+      "closedAt": "2026-04-20T09:46:49Z",
       "comments": [
         {
           "author": "EskoDijk",
@@ -1859,24 +1861,26 @@
       "id": "PR_kwDOOs4T_87Nx7cw",
       "title": "- Document suppression of goodbye announcements",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/31",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "- Document suppression of redundant probes\r\n- Document API requirement for withdrawal of valid data\r\n\r\nCloses #10 ",
       "createdAt": "2026-03-26T16:12:57Z",
-      "updatedAt": "2026-03-30T16:43:38Z",
+      "updatedAt": "2026-04-20T09:46:58Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "baseRefName": "main",
-      "baseRefOid": "826eb138d9eabde9bfb05d8b77d59150843f2f5d",
+      "baseRefOid": "d1f7de48dbcc50a80b9008daec02a73682ba5b57",
       "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
       "headRefName": "goodbye-withdrawal",
-      "headRefOid": "cfae2fb4bb9224c5efcbc7abafb582c32ce27d10",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "ef8d61e395fae442fd1926c3a2045c01d17ffa53",
+      "closedAt": "2026-04-20T09:46:48Z",
+      "mergedAt": "2026-04-20T09:46:48Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "c4912efeb9ddabd815db4237915dce7d63de7c7e"
+      },
       "comments": [
         {
           "author": "Abhayakara",
@@ -2106,6 +2110,179 @@
               "updatedAt": "2026-03-30T16:43:00Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872r3cF",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:12:52Z",
+          "updatedAt": "2026-04-20T09:12:52Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "change done now in upcoming commit",
+              "createdAt": "2026-04-20T09:12:52Z",
+              "updatedAt": "2026-04-20T09:12:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872r7Me",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:15:10Z",
+          "updatedAt": "2026-04-20T09:15:10Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "leaving this for future reviews",
+              "createdAt": "2026-04-20T09:15:10Z",
+              "updatedAt": "2026-04-20T09:15:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872r7zp",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:15:37Z",
+          "updatedAt": "2026-04-20T09:15:37Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "leaving this for future reviews",
+              "createdAt": "2026-04-20T09:15:37Z",
+              "updatedAt": "2026-04-20T09:15:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872sDi5",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:20:37Z",
+          "updatedAt": "2026-04-20T09:20:37Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "fixed a few instances, rest to be done later",
+              "createdAt": "2026-04-20T09:20:37Z",
+              "updatedAt": "2026-04-20T09:20:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872sENp",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:21:01Z",
+          "updatedAt": "2026-04-20T09:21:01Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "done",
+              "createdAt": "2026-04-20T09:21:01Z",
+              "updatedAt": "2026-04-20T09:21:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872sZRO",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:32:05Z",
+          "updatedAt": "2026-04-20T09:32:05Z",
+          "comments": [
+            {
+              "originalPosition": 59,
+              "body": "added a note that change primary/secondary while data is already registered is out of scope. So, the indication is only at the time of registration of this data.\n\n(And the registrant can if it wants always reregister with a different indication.)",
+              "createdAt": "2026-04-20T09:32:05Z",
+              "updatedAt": "2026-04-20T09:32:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872scRI",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:33:41Z",
+          "updatedAt": "2026-04-20T09:33:41Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "decided to not do this : the 2nd query will anyway trigger the response and that's better than doing it after a time delay.",
+              "createdAt": "2026-04-20T09:33:41Z",
+              "updatedAt": "2026-04-20T09:33:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872srub",
+          "commit": {
+            "abbreviatedOid": "cfae2fb"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-20T09:43:33Z",
+          "updatedAt": "2026-04-20T09:43:33Z",
+          "comments": [
+            {
+              "originalPosition": 64,
+              "body": "added a 5 second time window for marking a repeated mDNS query as \"the second\".",
+              "createdAt": "2026-04-20T09:43:33Z",
+              "updatedAt": "2026-04-20T09:43:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_872svnr",
+          "commit": {
+            "abbreviatedOid": "ef8d61e"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-04-20T09:46:00Z",
+          "updatedAt": "2026-04-20T09:46:00Z",
+          "comments": []
         }
       ]
     },
