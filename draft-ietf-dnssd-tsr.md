@@ -441,7 +441,7 @@ may already have (at the time of probing) the correct data in their local regist
 waiting to be probed.
 
 In such case, these proxies will determine that the records in the received probe message are identical to the locally-registered
-set of records, and therefore per <xref target="RFC6762" section="8.2.1" sectionFormat="of"/> no conflict is detected
+set of records, and therefore per {{Section 8.2.1 of RFC6762}} no conflict is detected
 and no response to the probe will be sent.
 An mDNS registrar that receives a probe, for a new set of records that it has just placed in the probing state, MUST
 suppress sending its own probe messages as this would be redundant: the probing
@@ -621,7 +621,7 @@ that TSR conflict resolution is wanted, but also to provide a way for the regist
 which the original registration was received, and the key checksum used to identify the entity that's actually authoritative
 for the data.
 
-This is important, for example, in the case of SRP Replication <xref target="I-D.ietf-dnssd-srp-replication"/>, where an
+This is important, for example, in the case of SRP Replication {{I-D.ietf-dnssd-srp-replication}}, where an
 SRP registrar may receive a registration from a peer during startup synchronization. This registration will have
 occurred at some significant amount of time in the past, and so it would be incorrect for the mDNS registrar receiving
 the registration to use the time that the registrant registers the service as the time of receipt.
