@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 23 October 2026                               IoTconsultancy.nl
-                                                           21 April 2026
+Expires: 24 October 2026                               IoTconsultancy.nl
+                                                           22 April 2026
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 October 2026.
+   This Internet-Draft will expire on 24 October 2026.
 
 Copyright Notice
 
@@ -249,13 +249,21 @@ Table of Contents
       database, for which an mDNS registrar is authoritative (as defined
       by [RFC6762]).
 
-   *cache*  the mDNS cache as defined in [RFC6762] of an mDNS registrar,
-      used for storing received mDNS answers.
+   *cache*  each mDNS registrar maintains a cache of DNS records
+      received from hosts on the local network, as described in
+      [RFC6762].  Information in the cache represents the mDNS
+      registrar's current understanding of what records are advertised
+      on the network.  Authoritative data may be present in the cache,
+      but the presence of data in the cache does not in itself indicate
+      that the mDNS registrar is authoritative for that data.
 
-   *local registration database*  a database maintained on the mDNS
-      registrar that stores records that are locally registered by mDNS
-      registrants.  It is distinct from its cache, as it contains
-      authoritative data.
+   *local registration database*  a database of DNS records maintained
+      by the mDNS registrar.  Records in this database are registered
+      locally with the mDNS registrar.  The mDNS registrar is
+      authoritative for all DNS records in this database.  When the mDNS
+      registrar receives queries that match records in this database,
+      the mDNS registrar can respond to these queries with the matching
+      records.
 
    *mDNS registrar*  an mDNS [RFC6762] implementation on a host that
       accepts local requests for querying, advertising and registering
@@ -530,22 +538,23 @@ Table of Contents
    If there is local TSR data for the record's owner name, but no TSR
    data for that owner name in the mDNS message, the mDNS registrar
    checks to see if there are any resource records in the local
-   registration database or in the cache on that name.  If there are,
-   all such records are treated as in conflict.  This conflict exists
-   even if the locally registered records are all shared records.  In
-   cases where there are records on the name in the cache, those records
-   are all discarded, because they are in conflict with the new data.
+   registration database on that name.  If there are, all such records
+   are treated as in conflict.  This conflict exists even if the locally
+   registered records are all shared records.  In cases where there are
+   records on the name in the cache, those records are all discarded,
+   because they are in conflict with the new data.
 
-   In the case that there is TSR data for the record in the mDNS packet,
-   and there are local records on the same owner name for which there is
-   no local TSR data, this always means that any data is in conflict.
-   How that conflict is addressed depends on the data.  First, note that
-   resource records in the answer section of an mDNS Query (QR bit in
-   the header is 0) are "known answers" and therefore are not relevant
-   when adding data to the cache.  Such records can never have TSR
-   options associated with them.  However, resource records in the
-   authority and additional sections of a query do need to be processed
-   (but in the case of authority records, are not added to the cache).
+   In the case that there is TSR data for the record in the mDNS
+   message, and there are local records on the same owner name for which
+   there is no local TSR data, this always means that any data is in
+   conflict.  How that conflict is addressed depends on the data.
+   First, note that resource records in the answer section of an mDNS
+   Query (QR bit in the header is 0) are "known answers" and therefore
+   are not relevant when adding data to the cache.  Such records can
+   never have TSR options associated with them.  However, resource
+   records in the authority and additional sections of a query do need
+   to be processed (but in the case of authority records, are not added
+   to the cache).
 
    In cases where the TSR data for a particular name is present both
    locally and in the mDNS message, the mDNS registrar MUST compare the
@@ -555,9 +564,9 @@ Table of Contents
 
    In cases where the key checksums match, the mDNS registrar MUST
    compare the times.  When the TSR time from the mDNS message is more
-   recent than the local TSR time, local data in the cache is flushed
-   and locally-registered data is removed and reported to the mDNS
-   registrant that registered it as stale.
+   recent than the local TSR time, the local data in the cache is
+   flushed.  Stale data in the local registration database is removed,
+   and the mDNS registrant is informed that this data is stale.
 
    When the TSR times are the same, any resource records on that name in
    the answer section and additional section are added to the cache.
@@ -627,11 +636,25 @@ Table of Contents
    probes for a new set of records first.  If this is the case, some or
    all proxies on the same multicast link that receive the replicated
    data may already have (at the time of probing) the correct data in
-   their local registration database with matching TSR times.
+   their local registration database with matching TSR times, waiting to
+   be probed.
 
-   [TBD for WG: these 'some or all proxies' authoritatively store the
-   new data already so will respond to the probe.  Is that the intended
-   behavior?  Or should they suppress the answer to this probe?]
+   In such case, these proxies will determine that the records in the
+   received probe message are identical to the locally-registered set of
+   records, and therefore per Section 8.2.1 of [RFC6762] no conflict is
+   detected and no response to the probe will be sent.  An mDNS
+   registrar that receives a probe, for a new set of records that it has
+   just placed in the probing state, MUST suppress sending its own probe
+   messages as this would be redundant: the probing is already being
+   performed on the link.
+
+   [TBD for WG: for the above, the response to a probe in case of a true
+   conflict (by another mDNS host) will typically be 'fast' with unicast
+   as per RFC 6762.  For this reason, the suppression of probing would
+   be dangerous in the above case, as most of the proxies that suppress
+   their probing would not see the actual conflict (if any).  Unless the
+   replication algorithm takes care of withdrawing the records on all
+   proxies.]
 
    Conversely, it can also be the case that one proxy already sent its
    mDNS probes and announced the new records before some other proxy on
@@ -639,7 +662,7 @@ Table of Contents
    these records.  In that case, the announced records will be stored
    already in the cache of this other proxy at the time that its local
    mDNS registrant (i.e. the replicating proxy process) performs the
-   registration of these records.
+   registration of these records and the associated probing.
 
    To avoid redundant probing for such cases, when an mDNS registrant
    registers data with an mDNS registrar for which the same data is
@@ -647,9 +670,10 @@ Table of Contents
    the mDNS registrar MUST skip probing.  This requirement follows the
    second case ("Both TSR times are the same") in Section 3.1.
 
-   [TBD for WG: the below 'recent' rule instead of 'equal' in above
-   sentence seems to conflict the section #locval 3 cases.  Only when
-   TSR time is equal, will the probing be suppressed.
+   [TBD for WG: the below 'recent' rule text instead of 'equal' as used
+   in above sentence seems to conflict the section 'locval' Section 3.1
+   3 cases.  Only when TSR time is equal, will the probing be
+   suppressed.
 
    Recent here should take into account network delays: a difference of
    less than ten seconds between the cached TSR time and the

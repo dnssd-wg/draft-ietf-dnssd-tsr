@@ -1057,7 +1057,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Dijk</td>
-<td class="center">Expires 23 October 2026</td>
+<td class="center">Expires 24 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-tsr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-21" class="published">21 April 2026</time>
+<time datetime="2026-04-22" class="published">22 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-23">23 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-24">24 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1132,7 +1132,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1381,13 +1381,18 @@ by <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>).<a href="#se
           <dd class="break"></dd>
 <dt id="section-1.3-2.5"><strong>cache</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.6">
-            <p id="section-1.3-2.6.1">the mDNS cache as defined in <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> of an mDNS registrar, used for storing received mDNS answers.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.6.1">each mDNS registrar maintains a cache of DNS records received from hosts on the local network, as described in <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.
+Information in the cache represents the mDNS registrar's current understanding of what records are advertised on the network.
+Authoritative data may be present in the cache, but the presence of data in the cache does not in itself indicate that
+the mDNS registrar is authoritative for that data.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.3-2.7"><strong>local registration database</strong></dt>
           <dd style="margin-left: 1.5em" id="section-1.3-2.8">
-            <p id="section-1.3-2.8.1">a database maintained on the mDNS registrar that stores records that are locally registered by mDNS registrants.
-It is distinct from its cache, as it contains authoritative data.<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
+            <p id="section-1.3-2.8.1">a database of DNS records maintained by the mDNS registrar. Records in this database are registered locally with
+the mDNS registrar. The mDNS registrar is authoritative for all DNS records in this database.
+When the mDNS registrar receives queries that match records in this database, the mDNS registrar can respond to these
+queries with the matching records.<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.3-2.9"><strong>mDNS registrar</strong></dt>
@@ -1687,10 +1692,10 @@ the mDNS message for that owner name. If there is not, the mDNS registrar <span 
 owner name locally. If there is not, the record is processed normally.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
 <p id="section-3.5-7">If there is local TSR data for the record's owner name, but no TSR data for that owner name in the mDNS message,
 the mDNS registrar checks to see if there are any resource records
-in the local registration database or in the cache on that name. If there are, all such records are treated as in
+in the local registration database on that name. If there are, all such records are treated as in
 conflict. This conflict exists even if the locally registered records are all shared records. In cases where there are
 records on the name in the cache, those records are all discarded, because they are in conflict with the new data.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
-<p id="section-3.5-8">In the case that there is TSR data for the record in the mDNS packet, and there are local records on the same owner name
+<p id="section-3.5-8">In the case that there is TSR data for the record in the mDNS message, and there are local records on the same owner name
 for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
 section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
@@ -1701,8 +1706,8 @@ added to the cache).<a href="#section-3.5-8" class="pilcrow">¶</a></p>
 <span class="bcp14">MUST</span> compare the key checksums. If these are different, then the records are always in conflict, and are handled according
 to the context of the conflict, as described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-9" class="relref">Section 9</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
 <p id="section-3.5-10">In cases where the key checksums match, the mDNS registrar <span class="bcp14">MUST</span> compare the times. When the TSR time from the mDNS message
-is more recent than the local TSR time, local data in the cache is flushed and locally-registered data is removed and reported
-to the mDNS registrant that registered it as stale.<a href="#section-3.5-10" class="pilcrow">¶</a></p>
+is more recent than the local TSR time, the local data in the cache is flushed.
+Stale data in the local registration database is removed, and the mDNS registrant is informed that this data is stale.<a href="#section-3.5-10" class="pilcrow">¶</a></p>
 <p id="section-3.5-11">When the TSR times are the same, any resource records on that name in the answer section and additional section are added
 to the cache.<a href="#section-3.5-11" class="pilcrow">¶</a></p>
 <p id="section-3.5-12">When the local TSR time is more recent, the data in the message is not added to the cache, and no action is taken with
@@ -1767,29 +1772,39 @@ on some mDNS registrar.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
 <p id="section-3.8-1">When mDNS proxies are doing any form of replication of the records they are publishing, it can be the case that one
 proxy sends its probes for a new set of records first.
 If this is the case, some or all proxies on the same multicast link that receive the replicated data
-may already have (at the time of probing) the correct data in their local registration database with matching TSR times.<a href="#section-3.8-1" class="pilcrow">¶</a></p>
-<p id="section-3.8-2">[TBD for WG: these 'some or all proxies' authoritatively store the new data already so will respond to the probe.
-  Is that the intended behavior?  Or should they suppress the answer to this probe?]<a href="#section-3.8-2" class="pilcrow">¶</a></p>
-<p id="section-3.8-3">Conversely, it can also be the case that one proxy already sent its mDNS probes and announced the new records before
+may already have (at the time of probing) the correct data in their local registration database with matching TSR times,
+waiting to be probed.<a href="#section-3.8-1" class="pilcrow">¶</a></p>
+<p id="section-3.8-2">In such case, these proxies will determine that the records in the received probe message are identical to the locally-registered
+set of records, and therefore per <span><a href="https://rfc-editor.org/rfc/rfc6762#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> no conflict is detected
+and no response to the probe will be sent.
+An mDNS registrar that receives a probe, for a new set of records that it has just placed in the probing state, <span class="bcp14">MUST</span>
+suppress sending its own probe messages as this would be redundant: the probing
+is already being performed on the link.<a href="#section-3.8-2" class="pilcrow">¶</a></p>
+<p id="section-3.8-3">[TBD for WG: for the above, the response to a probe in case of a true conflict (by another mDNS host) will typically
+  be 'fast' with unicast as per RFC 6762. For this reason, the suppression of probing would be dangerous in the above
+  case, as most of the proxies that suppress their probing would not see the actual conflict (if any).
+  Unless the replication algorithm takes care of withdrawing the records on all proxies.]<a href="#section-3.8-3" class="pilcrow">¶</a></p>
+<p id="section-3.8-4">Conversely, it can also be the case that one proxy already sent its mDNS probes and announced the new records before
 some other proxy on the same multicast link fully completed the replication process for these records.
 In that case, the announced records will be stored already in the cache of this other proxy at the time that its
-local mDNS registrant (i.e. the replicating proxy process) performs the registration of these records.<a href="#section-3.8-3" class="pilcrow">¶</a></p>
-<p id="section-3.8-4">To avoid redundant probing for such cases, when an mDNS
+local mDNS registrant (i.e. the replicating proxy process) performs the registration of these records and the associated
+probing.<a href="#section-3.8-4" class="pilcrow">¶</a></p>
+<p id="section-3.8-5">To avoid redundant probing for such cases, when an mDNS
 registrant registers data with an mDNS registrar for which the same data is already cached with the same TSR key
 checksum and an equal TSR time, the mDNS registrar <span class="bcp14">MUST</span> skip probing.
-This requirement follows the second case ("Both TSR times are the same") in <a href="#locval" class="auto internal xref">Section 3.1</a>.<a href="#section-3.8-4" class="pilcrow">¶</a></p>
-<p id="section-3.8-5">[TBD for WG: the below 'recent' rule instead of 'equal' in above sentence seems to conflict the section #locval 3 cases.
- Only when TSR time is equal, will the probing be suppressed.<a href="#section-3.8-5" class="pilcrow">¶</a></p>
-<p id="section-3.8-6">Recent here should take into account network
+This requirement follows the second case ("Both TSR times are the same") in <a href="#locval" class="auto internal xref">Section 3.1</a>.<a href="#section-3.8-5" class="pilcrow">¶</a></p>
+<p id="section-3.8-6">[TBD for WG: the below 'recent' rule text instead of 'equal' as used in above sentence seems to conflict the section
+ 'locval' <a href="#locval" class="auto internal xref">Section 3.1</a> 3 cases. Only when TSR time is equal, will the probing be suppressed.<a href="#section-3.8-6" class="pilcrow">¶</a></p>
+<p id="section-3.8-7">Recent here should take into account network
 delays: a difference of less than ten seconds between the cached TSR time and the registrant's TSR time should be
 considered "recent."
-]<a href="#section-3.8-6" class="pilcrow">¶</a></p>
-<p id="section-3.8-7">In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
+]<a href="#section-3.8-7" class="pilcrow">¶</a></p>
+<p id="section-3.8-8">In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
 the mDNS registrar <span class="bcp14">MUST NOT</span> re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
 announcement should be sent for such RRs, but no probe is sent for RRs that are not removed.
 If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
 the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
-there to be competing mDNS updates being probed or announced at the same time.<a href="#section-3.8-7" class="pilcrow">¶</a></p>
+there to be competing mDNS updates being probed or announced at the same time.<a href="#section-3.8-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="construct">
