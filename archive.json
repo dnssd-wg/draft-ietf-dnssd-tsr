@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-21T01:22:03.801034+00:00",
+  "timestamp": "2026-04-23T01:26:03.357444+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-tsr",
   "labels": [
     {
@@ -180,7 +180,7 @@
       "id": "I_kwDOOs4T_87CP7vC",
       "title": "Do we need to probe when we see existing data that has the same timestamp?",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Abhayakara",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -191,8 +191,8 @@
       ],
       "body": "The document says:\n\n**Both times are the same**\n: In this case, the new record is added to the local registration database and put in the probing state.\n\nHowever, given that the data is already in the cache, there's actually no need to send any mDNS traffic here, and it's always better not to. So I _think_ we should just add the data to the authoritative database and take no other action.\n\n",
       "createdAt": "2025-07-24T08:12:38Z",
-      "updatedAt": "2026-04-20T12:06:12Z",
-      "closedAt": null,
+      "updatedAt": "2026-04-22T20:20:58Z",
+      "closedAt": "2026-04-22T20:20:58Z",
       "comments": [
         {
           "author": "EskoDijk",
@@ -235,6 +235,20 @@
           "body": "@Abhayakara forgive my ignorance :-)   So the probe is for the name + type ANY, to ensure the name isn't in use already. When new records are added with the same name, very quickly after a probe has completed, there's no need to re-probe. And if a probe is already ongoing for that name we just \"join\" it (i.e. wait for that existing probe to conclude).\n\nI still wonder why probing is needed for case 3 (\"Proposed TSR time is more recent\"), if the previous (now stale) data was already present in the local mDNS registrar's database and it had already probed and claimed that name before. \nSee RFC 6762 Section 8.4:\n\n> The host does not need to repeat the Probing step because it has already\n   established unique ownership of that name.\n\nAnd the reason I'm focusing on these \"quick\" successive updates is \n* TSR does not require that the mDNS registrant is an entity that uses SRP; it's currently targeting to be more general also - a different type of proxy could be used.\n* when using SRP the client's first message may get delayed, such that from the SRP registrar point of view there are 2 updates that follow at almost the same time (e.g. 100 ms difference) and both updates are immediately sent to the mDNS registrar upon receipt, for example.\n   * is it the responsibility of the mDNS registrant (= SRP registrar + advProxy) to throttle/delay the 2nd registration in such case? Or should the mDNS registrar do this (such that it also keeps correctness in case of non-SRP protocols using TSR, or in case of buggy implementations) ?\n   * or can we design TSR handling such that this case doesn't matter anymore ... ?",
           "createdAt": "2026-03-31T10:11:18Z",
           "updatedAt": "2026-03-31T10:11:18Z"
+        },
+        {
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR #41 added - this also tries to clarify the distinction between cache and local database better.\n\nText assumes that there will be no \"quick successive updates\" to avoid the issues related to that. There's no text yet to require some actor (e.g. the mDNS registrant) to not send quick successive updates within 1 second. Leaving that for a future update or PR.",
+          "createdAt": "2026-04-21T19:26:48Z",
+          "updatedAt": "2026-04-21T19:26:48Z"
+        },
+        {
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "body": "BTW, I didn't answer your question about probing if we already have local data. You're right: we don't need to probe in this case, but we do still need to announce.",
+          "createdAt": "2026-04-22T08:18:34Z",
+          "updatedAt": "2026-04-22T08:18:34Z"
         }
       ]
     },
@@ -2712,6 +2726,288 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 41,
+      "id": "PR_kwDOOs4T_87UaQc8",
+      "title": "Do not probe if TSR times are equal.  ",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-tsr/pull/41",
+      "state": "MERGED",
+      "author": "EskoDijk",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also, clarify distinction cache/database and related fixes.  Mark some items TBD for discussion/review.\r\n\r\nClose #6",
+      "createdAt": "2026-04-21T19:23:41Z",
+      "updatedAt": "2026-04-22T20:21:03Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "baseRefName": "main",
+      "baseRefOid": "c4912efeb9ddabd815db4237915dce7d63de7c7e",
+      "headRepository": "dnssd-wg/draft-ietf-dnssd-tsr",
+      "headRefName": "pr-probe-skip-6",
+      "headRefOid": "b4bf4142f5facf8f7abbd642fd3222561bd947b2",
+      "closedAt": "2026-04-22T20:20:57Z",
+      "mergedAt": "2026-04-22T20:20:57Z",
+      "mergedBy": "EskoDijk",
+      "mergeCommit": {
+        "oid": "3fc8e7f0b87c3ad0ca5bb9d414480aff63df2ce1"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOs4T_873hj8o",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:24:43Z",
+          "updatedAt": "2026-04-22T07:24:43Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "This feels a bit thin, although possibly my proposed change is a bit too much:\n\n: each mDNS registrar maintains a cache of DNS records received from devices on the local network, as described in {{RFC6762}}. Information in the cache represents the mDNS registrar's current understanding of what records are advertised on the network. Authoritative data may be present in the cache, but the presence of data in the cache does not in itself indicate that the mDNS registrar is authoritative for that data.\n",
+              "createdAt": "2026-04-22T07:24:43Z",
+              "updatedAt": "2026-04-22T07:24:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873hq3v",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:29:54Z",
+          "updatedAt": "2026-04-22T07:29:54Z",
+          "comments": [
+            {
+              "originalPosition": 98,
+              "body": "In order to undo any confusion as a result of my proposed change to the definition of cache:\n\n: a database of DNS records maintained by the mDNS registrar. Records in this database are registered locally with the mDNS registrar, so the mDNS registrar is authoritative for all DNS records in this database. When the mDNS registrar receives queries that match records in this database, the mDNS registrar can respond to such queries.",
+              "createdAt": "2026-04-22T07:29:54Z",
+              "updatedAt": "2026-04-22T07:29:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873h_U5",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:45:30Z",
+          "updatedAt": "2026-04-22T07:45:30Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "maybe it's ok to have a bit more text, for the next revision. Later we can try to condense.",
+              "createdAt": "2026-04-22T07:45:30Z",
+              "updatedAt": "2026-04-22T07:45:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iAkT",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:46:28Z",
+          "updatedAt": "2026-04-22T07:46:28Z",
+          "comments": [
+            {
+              "originalPosition": 98,
+              "body": "sounds good",
+              "createdAt": "2026-04-22T07:46:28Z",
+              "updatedAt": "2026-04-22T07:46:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iLV4",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:54:16Z",
+          "updatedAt": "2026-04-22T07:54:16Z",
+          "comments": [
+            {
+              "originalPosition": 223,
+              "body": "the \"or\" here is incorrect. We only do conflict detection on authoritative data.",
+              "createdAt": "2026-04-22T07:54:16Z",
+              "updatedAt": "2026-04-22T07:54:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iOEs",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:56:22Z",
+          "updatedAt": "2026-04-22T07:56:22Z",
+          "comments": [
+            {
+              "originalPosition": 231,
+              "body": "oops. :)",
+              "createdAt": "2026-04-22T07:56:22Z",
+              "updatedAt": "2026-04-22T07:56:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iRqy",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T07:58:52Z",
+          "updatedAt": "2026-04-22T07:58:52Z",
+          "comments": [
+            {
+              "originalPosition": 227,
+              "body": "should change packet to message here.",
+              "createdAt": "2026-04-22T07:58:52Z",
+              "updatedAt": "2026-04-22T07:58:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iYC5",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T08:03:42Z",
+          "updatedAt": "2026-04-22T08:03:42Z",
+          "comments": [
+            {
+              "originalPosition": 247,
+              "body": "This sentence is kind of difficult to parse. How about:\n\n...local data in the cache is flushed. Stale data in the local registration database is removed, and the mDNS registrant is informed that the data is stale.",
+              "createdAt": "2026-04-22T08:03:42Z",
+              "updatedAt": "2026-04-22T08:03:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iYdH",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T08:04:01Z",
+          "updatedAt": "2026-04-22T08:04:01Z",
+          "comments": [
+            {
+              "originalPosition": 223,
+              "body": "yes - I just tried to translate the \"not just in the cache\" to what I understood of it. But better to remove 'cache' here then.",
+              "createdAt": "2026-04-22T08:04:01Z",
+              "updatedAt": "2026-04-22T08:04:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iY9m",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T08:04:25Z",
+          "updatedAt": "2026-04-22T08:04:26Z",
+          "comments": [
+            {
+              "originalPosition": 227,
+              "body": "yes",
+              "createdAt": "2026-04-22T08:04:25Z",
+              "updatedAt": "2026-04-22T08:04:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873ifZp",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Needs a few tweaks based on my comments, if you agree with them, but generally this is a big improvement\u2014thanks for doing it!",
+          "createdAt": "2026-04-22T08:09:16Z",
+          "updatedAt": "2026-04-22T08:09:16Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOOs4T_873iiGj",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "Abhayakara",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T08:11:10Z",
+          "updatedAt": "2026-04-22T08:11:11Z",
+          "comments": [
+            {
+              "originalPosition": 223,
+              "body": "Yeah, I think the clarification of \"local registration database\" makes the (not just in the cache) superfluous.",
+              "createdAt": "2026-04-22T08:11:10Z",
+              "updatedAt": "2026-04-22T08:11:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOs4T_873zhtr",
+          "commit": {
+            "abbreviatedOid": "78e0080"
+          },
+          "author": "EskoDijk",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-04-22T19:44:16Z",
+          "updatedAt": "2026-04-22T19:44:17Z",
+          "comments": [
+            {
+              "originalPosition": 247,
+              "body": "ok, changed",
+              "createdAt": "2026-04-22T19:44:16Z",
+              "updatedAt": "2026-04-22T19:44:17Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
