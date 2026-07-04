@@ -304,17 +304,21 @@ For the third case, as with any local mDNS registration, the mDNS registrar trea
 request as tentative (that is, they are put in the probing state) until they have been probed and no conflicting answers
 from other mDNS hosts have been received.
 
-## Probing resource records on names for which TSR data has been proposed
+## Probing resource records on names with TSR data
 
 {{Section 8.1 of RFC6762}} describes how an mDNS registrar probes to ensure that there is
 no conflicting data for records in the probing state. The behavior for records that are in the probing state with owner names to
 which no TSR data applies remains unchanged.  When there is TSR data on a name for which records are being probed,
-the mDNS registar MUST include TSR options for each such name as described in {{tsrrr}}. Handling of
+the mDNS registar MUST include TSR options for each such name as described in {{tsrrr}} and {{construct}}. Handling of
 responses is described in {{procmes}}.
 
-### Probing when only the TSR timestamp has changed
+### Probing when only the TSR time has changed {#probing-tsr-change-only}
 
-If the only change to the set of mDNS records advertised on a name protect by TSR is the timestamp on the TSR itself, probing is not necessary and in this case mDNS Registrars MUST NOT probe. The reason to eliminate this probe is that it eliminates useless multicast traffic: in this situation the probe serves no purpose, since nothing substantive has changed.
+If the only change to the set of mDNS records advertised on a name with TSR data is the TSR time itself,
+probing is not necessary and in this case an mDNS registrar MUST NOT probe.
+The reason to eliminate this probe is that it avoids unnecessary multicast traffic:
+in this situation the probe serves no purpose, since nothing substantive has changed and the mDNS registrar was
+already authoritative for the records.
 
 ## Processing mDNS questions for which TSR data exists
 
@@ -476,19 +480,32 @@ considered "recent."
 \]
 
 In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
-the mDNS registrar MUST NOT re-probe those RRs. In this situation, if some RRs are removed, then a goodbye
+the mDNS registrar does not re-probe those RRs as defined in {{probing-tsr-change-only}}.
+In this situation, if some RRs are removed, then a goodbye
 announcement should be sent for such RRs, but no probe is sent for RRs that are not removed.
 If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
 the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
 there to be competing mDNS updates being probed or announced at the same time.
 
-## Handling marshalling fragmentation
+## Handling multi-packet mDNS advertisements
 
-It can happen, particularly when some sort of synchronization event occurs, such as the announcement of a new prefix that triggers many SRP registrations, that the set of mDNS records on a particular name do not all fit in the remaining space in an mDNS packet during marshalling. The mDNS protocol does not require that such records all be sent in the same mDNS message. With mDNS probes and announcements that do not use TSR, this can result in conflicts when the information being announced or probed is advertised by more than one proxy.
+It can happen, particularly when some sort of synchronization event occurs, such as the announcement of a new IPv6 prefix that
+triggers many SRP registrations, that the mDNS records on a particular name do not all fit in the remaining space
+in an mDNS packet during packet construction (see {{construct}}).
+The mDNS protocol does not require that such records all be sent in the same mDNS message.
+With mDNS probes and announcements that do not use TSR, this can result in conflicts when the information being announced
+or probed is advertised by more than one mDNS proxy.
 
-In the case of proxies using TSR, if the TSR key checksums are the same, there is no possibility of a conflict, and so this processing is unnecessary. The usual TSR stale data processing does not rely on all the records being present in a single mDNS message, and so the usual stale data evaluations described earlier are all that is needed to handle this case.
+In the case of mDNS proxies using TSR, if the TSR key checksums are the same, there is no possibility of a conflict,
+and so this processing, including the simultaneous probe tiebreaking of {{Section 8.2.1 of RFC6762}} and the conflict
+detection of {{Section 9 of RFC6762}}, need not be performed.
+The TSR stale data processing defined by this document does not rely on all the records being present in a single mDNS message,
+and so the stale data evaluations described in previous subsections are all that is needed to handle this case.
 
-Because of this, when processing mDNS records on a name covered by TSR where the local and received key checksums are identical, the mDNS Registrar MUST NOT treat a partial set of records in the mDNS message as a conflict or an indication of staleness. Only the TSR timestamp can be an indication of staleness in this case.
+Because of this, when an mDNS registrar is processing received mDNS records on a name with TSR data where the local and
+received key checksums are identical, it MUST NOT treat a partial set of records in the received mDNS message
+as a conflict or an indication of staleness.
+Only the TSR time can be an indication of staleness in this case.
 
 ## Constructing a mDNS message with TSR options {#construct}
 
