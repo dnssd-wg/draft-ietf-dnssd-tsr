@@ -195,8 +195,10 @@ DNS records registered via SRP to an SRP registrar may then be advertised by mDN
 In that case, the SRP registrar process acts as an mDNS registrant towards its local mDNS registrar process.
 
 **TSR data**
-: locally stored data, associated with a single DNS owner name, that keeps track of the absolute time when a set of
+: locally stored data, associated with a single DNS owner name, that keeps track of the absolute time ('TSR time') when a set of
 resource records were last updated and includes a key checksum to identify the owner of these records.
+It may be data proposed by an mDNS registrant's registration, or stored in the local registration database, or
+extracted from a received mDNS advertisement by parsing a TSR option.
 
 **TSR option**
 : an EDNS0 Time Since Received (TSR) option as defined by this specification.
@@ -247,8 +249,8 @@ an attacker on the local link can always cause problems with mDNS by providing s
 the checksum is simply to notice whether, for a specific owner name, two different authoritative sources have provided
 information.
 
-The 'Time Offset' field contains the difference, in seconds, between the the time at which the TSR option is being
-generated and the time of receipt of resource records for that owner name.
+The 'Time Offset' field contains the difference, in seconds, between the time at which the TSR option is being
+generated and the time of receipt of resource records for that owner name (as encoded in TSR data).
 
 The time offset is represented in the mDNS message as a time in seconds relative to the time when the mDNS message
 is sent. If this difference is greater than seven days (7 * 24 * 60 * 60), the mDNS registrar MUST use a value of seven days
@@ -259,7 +261,7 @@ mDNS message with a TSR option is generated from local data.
 
 # mDNS Registrar Behavior
 
-## Validating requested local RR registrations that include a TSR option {#locval}
+## Validating requested local RR registrations with TSR data {#locval}
 
 When a local mDNS registrant asks an mDNS registrar to register one or more records on an owner name, and provides TSR data
 for that name, the mDNS registrar first checks that none of the records are marked shared. If any record is marked shared,
@@ -341,10 +343,10 @@ staleness.
 
 To avoid this, mDNS registrars that have an API available to get the actual time of receipt of a packet should make use
 of that API. For example, the SO_TIMESTAMP_CONTINUOUS socket option is available on Linux and BSD Unix platforms,
-including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread
-and queue them for later processing.
+including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread,
+marking a timestamp and queue them for later processing.
 
-## Processing mDNS messages thay may contain TSR options {#procmes}
+## Processing mDNS messages that may contain TSR options {#procmes}
 
 mDNS registrars that support the TSR option MUST check incoming messages for the presence of an EDNS(0) option containing
 TSR options. mDNS registrars that do not support TSR will not do this check, and will behave as if no TSR options are present.
@@ -522,13 +524,13 @@ or more RRs on a particular name populates the answer section of its mDNS messag
 avoid unnecessary responses. However, in this case it can't also be probing for records on the same name, because probes
 are only done for unique (non-shared) records.
 
-The requirements in {{locval}} mean that there can never be an mDNS probe that contains known answers on an
-owner name for which any RR is being probed to which a TSR option applies.
+The requirements in {{locval}} mean that there can never be an mDNS probe message that contains known answer records on an
+owner name for which any RR is being probed to which TSR data applies.
 
 This means that for any particular owner name that might be represented in an mDNS packet, it must be the case either that
 it is not a known answer, or that it is a known answer and no other records exist in the mDNS packet with the same owner
 name to which a TSR option would apply.  That is, one of two things must be true about the set of all records with a
-particular owner name being added to the mDNS packet: either a TSR option applies to all of the records, or it applies to
+particular owner name being added to the mDNS packet: either a TSR option applies to all these records, or it applies to
 none of the records. Furthermore, either a record is a known answer from cache, or it is a locally-registered record.
 
 When constructing an mDNS message, the mDNS registrar maintains a set of names and associated TSR data. Initially this set is
@@ -559,9 +561,10 @@ should not affect the outcome.
 
 The TSR 'Time Offset' value that is sent on the wire is expressed in seconds relative to the time of receipt of the
 registration. In order to derive this value, the mDNS registrar must remember the (local) time at
-which the registration occurred. This time is recorded as an absolute time, not a relative time. We refer to this as the time of
-receipt. When constructing a TSR option, the registrar computes the difference between the current time and the time of
-receipt, which must always be in the past. This difference, which should be a positive integer, is converted to
+which the registration occurred. This time is recorded as an absolute time, not a relative time. We refer to this as the
+time of receipt or 'TSR time'.
+When constructing a TSR option, the registrar computes the difference between the current time and the TSR time,
+which must always be in the past. This difference, which should be a positive integer, is converted to
 seconds, and that unsigned value is then used to synthesize the TSR option.
 
 
@@ -571,7 +574,7 @@ If a conflict exists in which some mDNS registrant(s) store stale data, it is ex
 and that it will be resolved quickly since mDNS message exchanges with TSR options cause removal of the stale data.
 Different hosts may be able to record shorter or longer time offsets, depending on their implementation.
 However, because of this expectation of recentness, mDNS
-registrars should never need to report a TSR 'Time Offset' value of longer than seven days.
+registrars should never need to report a TSR option 'Time Offset' value of longer than seven days.
 It’s reasonable to expect that every mDNS implementation should be able to remember time intervals of at least seven days.
 
 This maximum time interval is normatively defined in {{tsrrr}}.
