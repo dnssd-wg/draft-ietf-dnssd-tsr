@@ -73,7 +73,7 @@ The current goal of mDNS conflict resolution is to prevent a newly advertised se
 an existing service with the same name that is already being advertised. This goal, however, assumes that the
 entity advertising an mDNS service is in fact authoritative for that service. For mDNS proxies, such as
 an advertising proxy {{I-D.ietf-dnssd-advertising-proxy}}, this is not the case: the source of truth for
-the service being advertised is an DNSSD Service Registration Protocol (SRP) {{RFC9665}} requester.
+the service being advertised is a DNSSD Service Registration Protocol (SRP) {{RFC9665}} requester.
 
 On a link with more than one SRP registrar, an SRP requester may register with one SRP registrar, and then subsequently
 update its registration on a different SRP registrar. Both SRP registrars may be acting as advertising proxies. If so, the
@@ -196,7 +196,7 @@ In that case, the SRP registrar process acts as an mDNS registrant towards its l
 
 **TSR data**
 : locally stored data, associated with a single DNS owner name, that keeps track of the absolute time ('TSR time') when a set of
-resource records were last updated and includes a key checksum to identify the owner of these records.
+resource records was last updated and includes a key checksum to identify the owner of these records.
 It may be data proposed by an mDNS registrant's registration, or stored in the local registration database, or
 extracted from a received mDNS advertisement by parsing a TSR option.
 
@@ -228,16 +228,16 @@ The TSR EDNS option has the following format:
 +-------------------------------+
 ~~~~~~~~~~~
 
-The TSR EDNS option includes three fields in the OPTION-DATA ({{RFC6891}}): 'RR Index' (two byte integer in network
+The TSR EDNS option includes three fields in the OPTION-DATA ({{RFC6891}}): 'RR Index' (two-byte integer in network
 byte order), 'Key Checksum' (four bytes), and 'Time Offset' (four bytes).
 
 The 'RR Index' is the number of the RR in the mDNS packet. Question RRs are not counted.  So if the message includes two
 answer RRs, one authority RR and two additional RRs, an index of 0 would refer to the first answer, an index of 1 to the
-second answer, and index of 2 to the single authority record, and so on. Questions are excluded because they have no
-data associated with them, and so it makes no sense for them to have TSR options associated with them.
+second answer, an index of 2 to the single authority record, and so on. Questions are excluded because they have no
+data associated with them, and so it makes no sense to have TSR options associated with them.
 
-If there is more than one record in the mDNS Message with the same owner name, only one TSR option is emitted for
-that name, and it applies to every RR in the mDNS Message with that owner name. It is not possible in the
+If there is more than one record in the mDNS message with the same owner name, only one TSR option is emitted for
+that name, and it applies to every RR in the mDNS message with that owner name. It is not possible in the
 SRP protocol for two updates at two different times to contain records that apply to the same name: in such a
 situation, the second update completely replaces the first, so all data in the first update is then rendered stale.
 
@@ -253,7 +253,7 @@ The 'Time Offset' field contains the difference, in seconds, between the time at
 generated and the time of receipt of resource records for that owner name (as encoded in TSR data).
 
 The time offset is represented in the mDNS message as a time in seconds relative to the time when the mDNS message
-is sent. If this difference is greater than seven days (7 * 24 * 60 * 60), the mDNS registrar MUST use a value of seven days
+is sent. If this difference is greater than 7 days (7 * 24 * 60 * 60 = 604,800), the mDNS registrar MUST use a value of 7 days
 rather than the larger value.  The relative time value in the TSR option is converted to an absolute (local) time when stored
 in a cache or a local registration database on an mDNS registrar as TSR data, and is converted back to a relative time whenever an
 mDNS message with a TSR option is generated from local data.
@@ -311,7 +311,7 @@ from other mDNS hosts have been received.
 {{Section 8.1 of RFC6762}} describes how an mDNS registrar probes to ensure that there is
 no conflicting data for records in the probing state. The behavior for records that are in the probing state with owner names to
 which no TSR data applies remains unchanged.  When there is TSR data on a name for which records are being probed,
-the mDNS registar MUST include TSR options for each such name as described in {{tsrrr}} and {{construct}}. Handling of
+the mDNS registrar MUST include TSR options for each such name as described in {{tsrrr}} and {{construct}}. Handling of
 responses is described in {{procmes}}.
 
 ### Probing when only the TSR time has changed {#probing-tsr-change-only}
@@ -344,7 +344,7 @@ staleness.
 To avoid this, mDNS registrars that have an API available to get the actual time of receipt of a packet should make use
 of that API. For example, the SO_TIMESTAMP_CONTINUOUS socket option is available on Linux and BSD Unix platforms,
 including MacOS. When such APIs are not available, another option is to receive such packets on a high priority thread,
-marking a timestamp and queue them for later processing.
+mark a timestamp and queue them for later processing.
 
 ## Processing mDNS messages that may contain TSR options {#procmes}
 
@@ -355,13 +355,13 @@ on the same owner name, these are actually in conflict. However, for the proxy u
 proxies that are proxying the same data cannot interoperate if one supports TSR and the other doesn't.
 
 It is important to note that mDNS messages, particularly in the case of proxies, can contain combined information
-answering multiple queries that may be outstanding, and as such, it's entirely possible for a mDNS message sent by an
+answering multiple queries that may be outstanding, and as such, it's entirely possible for an mDNS message sent by an
 mDNS registrar that supports TSR to contain some answers for which there is TSR data, and some answers for which there
 is not. It's equally possible that such a registrar will send mDNS packets containing no TSR options at all.
 
 When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
 the owner name of the TSR option by assigning
-an index to each non-question resource record in the mDNS message. The 'RR index' of each TSR option is then matched to the
+an index to each non-question resource record in the mDNS message. The 'RR Index' of each TSR option is then matched to the
 index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
 option is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
 the TSR option.
@@ -387,7 +387,7 @@ records on the name in the cache, those records are all discarded, because they 
 In the case that there is TSR data for the record in the mDNS message, and there are local records on the same owner name
 for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
-section of an mDNS Query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
+section of an mDNS query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
 to the cache. Such records can never have TSR options associated with them.  However, resource records in
 the authority and additional sections of a query do need to be processed (but in the case of authority records, are not
 added to the cache).
@@ -436,10 +436,10 @@ this stale data.
 
 The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
 by TSR data, and as a result of this some records are removed, but some remain, the mDNS registrar that was directly
-updated will either send "goodbye" announcement or an announcement with the cache flush bit set as specified in
+updated will either send a "goodbye" announcement or an announcement with the cache flush bit set as specified in
 {{Section 8.4 of RFC6762}}. Since the mDNS registrar with the most current information has already done what is needed,
 if an mDNS registrar that is flushing locally-registered data were to send a "goodbye" announcement this would at
-best be redundant and hence wasteful use of multicast, and at worse might cause valid data to be flushed from the cache
+best be redundant and hence wasteful use of multicast, and at worst might cause valid data to be flushed from the cache
 on some mDNS registrar.
 
 ## Suppression of redundant probing
@@ -450,7 +450,7 @@ If this is the case, some or all proxies on the same multicast link that receive
 may already have (at the time of probing) the correct data in their local registration database with matching TSR times,
 waiting to be probed.
 
-In such case, these proxies will determine that the records in the received probe message are identical to the locally-registered
+In such cases, these proxies will determine that the records in the received probe message are identical to the locally-registered
 set of records, and therefore per {{Section 8.2.1 of RFC6762}} no conflict is detected
 and no response to the probe will be sent.
 An mDNS registrar that receives a probe, for a new set of records that it has just placed in the probing state, MUST
@@ -477,7 +477,7 @@ This requirement follows the second case ("Both TSR times are the same") in {{lo
  'locval' {{locval}} 3 cases. Only when TSR time is equal, will the probing be suppressed.
 
 Recent here should take into account network
-delays: a difference of less than ten seconds between the cached TSR time and the registrant's TSR time should be
+delays: a difference of less than 10 seconds between the cached TSR time and the registrant's TSR time should be
 considered "recent."
 \]
 
@@ -509,7 +509,7 @@ received key checksums are identical, it MUST NOT treat a partial set of records
 as a conflict or an indication of staleness.
 Only the TSR time can be an indication of staleness in this case.
 
-## Constructing a mDNS message with TSR options {#construct}
+## Constructing an mDNS message with TSR options {#construct}
 
 For each non-question record that is added to the mDNS message, one of three things must be true:
 
@@ -546,7 +546,7 @@ produce the value for the 'Time Offset' field, and this value is clamped to a ma
 {{tsrrr}}.
 
 
-# The effect of network latency on time computations
+# The Effect of Network Latency on Time Computations
 
 Because TSR computations are affected by network latency, comparisons can’t be considered accurate. It is
 therefore necessary to tolerate some amount of error. In practice, however, it should generally not be the case
@@ -557,7 +557,7 @@ SRP registrars would simultaneously receive identical data, so the close orderin
 should not affect the outcome.
 
 
-# Internal Handling of TSR data
+# Internal Handling of TSR Data
 
 The TSR 'Time Offset' value that is sent on the wire is expressed in seconds relative to the time of receipt of the
 registration. In order to derive this value, the mDNS registrar must remember the (local) time at
@@ -633,7 +633,7 @@ the rules for generating packets with TSR given in {{construct}}).
 
 When such RRs are cached and later resent, they would also be accompanied by their TSR data. The mDNS cache service
 would need to record the time at which they were received. When retransmitting such cached data, the cache
-service would need to adjust the time offset in the TSR option, increasing it by the subtracting the time
+service would need to adjust the time offset in the TSR option, by first subtracting the time
 at which the cached RRs were received from the current time, and then increasing the offset in the applicable
 TSR option by that amount, up to the limit of 7 days.
 
@@ -645,7 +645,7 @@ services are available for discovery. Discovery Proxy uses unicast DNS, and ther
 these limitations.
 
 
-# Registrant API considerations
+# Registrant API Considerations
 
 When a registrant registers a service at its mDNS registrar and requests the use of a time of receipt, the registrant MUST also specify when it
 received the original registration. In order to support this, the API is required not only to allow the registrant to specify
@@ -676,7 +676,7 @@ registrant to indicate that it is primary or secondary. When an RR registered by
 mDNS registrant MUST NOT send a goodbye packet for that RR.
 
 Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrar MUST NOT
-respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received within 5 seconds
+respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received, within 5 seconds
 of the initial query reception, should it respond.
 
 Note that any change of indication from primary to secondary, or vice versa, while an mDNS registrant already has
@@ -697,7 +697,7 @@ process that follows its bogus announcement.
 
 So the TSR-based conflict resolution process creates no new vulnerability. Addressing the existing vulnerability is
 out of scope for this document. Protocols that rely on mDNS MUST NOT assume that mDNS service is secure or
-private. If security (authentication, authorization and/or secrecy) are needed, these must be provided at the
+private. If security (authentication, authorization and/or secrecy) is needed, these must be provided at the
 application layer, or by using DNSSEC rather than mDNS for service discovery.
 
 
@@ -706,7 +706,7 @@ application layer, or by using DNSSEC rather than mDNS for service discovery.
 
 IANA is requested to allocate a new OPT RR option code from the DNS EDNS0 Option Codes (OPT) registry for the 'Time Since
 Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by IANA. The meaning shall be
-'Multicast DNS Time Since Received". Reference shall refer to this document, once published.  IANA shall determine the registration date.
+"Multicast DNS Time Since Received". Reference shall refer to this document, once published.  IANA shall determine the registration date.
 
 
 
@@ -728,11 +728,11 @@ Note that TSR times are absolute times, but these are represented in the mDNS me
 "TSR time T+300" when sent at time T+400 would be represented in the mDNS message as a time offset of 100 seconds, and
 if the message in (2) were sent at nearly the same time, it would have a time offset of about 400 seconds.
 
-In between (2) and (3) we would expect mDNS Requester A to see a callback to its DNSServiceQueryRecord call, providing a
+In between (2) and (3) we would expect mDNS requester A to see a callback to its DNSServiceQueryRecord call, providing a
 AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing bit clear.
 
-After (3) we would expect mDNS Requester A to see two callbacks to its DNSServiceQueryRecord call. The first would provide
-a AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd clear and the kDNSServiceFlagsMoreComing bit set. The
+After (3) we would expect mDNS requester A to see two callbacks to its DNSServiceQueryRecord call. The first would provide
+a AAAA record of 2001:db8:0:42::1 with the kDNSServiceFlagsAdd bit clear and the kDNSServiceFlagsMoreComing bit set. The
 second would provide a AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
 bit clear.
 
