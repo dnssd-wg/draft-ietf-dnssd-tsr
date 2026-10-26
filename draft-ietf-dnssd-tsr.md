@@ -371,7 +371,7 @@ registrar MUST ignore that TSR option. The mDNS registrar MUST NOT use the 'RR I
 mDNS packet since such an index can easily be out of bounds.
 
 Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
-the question section, or is a known answer (QD bit = 0 and it's a record in the answer section). For all such records, no
+the question section, or is a known answer (QR bit = 0 and it's a record in the answer section). For all such records, no
 special processing is done for TSRs, since no TSR should exist in the mDNS message.
 
 For each remaining resource record in the mDNS message, the mDNS registrar MUST check to see if there is a TSR option in
