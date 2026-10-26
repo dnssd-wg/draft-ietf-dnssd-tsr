@@ -291,7 +291,7 @@ If such data exists and the key checksums match, there are three possibilities b
 **Proposed TSR time is more recent**
 : In this case, cached data (if any) on the owner name is discarded first.
   The registrant for any existing locally-registered data is notified that
-  the data they had previously registered is stale, and the stale data is removed from the local registration database.
+  the data they had previously registered is stale, and the stale data (if any) is removed from the local registration database.
   The requested records are added to the local registration database and put in the probing state,
   and the TSR data is replaced by the proposed TSR data.
 
