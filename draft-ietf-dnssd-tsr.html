@@ -1703,7 +1703,7 @@ the TSR option.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
 registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the 'RR Index' value in the TSR option to search across the
 mDNS packet since such an index can easily be out of bounds.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 <p id="section-3.5-5">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
-the question section, or is a known answer (QD bit = 0 and it's a record in the answer section). For all such records, no
+the question section, or is a known answer (QR bit = 0 and it's a record in the answer section). For all such records, no
 special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
 <p id="section-3.5-6">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is TSR data with that
