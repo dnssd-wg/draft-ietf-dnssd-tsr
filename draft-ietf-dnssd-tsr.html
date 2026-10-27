@@ -1374,91 +1374,94 @@ per name being advertised by the mDNS proxy.<a href="#section-1.2-5" class="pilc
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-1.3-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-1.3-2">
-          <dt id="section-1.3-2.1"><strong>absolute time</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.2">
-            <p id="section-1.3-2.2.1">a node-local timestamp that is derived from a local monotonic clock. This clock is not required to be synchronized
+<p id="section-1.3-2">The list below defines the most important terms that are used in this document.
+In addition, a reader is expected to be familiar with DNS terminology <span>[<a href="#RFC9499" class="cite xref">RFC9499</a>]</span>, in particular
+"EDNS", "OPT", "Owner", "resource record", "RR", and "RRset".<a href="#section-1.3-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-1.3-3">
+          <dt id="section-1.3-3.1"><strong>absolute time</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.2">
+            <p id="section-1.3-3.2.1">a node-local timestamp that is derived from a local monotonic clock. This clock is not required to be synchronized
 with any other clock, nor is it an absolute time in the sense of UTC. The clock may restart upon boot of the node but
-not during regular operation.<a href="#section-1.3-2.2.1" class="pilcrow">¶</a></p>
+not during regular operation.<a href="#section-1.3-3.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.3"><strong>authoritative data</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.4">
-            <p id="section-1.3-2.4.1">DNS records stored in the local registration database, for which an mDNS registrar is authoritative (as defined
-by <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>).<a href="#section-1.3-2.4.1" class="pilcrow">¶</a></p>
+<dt id="section-1.3-3.3"><strong>authoritative data</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.4">
+            <p id="section-1.3-3.4.1">DNS records stored in the local registration database, for which an mDNS registrar is authoritative (as defined
+by <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>).<a href="#section-1.3-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.5"><strong>cache</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.6">
-            <p id="section-1.3-2.6.1">each mDNS registrar maintains a cache of DNS records received from hosts on the local network, as described in <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.
+<dt id="section-1.3-3.5"><strong>cache</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.6">
+            <p id="section-1.3-3.6.1">each mDNS registrar maintains a cache of DNS records received from hosts on the local network, as described in <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>.
 Information in the cache represents the mDNS registrar's current understanding of what records are advertised on the network.
 Authoritative data may be present in the cache, but the presence of data in the cache does not in itself indicate that
-the mDNS registrar is authoritative for that data.<a href="#section-1.3-2.6.1" class="pilcrow">¶</a></p>
+the mDNS registrar is authoritative for that data.<a href="#section-1.3-3.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.7"><strong>local registration database</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.8">
-            <p id="section-1.3-2.8.1">a database of DNS records maintained by the mDNS registrar. Records in this database are registered locally with
+<dt id="section-1.3-3.7"><strong>local registration database</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.8">
+            <p id="section-1.3-3.8.1">a database of DNS records maintained by the mDNS registrar. Records in this database are registered locally with
 the mDNS registrar. The mDNS registrar is authoritative for all DNS records in this database.
 When the mDNS registrar receives queries that match records in this database, the mDNS registrar can respond to these
-queries with the matching records.<a href="#section-1.3-2.8.1" class="pilcrow">¶</a></p>
+queries with the matching records.<a href="#section-1.3-3.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.9"><strong>mDNS registrar</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.10">
-            <p id="section-1.3-2.10.1">an mDNS <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> implementation on a host that accepts local requests for querying, advertising and registering
+<dt id="section-1.3-3.9"><strong>mDNS registrar</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.10">
+            <p id="section-1.3-3.10.1">an mDNS <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span> implementation on a host that accepts local requests for querying, advertising and registering
 DNS records from one or more requesters and/or registrants. This could for example be an mDNS daemon process running
 in an operating system, accepting API calls from local processes to register or update DNS records for that process.
-It stores the locally-registered records in its local registration database.<a href="#section-1.3-2.10.1" class="pilcrow">¶</a></p>
+It stores the locally-registered records in its local registration database.<a href="#section-1.3-3.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.11"><strong>mDNS registrant</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.12">
-            <p id="section-1.3-2.12.1">an entity or software process that is attempting to register records for advertisement to a (local) mDNS registrar.<a href="#section-1.3-2.12.1" class="pilcrow">¶</a></p>
+<dt id="section-1.3-3.11"><strong>mDNS registrant</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.12">
+            <p id="section-1.3-3.12.1">an entity or software process that is attempting to register records for advertisement to a (local) mDNS registrar.<a href="#section-1.3-3.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.13"><strong>mDNS requester</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.14">
-            <p id="section-1.3-2.14.1">an entity or software process that issues mDNS queries to a local mDNS registrar, via an API call.
-The mDNS registrar is responsible for executing these queries and notifying the mDNS requester about the answer(s).<a href="#section-1.3-2.14.1" class="pilcrow">¶</a></p>
+<dt id="section-1.3-3.13"><strong>mDNS requester</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.14">
+            <p id="section-1.3-3.14.1">an entity or software process that issues mDNS queries to a local mDNS registrar, via an API call.
+The mDNS registrar is responsible for executing these queries and notifying the mDNS requester about the answer(s).<a href="#section-1.3-3.14.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.15"><strong>mDNS proxy</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.16">
-            <p id="section-1.3-2.16.1">a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
+<dt id="section-1.3-3.15"><strong>mDNS proxy</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.16">
+            <p id="section-1.3-3.16.1">a host that runs an mDNS registrar and at least one mDNS registrant acting as a proxy. That is, it needs to advertise
 mDNS records on behalf of one or more entities not located on the host itself.
-The advertising proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-2.16.1" class="pilcrow">¶</a></p>
+The advertising proxy <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> is an example of an mDNS proxy.<a href="#section-1.3-3.16.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.17"><strong>SRP requester</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.18">
-            <p id="section-1.3-2.18.1">a client that uses the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> to send an SRP Update to an SRP registrar.<a href="#section-1.3-2.18.1" class="pilcrow">¶</a></p>
+<dt id="section-1.3-3.17"><strong>SRP requester</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.18">
+            <p id="section-1.3-3.18.1">a client that uses the Service Registration Protocol (SRP) <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span> to send an SRP Update to an SRP registrar.<a href="#section-1.3-3.18.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.19"><strong>SRP registrar</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.20">
-            <p id="section-1.3-2.20.1">a server that accepts SRP Updates sent by SRP requesters using the SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>.
+<dt id="section-1.3-3.19"><strong>SRP registrar</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.20">
+            <p id="section-1.3-3.20.1">a server that accepts SRP Updates sent by SRP requesters using the SRP <span>[<a href="#RFC9665" class="cite xref">RFC9665</a>]</span>.
 DNS records registered via SRP to an SRP registrar may then be advertised by mDNS using an advertising proxy
 <span>[<a href="#I-D.ietf-dnssd-advertising-proxy" class="cite xref">I-D.ietf-dnssd-advertising-proxy</a>]</span> located on the same host.
-In that case, the SRP registrar process acts as an mDNS registrant towards its local mDNS registrar process.<a href="#section-1.3-2.20.1" class="pilcrow">¶</a></p>
+In that case, the SRP registrar process acts as an mDNS registrant towards its local mDNS registrar process.<a href="#section-1.3-3.20.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.21"><strong>TSR data</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.22">
-            <p id="section-1.3-2.22.1">locally stored data, associated with a single DNS owner name, that keeps track of the absolute time ('TSR time') when a set of
+<dt id="section-1.3-3.21"><strong>TSR data</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.22">
+            <p id="section-1.3-3.22.1">locally stored data, associated with a single DNS owner name, that keeps track of the absolute time ('TSR time') when a set of
 resource records was last updated and includes a key checksum to identify the owner of these records.
 It may be data proposed by an mDNS registrant's registration, or stored in the local registration database, or
-extracted from a received mDNS advertisement by parsing a TSR option.<a href="#section-1.3-2.22.1" class="pilcrow">¶</a></p>
+extracted from a received mDNS advertisement by parsing a TSR option.<a href="#section-1.3-3.22.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.23"><strong>TSR option</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.24">
-            <p id="section-1.3-2.24.1">an EDNS0 Time Since Received (TSR) option as defined by this specification.<a href="#section-1.3-2.24.1" class="pilcrow">¶</a></p>
+<dt id="section-1.3-3.23"><strong>TSR option</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.24">
+            <p id="section-1.3-3.24.1">an EDNS0 Time Since Received (TSR) option as defined by this specification.<a href="#section-1.3-3.24.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.3-2.25"><strong>TSR time</strong></dt>
-          <dd style="margin-left: 1.5em" id="section-1.3-2.26">
-            <p id="section-1.3-2.26.1">the (node-local) absolute time indicated by a particular TSR data.<a href="#section-1.3-2.26.1" class="pilcrow">¶</a></p>
+<dt id="section-1.3-3.25"><strong>TSR time</strong></dt>
+          <dd style="margin-left: 1.5em" id="section-1.3-3.26">
+            <p id="section-1.3-3.26.1">the (node-local) absolute time indicated by a particular TSR data.<a href="#section-1.3-3.26.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1806,7 +1809,7 @@ for that owner name in the pre-empting response<a href="#section-3.6-3.4.1" clas
 <a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-suppression-of-goodbye-anno" class="section-name selfRef">Suppression of Goodbye announcements</a>
         </h3>
 <p id="section-3.7-1">When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
-data, the mDNS registrar <span class="bcp14">MUST NOT</span> send a "goodbye" announcement for any RR on that owner name as a result of flushing
+data, the mDNS registrar <span class="bcp14">MUST NOT</span> send a "goodbye" announcement for any RR/RRset on that owner name as a result of flushing
 this stale data.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
 <p id="section-3.7-2">The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
 by TSR data, and as a result of this some records are removed, but some remain, the mDNS registrar that was directly
@@ -1852,10 +1855,10 @@ This requirement follows the second case ("Both TSR times are the same") in <a h
 delays: a difference of less than 10 seconds between the cached TSR time and the registrant's TSR time should be
 considered "recent."
 ]<a href="#section-3.8-7" class="pilcrow">¶</a></p>
-<p id="section-3.8-8">In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
-the mDNS registrar does not re-probe those RRs as defined in <a href="#probing-tsr-change-only" class="auto internal xref">Section 3.2.1</a>.
-In this situation, if some RRs are removed, then a goodbye
-announcement should be sent for such RRs, but no probe is sent for RRs that are not removed.
+<p id="section-3.8-8">In addition, when the TSR time for a set of records is updated by an mDNS registrant, but nothing else changes,
+the mDNS registrar does not re-probe those records as defined in <a href="#probing-tsr-change-only" class="auto internal xref">Section 3.2.1</a>.
+In this situation, if some RRsets are removed, then a goodbye
+announcement should be sent for those RRsets, but no probe is sent for RRs that are not removed.
 If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
 the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
 there to be competing mDNS updates being probed or announced at the same time.<a href="#section-3.8-8" class="pilcrow">¶</a></p>
@@ -2082,8 +2085,8 @@ this is the case, the mDNS registrar <span class="bcp14">MUST NOT</span> send go
         </h3>
 <p id="section-9.2-1">When more than one proxy is authoritative for a particular RR, this can generate excessive answer traffic, and also
 redundant goodbye announcements. mDNS registrar implementations that support TSR <span class="bcp14">MUST</span> provide a way for a new proxy mDNS
-registrant to indicate that it is primary or secondary. When an RR registered by a secondary proxy is later removed, the
-mDNS registrant <span class="bcp14">MUST NOT</span> send a goodbye packet for that RR.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+registrant to indicate that it is primary or secondary. When an RRset registered by a secondary proxy is later removed, the
+mDNS registrar <span class="bcp14">MUST NOT</span> send a goodbye packet for that RRset.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 <p id="section-9.2-2">Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrar <span class="bcp14">MUST NOT</span>
 respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received, within 5 seconds
 of the initial query reception, should it respond.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
@@ -2157,6 +2160,10 @@ Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by 
 <dt id="RFC8766">[RFC8766]</dt>
         <dd>
 <span class="refAuthor">Cheshire, S.</span>, <span class="refTitle">"Discovery Proxy for Multicast DNS-Based Service Discovery"</span>, <span class="seriesInfo">RFC 8766</span>, <span class="seriesInfo">DOI 10.17487/RFC8766</span>, <time datetime="2020-06" class="refDate">June 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8766">https://www.rfc-editor.org/rfc/rfc8766</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9499">[RFC9499]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">K. Fujiwara</span>, <span class="refTitle">"DNS Terminology"</span>, <span class="seriesInfo">BCP 219</span>, <span class="seriesInfo">RFC 9499</span>, <span class="seriesInfo">DOI 10.17487/RFC9499</span>, <time datetime="2024-03" class="refDate">March 2024</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9499">https://www.rfc-editor.org/rfc/rfc9499</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9665">[RFC9665]</dt>
       <dd>
