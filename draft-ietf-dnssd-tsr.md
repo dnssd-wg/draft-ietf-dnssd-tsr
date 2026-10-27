@@ -47,6 +47,7 @@ normative:
   RFC6762:
   RFC6891:
   RFC8766:
+  RFC9499:
   RFC9665:
 
 informative:
@@ -145,6 +146,10 @@ per name being advertised by the mDNS proxy.
 
 ## Conventions, Terms and Definitions
 {::boilerplate bcp14-tagged}
+
+The list below defines the most important terms that are used in this document.
+In addition, a reader is expected to be familiar with DNS terminology {{RFC9499}}, in particular
+"EDNS", "OPT", "Owner", "resource record", "RR", and "RRset".
 
 **absolute time**
 : a node-local timestamp that is derived from a local monotonic clock. This clock is not required to be synchronized
@@ -454,7 +459,7 @@ response is stale or conflicting. For this reason, an mDNS registrar MUST NOT su
 ## Suppression of Goodbye announcements
 
 When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
-data, the mDNS registrar MUST NOT send a "goodbye" announcement for any RR on that owner name as a result of flushing
+data, the mDNS registrar MUST NOT send a "goodbye" announcement for any RR/RRset on that owner name as a result of flushing
 this stale data.
 
 The reason for this is that in the case where an mDNS registrant updates one or more RRsets on an owner name covered
@@ -504,10 +509,10 @@ delays: a difference of less than 10 seconds between the cached TSR time and the
 considered "recent."
 \]
 
-In addition, when the TSR time for a set of RRs is updated by an mDNS registrant, but nothing else changes,
-the mDNS registrar does not re-probe those RRs as defined in {{probing-tsr-change-only}}.
-In this situation, if some RRs are removed, then a goodbye
-announcement should be sent for such RRs, but no probe is sent for RRs that are not removed.
+In addition, when the TSR time for a set of records is updated by an mDNS registrant, but nothing else changes,
+the mDNS registrar does not re-probe those records as defined in {{probing-tsr-change-only}}.
+In this situation, if some RRsets are removed, then a goodbye
+announcement should be sent for those RRsets, but no probe is sent for RRs that are not removed.
 If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
 the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
 there to be competing mDNS updates being probed or announced at the same time.
@@ -695,8 +700,8 @@ this is the case, the mDNS registrar MUST NOT send goodbye announcements for suc
 
 When more than one proxy is authoritative for a particular RR, this can generate excessive answer traffic, and also
 redundant goodbye announcements. mDNS registrar implementations that support TSR MUST provide a way for a new proxy mDNS
-registrant to indicate that it is primary or secondary. When an RR registered by a secondary proxy is later removed, the
-mDNS registrant MUST NOT send a goodbye packet for that RR.
+registrant to indicate that it is primary or secondary. When an RRset registered by a secondary proxy is later removed, the
+mDNS registrar MUST NOT send a goodbye packet for that RRset.
 
 Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrar MUST NOT
 respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received, within 5 seconds
