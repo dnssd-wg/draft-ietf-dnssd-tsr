@@ -291,20 +291,43 @@ If such data exists and the key checksums match, there are three possibilities b
 **Proposed TSR time is more recent**
 : In this case, cached data (if any) on the owner name is discarded first.
   The registrant for any existing locally-registered data is notified that
-  the data they had previously registered is stale, and the stale data is removed from the local registration database.
-  The requested records are added to the local registration database and put in the probing state,
-  and the TSR data is replaced by the proposed TSR data.
+  the data they had previously registered is stale, and the stale data (if any) is removed from the local
+  registration database.
+  The requested records including TSR data are then added to the local registration database.
+  The records are put in the probing state only if needed, as described in {{probing-or-updating}}.
+  If probing is not performed, the new records are only announced ({{Section 8.4 of RFC6762}}) and a "goodbye"
+  ({{Section 10.1 of RFC6762}}) is sent for any RRset that is removed due to the local registration database update.
 
 It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see {{Section 2 of RFC6762}}).
-If an mDNS registrant tries to register an RR on a name for which the registrar already has data, cached or
+If an mDNS registrant tries to register an RR on a name for which the mDNS registrar already has data, cached or
 authoritative, on the same name, whether of the same RR type or a different RR type, for which there is no TSR data, or for
 which the key checksum in the TSR data being registered does not match what is already known, the registrar MUST treat
 this as an immediate conflict, and MUST NOT add the data to its local registration database and MUST NOT probe.
 
-For the third case, as with any local mDNS registration, the mDNS registrar treats all of the records in the registration
-request as tentative (that is, they are put in the probing state) until they have been probed and no conflicting answers
-from other mDNS hosts have been received.
+### Probing or Updating when the proposed TSR time is more recent {#probing-or-updating}
+
+For the third case above where the proposed TSR time is more recent, the newly registered records are only put in the
+probing state if the mDNS registrar does not
+have unique ownership of the name yet. This follows {{Section 8.4 of RFC6762}}: a host that has already
+established unique ownership of a name does not repeat the probing step when it updates the records on that name,
+but only re-announces them.
+Therefore, an mDNS registrar that has already completed probing for the previous (now stale) set of records on this
+owner name, that were stored in the local registration database, MUST NOT probe the newly registered records on this
+same name.
+
+Cases where the mDNS registrar has not (yet) established unique ownership of the owner name include for example:
+
+* previous records on the name were present only in the cache (learned from another mDNS host on the link);
+* records on the name are already locally registered but still in the probing state (i.e., probing has
+not completed yet).
+
+In any such cases the mDNS registrar MUST put the requested records in the probing state and treat them as tentative,
+as with any new local mDNS registration, until they have been fully probed as described in {{Section 8.1 of RFC6762}}.
+
+If probing for the owner name was already in progress, it SHOULD continue without restarting: only the proposed
+records in the authority section ({{Section 8.2 of RFC6762}}) are updated for the probe messages that
+are still to be sent.
 
 ## Probing resource records on names with TSR data
 
