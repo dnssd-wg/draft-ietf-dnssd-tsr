@@ -44,6 +44,7 @@ author:
 
 normative:
   RFC1034:
+  RFC1035:
   RFC6762:
   RFC6891:
   RFC8766:
@@ -210,6 +211,7 @@ extracted from a received mDNS advertisement by parsing a TSR option.
 
 **TSR time**
 : the (node-local) absolute time indicated by a particular TSR data.
+  The internal representation of TSR time and comparisons are defined in {{tolerance}}.
 
 # Time Since Received EDNS Option {#tsrrr}
 
@@ -288,7 +290,7 @@ If such data exists and the key checksums match, there are three possibilities b
   registrant that its registration is stale. This indication must be distinct from the "appropriate error" indication of
   conflict that was defined above.
 
-**Both TSR times are the same**
+**Both TSR times are the same (equal)**
 : In this case, cached data (if any) on the owner name is discarded first. Then, the requested records are added to
   the local registration database, updating existing records (if any). Since the requested records are considered
   identical to the known records, based on TSR time, no probing or announcing is performed for these records.
@@ -302,6 +304,8 @@ If such data exists and the key checksums match, there are three possibilities b
   The records are put in the probing state only if needed, as described in {{probing-or-updating}}.
   If probing is not performed, the new records are only announced ({{Section 8.4 of RFC6762}}) and a "goodbye"
   ({{Section 10.1 of RFC6762}}) is sent for any RRset that is removed due to the local registration database update.
+
+Note that any TSR time comparisons are performed with a small tolerance as defined in {{tolerance}}.
 
 It is in principle possible for two different mDNS registrants to ask the same mDNS registrar to publish different RRs on
 the same name, some of which are shared and some of which are unique (see {{Section 2 of RFC6762}}).
@@ -472,50 +476,45 @@ on some mDNS registrar.
 
 ## Suppression of redundant probing
 
-When mDNS proxies are doing any form of replication of the records they are publishing, it can be the case that one
-proxy sends its probes for a new set of records first.
-If this is the case, some or all proxies on the same multicast link that receive the replicated data
-may already have (at the time of probing) the correct data in their local registration database with matching TSR times,
-waiting to be probed.
+There are use cases for TSR in which the same set of records, with the same TSR time, can be registered at multiple
+mDNS registrars on multiple hosts.
+Examples are:
+* an mDNS registrant that registers its set of records to a remote SRP registrar via unicast, while at the same time
+  it advertises these records itself, if needed, using mDNS as a backup solution.
+* a group of two or more mDNS proxies that run a replication protocol, each one sharing any change to a set of records
+  with its peers. Each proxy's mDNS registrar then can advertise the same records, for redundancy.
 
-In such cases, these proxies will determine that the records in the received probe message are identical to the locally-registered
-set of records, and therefore per {{Section 8.2.1 of RFC6762}} no conflict is detected
-and no response to the probe will be sent.
-An mDNS registrar that receives a probe, for a new set of records that it has just placed in the probing state, MUST
-suppress sending its own probe messages as this would be redundant: the probing
-is already being performed on the link.
+If in such cases the registration triggers probing by an mDNS registrar, the situation of multiple mDNS registrars
+probing at the same time for the same data needs to be avoided.
+Therefore, the following requirement is imposed on any mDNS registrant using TSR:
+the mDNS registrant (out of multiple) that first registers a set of records to an mDNS registrar MUST wait until the
+records are successfully registered at this mDNS registrar, before it can trigger a registration at another mDNS registrar.
+This makes it likely that any probing, if needed, is performed by the first mDNS registrar only and not by others.
 
-\[TBD for WG: for the above, the response to a probe in case of a true conflict (by another mDNS host) will typically
-  be 'fast' with unicast as per RFC 6762. For this reason, the suppression of probing would be dangerous in the above
-  case, as most of the proxies that suppress their probing would not see the actual conflict (if any).
-  Unless the replication algorithm takes care of withdrawing the records on all proxies.\]
+For example, if multiple mDNS registrants are peers in a replication protocol, then the replication of records from
+the first (origin) peer to a second peer can only be confirmed to the second peer once the local registration to
+the mDNS registrar on the first peer's host returns 'success' which implies the probing was done and the mDNS announce
+message for the new records is either already sent on the link, or pending broadcast transmission (i.e. queued
+in Layer 2).
+It is perfectly fine if the first peer sends the record data to the second peer earlier than that (for example, while
+probing is ongoing) but the second peer's mDNS registrant must not register this data yet to its local mDNS registrar
+before the first peer confirms its local registration was successful.
 
-Conversely, it can also be the case that one proxy already sent its mDNS probes and announced the new records before
-some other proxy on the same multicast link fully completed the replication process for these records.
-In that case, the announced records will be stored already in the cache of this other proxy at the time that its
-local mDNS registrant (i.e. the replicating proxy process) performs the registration of these records and the associated
-probing.
+Due to the above requirement, it will often be the case that one or more other mDNS registrars on the same link
+already have the replicated records in their cache at the time that they receive the registration request
+from a local mDNS registrant.
+This cached data will then also have matching (equal) TSR times to the data being registered.
+In such cases, these mDNS registrars apply the second case in {{locval}} ("Both TSR times are the same")
+and no probing or announcing is performed for the data by these mDNS registrars.
 
-To avoid redundant probing for such cases, when an mDNS
-registrant registers data with an mDNS registrar for which the same data is already cached with the same TSR key
-checksum and an equal TSR time, the mDNS registrar MUST skip probing.
-This requirement follows the second case ("Both TSR times are the same") in {{locval}}.
+If an update by an mDNS registrant causes some RRsets to be removed on the mDNS registrar, then a goodbye
+announcement is sent for those RRsets, but no probe is sent for RRs that are not removed.
+If some new RRs are added in an update to an existing (already registered) RRset, probing can be skipped because
+the mDNS registrar already knows it is up to date and has ownership of the name.
+So the new RRs can simply be announced immediately.
 
-\[TBD for WG: the below 'recent' rule text instead of 'equal' as used in above sentence seems to conflict the section
- 'locval' {{locval}} 3 cases. Only when TSR time is equal, will the probing be suppressed.
-
-Recent here should take into account network
-delays: a difference of less than 10 seconds between the cached TSR time and the registrant's TSR time should be
-considered "recent."
-\]
-
-In addition, when the TSR time for a set of records is updated by an mDNS registrant, but nothing else changes,
+Note that if the TSR time for a set of records is updated by an mDNS registrant, but nothing else changes,
 the mDNS registrar does not re-probe those records as defined in {{probing-tsr-change-only}}.
-In this situation, if some RRsets are removed, then a goodbye
-announcement should be sent for those RRsets, but no probe is sent for RRs that are not removed.
-If some RRs are added, the probing stage can be skipped because the registrar already knows it is up to date. So
-the new RRs can simply be announced immediately. One can assume that updates do not happen frequently enough for
-there to be competing mDNS updates being probed or announced at the same time.
 
 ## Handling multi-packet mDNS advertisements
 
@@ -574,16 +573,31 @@ produce the value for the 'Time Offset' field, and this value is clamped to a ma
 {{tsrrr}}.
 
 
-# The Effect of Network Latency on Time Computations
+# The Effect of Network Latency on Time Computations {#tolerance}
 
-Because TSR computations are affected by network latency, comparisons can’t be considered accurate. It is
-therefore necessary to tolerate some amount of error. In practice, however, it should generally not be the case
-that two advertising proxies receive SRP updates from the same SRP requester at nearly the same time. So it should
-always be the case either that there is a clear ordering to the TSR 'Time Offset' values, or that there is no conflict in the
-data. For example with anycast, a retransmission could go to a different SRP registrar, but in this case both
-SRP registrars would simultaneously receive identical data, so the close ordering or even equality of the TSR time offsets
-should not affect the outcome.
+Because TSR time computations are affected by network latency as well as rounding effects (when computing the
+'Time Offset' value in a TSR option), comparisons can’t be considered accurate.
+It is therefore necessary to tolerate some amount of error or uncertainty when comparing two TSR times.
 
+This document defines a tolerance of 2 seconds for comparing two TSR times:
+given two TSR times t1, t2 to compare, t1 equals t2 iff `| t1 - t2 | <= 2`.
+
+In practice, however, it should generally not be the case that two mDNS registrars receive a registration from
+a single source with different sets of records at nearly the same time.
+For example, two SRP registrars acting as advertising proxy that both receive an SRP update from the same SRP
+requester at nearly the same time with different data would be unlikely for a well-behaved SRP requester.
+So it should always be the case that either there is a clear ordering to the TSR 'Time Offset' values as advertised
+by the two mDNS registrars, or that there is no conflict in the two sets of data.
+In the latter case, the above equality definition with tolerance holds true.
+
+For example, when sending SRP Updates with IP anycast, an SRP Update UDP retransmission triggered by a lost SRP
+Update response could be routed to a different SRP registrar.
+In this case both SRP registrars would receive identical data with a small time difference of at least
+2-5 seconds (per {{Section 4.2.1 of RFC1035}}).
+Depending on rounding effects and network delays, the resulting difference in the TSR 'Time Offset' value advertised
+by the mDNS registrars could be 2 seconds, in which case the set of records would be (correctly) treated as being
+identical and having no conflict, or it could be 3 seconds or higher, in which case there is a clear ordering to
+the data with the latest registration "winning", which is also correct.
 
 # Internal Handling of TSR Data
 
@@ -591,10 +605,15 @@ The TSR 'Time Offset' value that is sent on the wire is expressed in seconds rel
 registration. In order to derive this value, the mDNS registrar must remember the (local) time at
 which the registration occurred. This time is recorded as an absolute time, not a relative time. We refer to this as the
 time of receipt or 'TSR time'.
+
+The resolution of the internal TSR time is implementation-specific. Typically it is stored in a higher resolution
+than seconds, for example milliseconds or units of 10 milliseconds, to mitigate rounding errors as much as possible.
+
 When constructing a TSR option, the registrar computes the difference between the current time and the TSR time,
 which must always be in the past. This difference, which should be a positive integer, is converted to
-seconds, and that unsigned value is then used to synthesize the TSR option.
-
+seconds, and that unsigned value is then used to synthesize the 'Time Offset' value in the TSR option.
+The conversion to seconds MUST use a rounding operation (i.e. not use a 'floor' or 'ceil' operation).
+Note that a 'Time Offset' value can be 0.
 
 # Timeliness of Conflict Resolution
 
