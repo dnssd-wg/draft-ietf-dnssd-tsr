@@ -573,8 +573,8 @@ was generated when adding resource records to the message. The time of receipt i
 produce the value for the 'Time Offset' field (as specified in {{internal-tsr}}).
 This value is clamped to a maximum of seven days (604,800 seconds) {{tsrrr}}.
 
-Note that "goodbye" announcements for an owner name are also covered by the second bullet above and therefore MUST have
-an associated TSR option in the mDNS message.
+Note that "goodbye" announcements for an owner name that has TSR data associated are also covered by the second bullet
+above and therefore MUST have an associated TSR option in the mDNS message.
 
 # The Effect of Network Latency on Time Computations {#tolerance}
 
