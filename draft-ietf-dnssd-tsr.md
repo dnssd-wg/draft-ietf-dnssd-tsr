@@ -751,10 +751,13 @@ application layer, or by using DNSSEC rather than mDNS for service discovery.
 
 # IANA Considerations
 
-IANA is requested to allocate a new OPT RR option code from the DNS EDNS0 Option Codes (OPT) registry for the 'Time Since
-Received' Option. The Name shall be 'mDNS-TSR'. The value shall be allocated by IANA. The meaning shall be
-"Multicast DNS Time Since Received". Reference shall refer to this document, once published.  IANA shall determine the registration date.
+IANA is requested to allocate a new OPT RR option code from the DNS EDNS0 Option Codes (OPT) registry, in the
+Domain Name System (DNS) Parameters registry group, for the 'Time Since Received' Option.
 
+    Value:     TBD1 - allocated by IANA
+    Name:      mDNS-TSR
+    Status:    Standard
+    Reference: [THIS-RFC]
 
 
 --- back
