@@ -1926,8 +1926,8 @@ it adds an OPT record in the additional section. In this OPT record it adds a TS
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
 produce the value for the 'Time Offset' field (as specified in <a href="#internal-tsr" class="auto internal xref">Section 5</a>).
 This value is clamped to a maximum of seven days (604,800 seconds) <a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.10-7" class="pilcrow">¶</a></p>
-<p id="section-3.10-8">Note that "goodbye" announcements for an owner name are also covered by the second bullet above and therefore <span class="bcp14">MUST</span> have
-an associated TSR option in the mDNS message.<a href="#section-3.10-8" class="pilcrow">¶</a></p>
+<p id="section-3.10-8">Note that "goodbye" announcements for an owner name that has TSR data associated are also covered by the second bullet
+above and therefore <span class="bcp14">MUST</span> have an associated TSR option in the mDNS message.<a href="#section-3.10-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
