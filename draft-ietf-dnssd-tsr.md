@@ -404,8 +404,8 @@ registrar MUST ignore that TSR option. The mDNS registrar MUST NOT use the 'RR I
 mDNS packet since such an index can easily be out of bounds.
 
 Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
-the question section, or is a known answer (QR bit = 0 and it's a record in the answer section). For all such records, no
-special processing is done for TSRs, since no TSR should exist in the mDNS message.
+the question section, or is a known answer (QR bit {{RFC1035}} is '0' and it's a record in the answer section).
+For all such records, no special processing is done for TSRs, since no TSR should exist in the mDNS message.
 
 For each remaining resource record in the mDNS message, the mDNS registrar MUST check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar MUST check to see if there is TSR data with that
@@ -420,7 +420,7 @@ records on the name in the cache, those records are all discarded, because they 
 In the case that there is TSR data for the record in the mDNS message, and there are local records on the same owner name
 for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
-section of an mDNS query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
+section of an mDNS query (QR bit is '0') are "known answers" and therefore are not relevant when adding data
 to the cache. Such records can never have TSR options associated with them.  However, resource records in
 the authority and additional sections of a query do need to be processed (but in the case of authority records, are not
 added to the cache).
@@ -545,7 +545,7 @@ For each non-question record that is added to the mDNS message, one of three thi
   state.
 * It is sending an answer which is either an announcement or a response containing data it has already validated and for
   which it is authoritative.
-* The message is a query (QD=0) and the record is in the answer section, and is therefore a "known answer."
+* The message is a query (QR bit is '0') and the record is in the answer section, and is therefore a "known answer."
 
 As described in {{Section 7.1 of RFC6762}}, an mDNS registrar asking a question about one
 or more RRs on a particular name populates the answer section of its mDNS message with the answers it already knows, to
