@@ -303,7 +303,8 @@ If such data exists and the key checksums match, there are three possibilities b
   The requested records including TSR data are then added to the local registration database.
   The records are put in the probing state only if needed, as described in {{probing-or-updating}}.
   If probing is not performed, the new records are only announced ({{Section 8.4 of RFC6762}}) and a "goodbye"
-  ({{Section 10.1 of RFC6762}}) is sent for any RRset that is removed due to the local registration database update.
+  announcement ({{Section 10.1 of RFC6762}}) with TSR option is sent for any RRset that is removed due to the
+  local registration database update.
 
 Note that any TSR time comparisons are performed with a small tolerance as defined in {{tolerance}}.
 
@@ -460,7 +461,7 @@ response is stale or conflicting. For this reason, an mDNS registrar MUST NOT su
 
 {{dupasexample}} shows what this might look like from the perspective of an mDNS requester.
 
-## Suppression of Goodbye announcements
+## Suppression of "Goodbye" announcements
 
 When authoritative data is removed on an mDNS registrar because an mDNS message has been received with more recent
 data, the mDNS registrar MUST NOT send a "goodbye" announcement for any RR/RRset on that owner name as a result of flushing
@@ -572,6 +573,8 @@ was generated when adding resource records to the message. The time of receipt i
 produce the value for the 'Time Offset' field (as specified in {{internal-tsr}}).
 This value is clamped to a maximum of seven days (604,800 seconds) {{tsrrr}}.
 
+Note that "goodbye" announcements for an owner name are also covered by the second bullet above and therefore MUST have
+an associated TSR option in the mDNS message.
 
 # The Effect of Network Latency on Time Computations {#tolerance}
 
@@ -713,14 +716,14 @@ from the caches of mDNS registrars that receive such announcements.
 
 To prevent this, an mDNS registrar implementation that implements TSR MUST provide a way for an mDNS registrant to indicate
 that such data is being withdrawn from publication by that registrant, but is still valid. When the registrant indicates that
-this is the case, the mDNS registrar MUST NOT send goodbye announcements for such data.
+this is the case, the mDNS registrar MUST NOT send "goodbye" announcements for such data.
 
 ## Primary/Secondary indication
 
 When more than one proxy is authoritative for a particular RR, this can generate excessive answer traffic, and also
-redundant goodbye announcements. mDNS registrar implementations that support TSR MUST provide a way for a new proxy mDNS
+redundant "goodbye" announcements. mDNS registrar implementations that support TSR MUST provide a way for a new proxy mDNS
 registrant to indicate that it is primary or secondary. When an RRset registered by a secondary proxy is later removed, the
-mDNS registrar MUST NOT send a goodbye packet for that RRset.
+mDNS registrar MUST NOT send a "goodbye" announcement for that RRset.
 
 Similarly, when an RR is registered by a registrant that indicates that it is secondary, the mDNS registrar MUST NOT
 respond to the initial mDNS query for that RR. Only if a second mDNS query retransmission is received, within 5 seconds
