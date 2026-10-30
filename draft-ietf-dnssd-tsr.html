@@ -1736,8 +1736,8 @@ is not. It's equally possible that such a registrar will send mDNS packets conta
 <p id="section-3.5-3">When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
 the owner name of the TSR option by assigning
 an index to each non-question resource record in the mDNS message. The 'RR Index' of each TSR option is then matched to the
-index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
-option is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
+index of a resource record, and the owner name for that resource record is applied to the TSR option. The TSR time
+is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
 the TSR option.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
 <p id="section-3.5-4">If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
 registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the 'RR Index' value in the TSR option to search across the
@@ -1856,8 +1856,8 @@ In such cases, these mDNS registrars apply the second case in <a href="#locval" 
 and no probing or announcing is performed for the data by these mDNS registrars.<a href="#section-3.8-4" class="pilcrow">¶</a></p>
 <p id="section-3.8-5">If an update by an mDNS registrant causes some RRsets to be removed on the mDNS registrar, then a goodbye
 announcement is sent for those RRsets, but no probe is sent for RRs that are not removed.
-If some new RRs are added in an update to an existing (already registered) RRset, probing can be skipped because
-the mDNS registrar already knows it is up to date and has ownership of the name.
+If some new RRs are added in an update on a name the mDNS registrar already owns, probing can be skipped because
+the mDNS registrar already knows it has ownership of the name.
 So the new RRs can simply be announced immediately.<a href="#section-3.8-5" class="pilcrow">¶</a></p>
 <p id="section-3.8-6">Note that if the TSR time for a set of records is updated by an mDNS registrant, but nothing else changes,
 the mDNS registrar does not re-probe those records as defined in <a href="#probing-tsr-change-only" class="auto internal xref">Section 3.2.1</a>.<a href="#section-3.8-6" class="pilcrow">¶</a></p>
@@ -1923,8 +1923,8 @@ owner name, the index of the record being added (since it is the first), the key
 <p id="section-3.10-7">Once the mDNS registrar has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
-produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds)
-<a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.10-7" class="pilcrow">¶</a></p>
+produce the value for the 'Time Offset' field (as specified in <a href="#internal-tsr" class="auto internal xref">Section 5</a>).
+This value is clamped to a maximum of seven days (604,800 seconds) <a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.10-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1956,7 +1956,7 @@ identical and having no conflict, or it could be 3 seconds or higher, in which c
 the data with the latest registration "winning", which is also correct.<a href="#section-4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="internal-handling-of-tsr-data">
+<div id="internal-tsr">
 <section id="section-5">
       <h2 id="name-internal-handling-of-tsr-da">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-internal-handling-of-tsr-da" class="section-name selfRef">Internal Handling of TSR Data</a>
