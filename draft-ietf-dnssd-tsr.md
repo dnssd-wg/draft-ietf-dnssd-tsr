@@ -394,8 +394,8 @@ is not. It's equally possible that such a registrar will send mDNS packets conta
 When an mDNS message contains TSR options, for each TSR option in an mDNS message, the mDNS registrar first determines
 the owner name of the TSR option by assigning
 an index to each non-question resource record in the mDNS message. The 'RR Index' of each TSR option is then matched to the
-index of a resource record, and the owner name for that resource record is applied to the TSR option. The time on the TSR
-option is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
+index of a resource record, and the owner name for that resource record is applied to the TSR option. The TSR time
+is then computed by taking the current local clock time and subtracting from it the 'Time Offset' value in
 the TSR option.
 
 If there is a TSR option in an mDNS message for which there is no matching resource record in the mDNS message, the mDNS
@@ -509,8 +509,8 @@ and no probing or announcing is performed for the data by these mDNS registrars.
 
 If an update by an mDNS registrant causes some RRsets to be removed on the mDNS registrar, then a goodbye
 announcement is sent for those RRsets, but no probe is sent for RRs that are not removed.
-If some new RRs are added in an update to an existing (already registered) RRset, probing can be skipped because
-the mDNS registrar already knows it is up to date and has ownership of the name.
+If some new RRs are added in an update on a name the mDNS registrar already owns, probing can be skipped because
+the mDNS registrar already knows it has ownership of the name.
 So the new RRs can simply be announced immediately.
 
 Note that if the TSR time for a set of records is updated by an mDNS registrant, but nothing else changes,
@@ -569,8 +569,8 @@ owner name, the index of the record being added (since it is the first), the key
 Once the mDNS registrar has finished adding resource records to the mDNS message,
 it adds an OPT record in the additional section. In this OPT record it adds a TSR option for every name in the set that
 was generated when adding resource records to the message. The time of receipt is subtracted from the current time to
-produce the value for the 'Time Offset' field, and this value is clamped to a maximum of seven days (604,800 seconds)
-{{tsrrr}}.
+produce the value for the 'Time Offset' field (as specified in {{internal-tsr}}).
+This value is clamped to a maximum of seven days (604,800 seconds) {{tsrrr}}.
 
 
 # The Effect of Network Latency on Time Computations {#tolerance}
@@ -599,7 +599,7 @@ by the mDNS registrars could be 2 seconds, in which case the set of records woul
 identical and having no conflict, or it could be 3 seconds or higher, in which case there is a clear ordering to
 the data with the latest registration "winning", which is also correct.
 
-# Internal Handling of TSR Data
+# Internal Handling of TSR Data {#internal-tsr}
 
 The TSR 'Time Offset' value that is sent on the wire is expressed in seconds relative to the time of receipt of the
 registration. In order to derive this value, the mDNS registrar must remember the (local) time at
