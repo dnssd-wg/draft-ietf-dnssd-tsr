@@ -1744,8 +1744,8 @@ the TSR option.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
 registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS registrar <span class="bcp14">MUST NOT</span> use the 'RR Index' value in the TSR option to search across the
 mDNS packet since such an index can easily be out of bounds.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 <p id="section-3.5-5">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
-the question section, or is a known answer (QR bit = 0 and it's a record in the answer section). For all such records, no
-special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
+the question section, or is a known answer (QR bit <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span> is '0' and it's a record in the answer section).
+For all such records, no special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
 <p id="section-3.5-6">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is TSR data with that
 owner name locally. If there is not, the record is processed normally.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
@@ -1757,7 +1757,7 @@ records on the name in the cache, those records are all discarded, because they 
 <p id="section-3.5-8">In the case that there is TSR data for the record in the mDNS message, and there are local records on the same owner name
 for which there is no local TSR data, this always means that any
 data is in conflict. How that conflict is addressed depends on the data. First, note that resource records in the answer
-section of an mDNS query (QR bit in the header is 0) are "known answers" and therefore are not relevant when adding data
+section of an mDNS query (QR bit is '0') are "known answers" and therefore are not relevant when adding data
 to the cache. Such records can never have TSR options associated with them.  However, resource records in
 the authority and additional sections of a query do need to be processed (but in the case of authority records, are not
 added to the cache).<a href="#section-3.5-8" class="pilcrow">¶</a></p>
@@ -1902,7 +1902,7 @@ state.<a href="#section-3.10-2.1.1" class="pilcrow">¶</a></p>
 which it is authoritative.<a href="#section-3.10-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.10-2.3">
-            <p id="section-3.10-2.3.1">The message is a query (QD=0) and the record is in the answer section, and is therefore a "known answer."<a href="#section-3.10-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-3.10-2.3.1">The message is a query (QR bit is '0') and the record is in the answer section, and is therefore a "known answer."<a href="#section-3.10-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.10-3">As described in <span><a href="https://rfc-editor.org/rfc/rfc6762#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>, an mDNS registrar asking a question about one
