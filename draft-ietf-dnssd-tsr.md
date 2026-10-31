@@ -445,7 +445,7 @@ respect to any locally-registered data.
 of duplicate answers. When an mDNS query is received for which the mDNS registrar has authoritative data, the mDNS registrar
 will wait for a random amount of time before sending a response. If, during that time, a response is received that contains
 all the answers it would have sent, it suppresses sending these answers, since they are redundant.
-Such a response is referred to as a "pre-empting response".
+Such a received response is referred to as a "pre-empting response" from here on.
 
 In the case where TSR data is present locally or in a pre-empting response, it can be the case that the data in a pre-empting
 response is stale or conflicting. For this reason, an mDNS registrar MUST NOT suppress duplicate answers when:
@@ -454,8 +454,8 @@ response is stale or conflicting. For this reason, an mDNS registrar MUST NOT su
   owner name
 * TSR data is present locally for that owner name but is not present in the pre-empting response
 * A TSR option is present for that owner name in the pre-empting response, but local authoritative data for that owner
-  name is present but has no associated TSR data
-* local authoritative data for that owner name is present and includes TSR data, a TSR option for that owner name is
+  name is present with no associated TSR data
+* local authoritative data for that owner name is present and includes TSR data, and a TSR option for that owner name is
   present in the pre-empting response, but the local TSR time for that owner name is more recent than the TSR time
   for that owner name in the pre-empting response
 
@@ -795,7 +795,7 @@ Note that we would not normally see the reverse sequence:
 2. mDNS registrar for proxy C sends a multicast response of 2001:db8:0:17::1 with TSR time T+300
 3. mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T
 
-This is because in this case we would expect known answer suppression to result in the mDNS registrar for proxy B suppressing
+This is because in this case we would expect duplicate answer suppression to result in the mDNS registrar for proxy B suppressing
 its response. However, it is possible that B might not see the response from C. In that situation, A would receive both
 responses, but since the TSR time on the second response is earlier than the TSR time on the first response, we would see
 only one callback, providing an AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
