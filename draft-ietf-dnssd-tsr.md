@@ -364,7 +364,7 @@ is performed as described in {{procmes}}.
 
 Once all non-question records have been processed, the registrar MUST respond to any questions that match
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
-described in {{tsrrr}}.
+described in {{construct}}.
 
 ## Receiving mDNS messages that may contain TSR options
 
