@@ -1745,7 +1745,8 @@ registrar <span class="bcp14">MUST</span> ignore that TSR option. The mDNS regis
 mDNS packet since such an index can easily be out of bounds.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 <p id="section-3.5-5">Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
 the question section, or is a known answer (QR bit <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span> is '0' and it's a record in the answer section).
-For all such records, no special processing is done for TSRs, since no TSR should exist in the mDNS message.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
+For all such records, no special processing is done for TSRs, since no TSR should exist in the mDNS message for these
+records.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
 <p id="section-3.5-6">For each remaining resource record in the mDNS message, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar <span class="bcp14">MUST</span> check to see if there is TSR data with that
 owner name locally. If there is not, the record is processed normally.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
@@ -1952,7 +1953,7 @@ In the latter case, the above equality definition with tolerance holds true.<a h
 <p id="section-4-4">For example, when sending SRP Updates with IP anycast, an SRP Update UDP retransmission triggered by a lost SRP
 Update response could be routed to a different SRP registrar.
 In this case both SRP registrars would receive identical data with a small time difference of at least
-2-5 seconds (per <span><a href="https://rfc-editor.org/rfc/rfc1035#section-4.2.1" class="relref">Section 4.2.1</a> of [<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>).
+the minimum DNS over UDP retransmission interval (2-5 seconds per <span><a href="https://rfc-editor.org/rfc/rfc1035#section-4.2.1" class="relref">Section 4.2.1</a> of [<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>).
 Depending on rounding effects and network delays, the resulting difference in the TSR 'Time Offset' value advertised
 by the mDNS registrars could be 2 seconds, in which case the set of records would be (correctly) treated as being
 identical and having no conflict, or it could be 3 seconds or higher, in which case there is a clear ordering to
