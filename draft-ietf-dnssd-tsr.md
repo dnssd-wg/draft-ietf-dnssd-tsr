@@ -495,8 +495,8 @@ This makes it likely that any probing, if needed, is performed by the first mDNS
 For example, if multiple mDNS registrants are peers in a replication protocol, then the replication of records from
 the first (origin) peer to a second peer can only be confirmed to the second peer once the local registration to
 the mDNS registrar on the first peer's host returns 'success' which implies the probing was done and the mDNS announce
-message for the new records is either already sent on the link, or pending broadcast transmission (i.e. queued
-in Layer 2).
+message for the new records is either already sent on the link, or is pending transmission (i.e. queued
+for Layer 2 multicast).
 It is perfectly fine if the first peer sends the record data to the second peer earlier than that (for example, while
 probing is ongoing) but the second peer's mDNS registrant must not register this data yet to its local mDNS registrar
 before the first peer confirms its local registration was successful.
