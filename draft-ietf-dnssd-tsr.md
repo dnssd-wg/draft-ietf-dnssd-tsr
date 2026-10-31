@@ -211,7 +211,7 @@ extracted from a received mDNS advertisement by parsing a TSR option.
 
 **TSR time**
 : the (node-local) absolute time indicated by a particular TSR data.
-  The internal representation of TSR time and comparisons are defined in {{tolerance}}.
+  The internal representation of TSR time is defined in {{internal-tsr}}, and comparisons in {{tolerance}}.
 
 # Time Since Received EDNS Option {#tsrrr}
 
