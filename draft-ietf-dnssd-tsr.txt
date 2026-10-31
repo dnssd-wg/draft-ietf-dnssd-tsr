@@ -521,7 +521,7 @@ Table of Contents
    Once all non-question records have been processed, the registrar MUST
    respond to any questions that match locally-registered resource
    records for which a known answer is not present in the query.
-   Responses are constructed as described in Section 2.
+   Responses are constructed as described in Section 3.10.
 
 3.4.  Receiving mDNS messages that may contain TSR options
 
@@ -713,8 +713,8 @@ Table of Contents
    the local registration to the mDNS registrar on the first peer's host
    returns 'success' which implies the probing was done and the mDNS
    announce message for the new records is either already sent on the
-   link, or pending broadcast transmission (i.e. queued in Layer 2).  It
-   is perfectly fine if the first peer sends the record data to the
+   link, or is pending transmission (i.e. queued for Layer 2 multicast).
+   It is perfectly fine if the first peer sends the record data to the
    second peer earlier than that (for example, while probing is ongoing)
    but the second peer's mDNS registrant must not register this data yet
    to its local mDNS registrar before the first peer confirms its local

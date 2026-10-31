@@ -1701,7 +1701,7 @@ the mDNS registrar <span class="bcp14">MUST</span> process the non-question reco
 is performed as described in <a href="#procmes" class="auto internal xref">Section 3.5</a>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">Once all non-question records have been processed, the registrar <span class="bcp14">MUST</span> respond to any questions that match
 locally-registered resource records for which a known answer is not present in the query. Responses are constructed as
-described in <a href="#tsrrr" class="auto internal xref">Section 2</a>.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+described in <a href="#construct" class="auto internal xref">Section 3.10</a>.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="receiving-mdns-messages-that-may-contain-tsr-options">
@@ -1844,8 +1844,8 @@ This makes it likely that any probing, if needed, is performed by the first mDNS
 <p id="section-3.8-3">For example, if multiple mDNS registrants are peers in a replication protocol, then the replication of records from
 the first (origin) peer to a second peer can only be confirmed to the second peer once the local registration to
 the mDNS registrar on the first peer's host returns 'success' which implies the probing was done and the mDNS announce
-message for the new records is either already sent on the link, or pending broadcast transmission (i.e. queued
-in Layer 2).
+message for the new records is either already sent on the link, or is pending transmission (i.e. queued
+for Layer 2 multicast).
 It is perfectly fine if the first peer sends the record data to the second peer earlier than that (for example, while
 probing is ongoing) but the second peer's mDNS registrant must not register this data yet to its local mDNS registrar
 before the first peer confirms its local registration was successful.<a href="#section-3.8-3" class="pilcrow">¶</a></p>
