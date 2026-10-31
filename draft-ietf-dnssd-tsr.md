@@ -60,8 +60,8 @@ informative:
 
 This document specifies a new conflict resolution mechanism for Multicast DNS (mDNS), for use in cases where the advertisement is
 being proxied, rather than advertised directly, e.g. when using a combined DNS-SD advertising proxy and SRP
-registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
-DNS owner name was most recently updated.
+registrar. A new EDNS option Time Since Received (TSR) is defined that communicates the time at which the set of
+resource records on a particular DNS owner name was most recently updated.
 
 --- middle
 
