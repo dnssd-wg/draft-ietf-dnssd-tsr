@@ -8,10 +8,10 @@
 <meta content="Ted Lemon" name="author">
 <meta content="Esko Dijk" name="author">
 <meta content="
-       This document specifies a new conflict resolution mechanism for DNS, for use in cases where the advertisement is
+       This document specifies a new conflict resolution mechanism for Multicast DNS (mDNS), for use in cases where the advertisement is
 being proxied, rather than advertised directly, e.g. when using a combined DNS-SD advertising proxy and SRP
-registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
-DNS owner name was most recently updated. 
+registrar. A new EDNS option Time Since Received (TSR) is defined that communicates the time at which the set of
+resource records on a particular DNS owner name was most recently updated. 
     " name="description">
 <meta content="xml2rfc 3.34.1" name="generator">
 <meta content="mDNS" name="keyword">
@@ -1088,10 +1088,10 @@ svg {
 <h1 id="title">Multicast DNS conflict resolution using the Time Since Received (TSR) EDNS option</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies a new conflict resolution mechanism for DNS, for use in cases where the advertisement is
+<p id="section-abstract-1">This document specifies a new conflict resolution mechanism for Multicast DNS (mDNS), for use in cases where the advertisement is
 being proxied, rather than advertised directly, e.g. when using a combined DNS-SD advertising proxy and SRP
-registrar. A new EDNS option is defined that communicates the time at which the set of resource records on a particular
-DNS owner name was most recently updated.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+registrar. A new EDNS option Time Since Received (TSR) is defined that communicates the time at which the set of
+resource records on a particular DNS owner name was most recently updated.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
