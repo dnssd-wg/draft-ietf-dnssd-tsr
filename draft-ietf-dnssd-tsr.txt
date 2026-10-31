@@ -5,8 +5,8 @@
 dnssd                                                           T. Lemon
 Internet-Draft                                                Apple Inc.
 Intended status: Standards Track                                 E. Dijk
-Expires: 3 May 2027                                    IoTconsultancy.nl
-                                                         30 October 2026
+Expires: 4 May 2027                                    IoTconsultancy.nl
+                                                         31 October 2026
 
 
  Multicast DNS conflict resolution using the Time Since Received (TSR)
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 May 2027.
+   This Internet-Draft will expire on 4 May 2027.
 
 Copyright Notice
 
@@ -638,7 +638,8 @@ Table of Contents
    amount of time before sending a response.  If, during that time, a
    response is received that contains all the answers it would have
    sent, it suppresses sending these answers, since they are redundant.
-   Such a response is referred to as a "pre-empting response".
+   Such a received response is referred to as a "pre-empting response"
+   from here on.
 
    In the case where TSR data is present locally or in a pre-empting
    response, it can be the case that the data in a pre-empting response
@@ -653,11 +654,11 @@ Table of Contents
 
    *  A TSR option is present for that owner name in the pre-empting
       response, but local authoritative data for that owner name is
-      present but has no associated TSR data
+      present with no associated TSR data
 
    *  local authoritative data for that owner name is present and
-      includes TSR data, a TSR option for that owner name is present in
-      the pre-empting response, but the local TSR time for that owner
+      includes TSR data, and a TSR option for that owner name is present
+      in the pre-empting response, but the local TSR time for that owner
       name is more recent than the TSR time for that owner name in the
       pre-empting response
 
@@ -1191,14 +1192,14 @@ Appendix A.  Duplicate Answer Suppression Example
    3.  mDNS registrar for proxy B sends a multicast response of
        2001:db8:0:42::1 with TSR time T
 
-   This is because in this case we would expect known answer suppression
-   to result in the mDNS registrar for proxy B suppressing its response.
-   However, it is possible that B might not see the response from C.  In
-   that situation, A would receive both responses, but since the TSR
-   time on the second response is earlier than the TSR time on the first
-   response, we would see only one callback, providing an AAAA record of
-   2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the
-   kDNSServiceFlagsMoreComing bit clear.
+   This is because in this case we would expect duplicate answer
+   suppression to result in the mDNS registrar for proxy B suppressing
+   its response.  However, it is possible that B might not see the
+   response from C.  In that situation, A would receive both responses,
+   but since the TSR time on the second response is earlier than the TSR
+   time on the first response, we would see only one callback, providing
+   an AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit
+   set and the kDNSServiceFlagsMoreComing bit clear.
 
 Acknowledgments
 

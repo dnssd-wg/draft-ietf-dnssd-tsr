@@ -1053,7 +1053,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Lemon &amp; Dijk</td>
-<td class="center">Expires 3 May 2027</td>
+<td class="center">Expires 4 May 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1066,12 +1066,12 @@ svg {
 <dd class="internet-draft">draft-ietf-dnssd-tsr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-10-30" class="published">30 October 2026</time>
+<time datetime="2026-10-31" class="published">31 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-05-03">3 May 2027</time></dd>
+<dd class="expires"><time datetime="2027-05-04">4 May 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1128,7 +1128,7 @@ DNS owner name was most recently updated.<a href="#section-abstract-1" class="pi
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1782,7 +1782,7 @@ respect to any locally-registered data.<a href="#section-3.5-12" class="pilcrow"
 of duplicate answers. When an mDNS query is received for which the mDNS registrar has authoritative data, the mDNS registrar
 will wait for a random amount of time before sending a response. If, during that time, a response is received that contains
 all the answers it would have sent, it suppresses sending these answers, since they are redundant.
-Such a response is referred to as a "pre-empting response".<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+Such a received response is referred to as a "pre-empting response" from here on.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
 <p id="section-3.6-2">In the case where TSR data is present locally or in a pre-empting response, it can be the case that the data in a pre-empting
 response is stale or conflicting. For this reason, an mDNS registrar <span class="bcp14">MUST NOT</span> suppress duplicate answers when:<a href="#section-3.6-2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1795,10 +1795,10 @@ owner name<a href="#section-3.6-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.6-3.3">
             <p id="section-3.6-3.3.1">A TSR option is present for that owner name in the pre-empting response, but local authoritative data for that owner
-name is present but has no associated TSR data<a href="#section-3.6-3.3.1" class="pilcrow">¶</a></p>
+name is present with no associated TSR data<a href="#section-3.6-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.6-3.4">
-            <p id="section-3.6-3.4.1">local authoritative data for that owner name is present and includes TSR data, a TSR option for that owner name is
+            <p id="section-3.6-3.4.1">local authoritative data for that owner name is present and includes TSR data, and a TSR option for that owner name is
 present in the pre-empting response, but the local TSR time for that owner name is more recent than the TSR time
 for that owner name in the pre-empting response<a href="#section-3.6-3.4.1" class="pilcrow">¶</a></p>
 </li>
@@ -2263,7 +2263,7 @@ bit clear.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
           <p id="appendix-A-7.3.1">mDNS registrar for proxy B sends a multicast response of 2001:db8:0:42::1 with TSR time T<a href="#appendix-A-7.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="appendix-A-8">This is because in this case we would expect known answer suppression to result in the mDNS registrar for proxy B suppressing
+<p id="appendix-A-8">This is because in this case we would expect duplicate answer suppression to result in the mDNS registrar for proxy B suppressing
 its response. However, it is possible that B might not see the response from C. In that situation, A would receive both
 responses, but since the TSR time on the second response is earlier than the TSR time on the first response, we would see
 only one callback, providing an AAAA record of 2001:db8:0:17::1 with the kDNSServiceFlagsAdd bit set and the kDNSServiceFlagsMoreComing
