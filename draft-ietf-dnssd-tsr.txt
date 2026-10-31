@@ -316,8 +316,8 @@ Table of Contents
       this specification.
 
    *TSR time*  the (node-local) absolute time indicated by a particular
-      TSR data.  The internal representation of TSR time and comparisons
-      are defined in Section 4.
+      TSR data.  The internal representation of TSR time is defined in
+      Section 5, and comparisons in Section 4.
 
 2.  Time Since Received EDNS Option
 
