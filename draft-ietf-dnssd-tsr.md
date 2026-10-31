@@ -405,7 +405,8 @@ mDNS packet since such an index can easily be out of bounds.
 
 Now, for each record in the mDNS message, the mDNS registrar first determines whether the record is an OPT record, is in
 the question section, or is a known answer (QR bit {{RFC1035}} is '0' and it's a record in the answer section).
-For all such records, no special processing is done for TSRs, since no TSR should exist in the mDNS message.
+For all such records, no special processing is done for TSRs, since no TSR should exist in the mDNS message for these
+records.
 
 For each remaining resource record in the mDNS message, the mDNS registrar MUST check to see if there is a TSR option in
 the mDNS message for that owner name. If there is not, the mDNS registrar MUST check to see if there is TSR data with that
@@ -596,7 +597,7 @@ In the latter case, the above equality definition with tolerance holds true.
 For example, when sending SRP Updates with IP anycast, an SRP Update UDP retransmission triggered by a lost SRP
 Update response could be routed to a different SRP registrar.
 In this case both SRP registrars would receive identical data with a small time difference of at least
-2-5 seconds (per {{Section 4.2.1 of RFC1035}}).
+the minimum DNS over UDP retransmission interval (2-5 seconds per {{Section 4.2.1 of RFC1035}}).
 Depending on rounding effects and network delays, the resulting difference in the TSR 'Time Offset' value advertised
 by the mDNS registrars could be 2 seconds, in which case the set of records would be (correctly) treated as being
 identical and having no conflict, or it could be 3 seconds or higher, in which case there is a clear ordering to
